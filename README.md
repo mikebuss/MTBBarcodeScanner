@@ -4,6 +4,12 @@ A lightweight, easy-to-use barcode scanning library for iOS 7.
 
 To scan barcodes, simply supply the library with a `UIView` to display the camera feed and wait for input using the result block. The block will be called for every frame a barcode is read.
 
+With this library you can:
+
+- Read any number of barcodes before stopping
+- Read multiple codes on the screen at the same time (2D barcodes only)
+- Easily 
+
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
 
 ## Installation
@@ -19,7 +25,7 @@ MTBBarcodeScanner can be installed via [CocoaPods](http://cocoapods.org) by addi
 To initialize an instance of `MTBBarcodeScanner`:
 
 ```objective-c
-self.scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:self.previewView];
+scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:self.previewView];
 ```
 
 Where `previewView` is the `UIView` in which the camera input will be displayed.
@@ -27,7 +33,7 @@ Where `previewView` is the `UIView` in which the camera input will be displayed.
 If you only want to scan for certain MetaObjectTypes, you can initialize with the `initWithMetadataObjectTypes:previewView:` method:
 
 ```objective-c
-self.scanner = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
+scanner = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
                                                               previewView:self.previewView];
 ```
 
