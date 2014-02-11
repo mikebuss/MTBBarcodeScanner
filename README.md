@@ -73,7 +73,6 @@ To continuously read and only output unique codes:
         for (AVMetadataMachineReadableCodeObject *code in codes) {
             if ([self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
                 [self.uniqueCodes addObject:code.stringValue];
-                gs
                 NSLog(@"Found unique code: %@", code.stringValue);
             }
         }
