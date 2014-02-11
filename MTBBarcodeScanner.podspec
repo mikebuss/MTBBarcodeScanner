@@ -7,19 +7,10 @@ Pod::Spec.new do |s|
   s.author           = { "Mike Buss" => "mike@mikebuss.com" }
   s.source           = { :git => "https://github.com/mikebuss/MTBBarcodeScanner.git", :tag => s.version.to_s }
 
-  s.platform     = :ios, '7.0'
+  s.platform              = :ios, '7.0'
   s.ios.deployment_target = '7.0'
-  s.requires_arc = true
+  s.requires_arc          = true
 
-  s.source_files = 'Classes'
-
-  s.ios.exclude_files = 'Classes/osx'
-  s.osx.exclude_files = 'Classes/ios'
-  
-  # s.public_header_files = 'Classes/**/*.h'
-  
-  s.frameworks = 'AVFoundation', 'QuartzCore'
-  
-  # s.dependency 'JSONKit', '~> 1.4'
-  
+  s.source_files = 'Classes/ios/**/*.{h,m}'
+  s.frameworks = 'AVFoundation', 'QuartzCore'  
 end
