@@ -101,9 +101,6 @@
             } else {
                 // First time seeing this code
                 BOOL isValidCode = [self isValidCodeString:codeString];
-                if (isValidCode) {
-                    NSLog(@"Found valid code for the first time: %@", codeString);
-                }
                 
                 // Create an overlay
                 UIView *overlayView = [self overlayForCodeString:codeString
