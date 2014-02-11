@@ -13,9 +13,6 @@ See demo project for examples of capturing one code, multiple codes, or highligh
 
 <img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/basic.PNG" width=50% height=50%>
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/advanced.PNG" width=50% height=50%>
-
-
 ## Installation
 
 MTBBarcodeScanner can be installed via [CocoaPods](http://cocoapods.org) by adding the following line to your Podfile:
