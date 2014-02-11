@@ -120,8 +120,8 @@
 }
 
 - (BOOL)isValidCodeString:(NSString *)codeString {
-    BOOL stringContainsDotCom = ([codeString rangeOfString:@"Valid"].location != NSNotFound);
-    return stringContainsDotCom;
+    BOOL stringIsValid = ([codeString rangeOfString:@"Valid"].location != NSNotFound);
+    return stringIsValid;
 }
 
 - (UIView *)overlayForCodeString:(NSString *)codeString bounds:(CGRect)bounds valid:(BOOL)valid {
