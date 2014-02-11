@@ -18,7 +18,7 @@ MTBBarcodeScanner can be installed via [CocoaPods](http://cocoapods.org) by addi
 
 To initialize an instance of `MTBBarcodeScanner`:
 
-```objc
+```objective-c
 self.scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:self.previewView];
 ```
 
@@ -26,7 +26,7 @@ Where `previewView` is the `UIView` in which the camera input will be displayed.
 
 If you only want to scan for certain MetaObjectTypes, you can initialize with the `initWithMetadataObjectTypes:previewView:` method:
 
-```objc
+```objective-c
 self.scanner = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
                                                               previewView:self.previewView];
 ```
@@ -35,7 +35,7 @@ self.scanner = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetada
 
 To read the first code and stop scanning:
 
-```objc
+```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         AVMetadataMachineReadableCodeObject *code = [codes firstObject];
         NSLog(@"Found code: %@", code.stringValue);
@@ -45,7 +45,7 @@ To read the first code and stop scanning:
 
 If the camera is pointed at more than one 2-dimensional code, you can read all of them:
 
-```objc
+```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         for (AVMetadataMachineReadableCodeObject *code in codes) {
             NSLog(@"Found code: %@", code.stringValue);
@@ -58,7 +58,7 @@ If the camera is pointed at more than one 2-dimensional code, you can read all o
 
 To continuously read and only output unique codes: 
 
-```objc
+```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         for (AVMetadataMachineReadableCodeObject *code in codes) {
             if ([self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
