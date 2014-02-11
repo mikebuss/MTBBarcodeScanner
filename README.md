@@ -2,15 +2,19 @@
 
 A lightweight, easy-to-use barcode scanning library for iOS 7. 
 
-To scan barcodes, simply supply the library with a `UIView` to display the camera feed and wait for input using the result block. The block will be called for every frame a barcode is read.
-
 With this library you can:
 
+- Supply a custom UIView for displaying camera input
 - Read any number of barcodes before stopping
 - Read multiple codes on the screen at the same time (2D barcodes only)
-- Easily 
+- Easily receive codes with a block, including the string value and position in the preview view.
 
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
+
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/basic.PNG" width=50% height=50%>
+
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/advanced.PNG" width=50% height=50%>
+
 
 ## Installation
 
@@ -78,9 +82,9 @@ To continuously read and only output unique codes:
 
 ## Sample Barcodes
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/valid.png" width=150 height=150>
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/valid.png" width=150 height=150>
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/invalid.png" width=150 height=150>
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/invalid.png" width=150 height=150>
 
 ## Developer
 
