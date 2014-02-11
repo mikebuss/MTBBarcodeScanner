@@ -70,9 +70,11 @@ To continuously read and only output unique codes:
     }];
 ```
 
-#### Sample Barcodes
+## Sample Barcodes
 
-![Valid Barcode](https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/valid.png) ![Invalid Barcode](https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/invalid.png) 
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/valid.png" width=150 height=150>
+
+<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/invalid.png" width=150 height=150>
 
 ## Developer
 
