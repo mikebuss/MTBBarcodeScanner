@@ -7,7 +7,7 @@ With this library you can:
 - Supply a custom UIView for displaying camera input
 - Read any number of barcodes before stopping
 - Read multiple codes on the screen at the same time (2D barcodes only)
-- Easily receive codes with a block, including the string value and position in the preview.
+- Easily receive codes with a block, including the string value and position in the preview
 
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
 
