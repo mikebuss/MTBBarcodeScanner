@@ -27,7 +27,7 @@
 /*!
  @property capturePreviewLayer
  @abstract
- The layer used to view the camera input. This layer is added to the 
+ The layer used to view the camera input. This layer is added to the
  previewView when scanning starts.
  */
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer *capturePreviewLayer;
@@ -38,7 +38,7 @@
  The MetaDataObjectTypes to look for in the scanning session.
  
  @discussion
- Only objects with a MetaDataObjectType found in this array will be 
+ Only objects with a MetaDataObjectType found in this array will be
  reported to the result block.
  */
 @property (strong, nonatomic) NSArray *metaDataObjectTypes;
@@ -49,8 +49,8 @@
  The view used to preview the camera input.
  
  @discussion
- The AVCaptureVideoPreviewLayer is added to this view to preview the 
- camera input when scanning starts. When scanning stops, the layer is 
+ The AVCaptureVideoPreviewLayer is added to this view to preview the
+ camera input when scanning starts. When scanning stops, the layer is
  removed.
  */
 @property (weak, nonatomic) UIView *previewView;
@@ -126,13 +126,15 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)stopScanning {
-    [self.session stopRunning];
-    [self.capturePreviewLayer removeFromSuperlayer];
-    
-    self.resultBlock = nil;
-    self.capturePreviewLayer = nil;
-    self.captureDevice = nil;
-    self.session = nil;
+    if ([MTBBarcodeScanner scanningIsAvailable]) {
+        [self.session stopRunning];
+        [self.capturePreviewLayer removeFromSuperlayer];
+        
+        self.resultBlock = nil;
+        self.capturePreviewLayer = nil;
+        self.captureDevice = nil;
+        self.session = nil;
+    }
 }
 
 - (BOOL)isScanning {
@@ -187,20 +189,24 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
                                                                             error:&inputError];
         
-        // Set an optimized preset for barcode scanning
-        [_session setSessionPreset:AVCaptureSessionPreset640x480];
-        [_session addInput:input];
-        
-        AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-        [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-        [_session addOutput:captureOutput];
-        captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-        
-        self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
-        self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-        self.capturePreviewLayer.frame = self.previewView.bounds;
-        
-        [_session commitConfiguration];
+        if (input) {
+            // Set an optimized preset for barcode scanning
+            [_session setSessionPreset:AVCaptureSessionPreset640x480];
+            [_session addInput:input];
+            
+            AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
+            [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+            [_session addOutput:captureOutput];
+            captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+            
+            self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
+            self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+            self.capturePreviewLayer.frame = self.previewView.bounds;
+            
+            [_session commitConfiguration];
+        } else {
+            NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
+        }
     }
     return _session;
 }
