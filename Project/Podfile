@@ -1,7 +1,4 @@
-pod "MTBBarcodeScanner", :path => "../MTBBarcodeScanner.podspec"
 
-target "Demo" do
-end
-
-target "DemoTests" do
+target :MTBBarcodeScannerExampleTests do
+  pod 'Kiwi/XCTest'
 end
