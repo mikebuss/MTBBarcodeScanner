@@ -11,11 +11,23 @@ With this library you can:
 
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
 
+---
+
 <img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/basic.PNG" width=50% height=50%>
 
 <img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/advanced.PNG" width=50% height=50%>
 
 <img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/book.PNG" width=50% height=50%>
+
+## Design Considerations
+
+The primary goals of this library are:
+
+- Provide an easy-to-use interface for barcode scanning
+- Make as few assumptions about the scanning process as possible
+	- Don't assume the user wants to scan one code at a time
+	- Don't assume the camera input view should be a particular size
+	- Don't assume the scanning process will have it's own view controller
 
 ## Installation
 
@@ -23,7 +35,14 @@ MTBBarcodeScanner can be installed via [CocoaPods](http://cocoapods.org) by addi
 
 `pod "MTBBarcodeScanner"`
 
+If you'd prefer not to use CocoaPods, you can download [these two files](https://github.com/mikebuss/MTBBarcodeScanner/tree/master/Classes/ios/Scanners) and add them to your project:
+
+`[MTBBarcodeScanner.h](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.h)`
+`[MTBBarcodeScanner.m](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.m)`
+
 ## Example Usage
+
+To import the library: `#import "MTBBarcodeScanner.h"`
 
 #### Initialization
 
@@ -38,7 +57,7 @@ Where `previewView` is the `UIView` in which the camera input will be displayed.
 If you only want to scan for certain MetaObjectTypes, you can initialize with the `initWithMetadataObjectTypes:previewView:` method:
 
 ```objective-c
-scanner = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
+s = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
                                                               previewView:self.previewView];
 ```
 
