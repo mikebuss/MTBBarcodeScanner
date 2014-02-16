@@ -1,4 +1,0 @@
-
-target :MTBBarcodeScannerExampleTests do
-  pod 'Kiwi/XCTest'
-end
