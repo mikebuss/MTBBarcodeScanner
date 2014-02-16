@@ -1,5 +1,12 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.2
+
+Version 0.1.2 adds improvements to documentation and formatting.
+
+Demo Project Enhancements:
+- Added Kiwi testing framework
+
 ## 0.1.1
 
 Features:
