@@ -85,7 +85,7 @@ If the camera is pointed at more than one 2-dimensional code, you can read all o
     }];
 ```
 
-**Note:** This doesn't work for 1-dimensional barcodes. See [relevant Apple document](https://developer.apple.com/library/ios/technotes/tn2325/_index.html).
+**Note:** This only applies to 2-dimensional barcodes as 1-dimensional barcodes can only be read one at a time. See [relevant Apple document](https://developer.apple.com/library/ios/technotes/tn2325/_index.html).
 
 To continuously read and only output unique codes: 
 
