@@ -59,7 +59,7 @@ If you only want to scan for certain MetaObjectTypes, you can initialize with th
 
 ```objective-c
 s = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]
-                                                              previewView:self.previewView];
+                                               previewView:self.previewView];
 ```
 
 #### Scanning
