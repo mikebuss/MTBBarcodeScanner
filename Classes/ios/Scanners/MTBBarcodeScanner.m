@@ -218,12 +218,14 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         if ([_captureDevice lockForConfiguration:&lockError] == YES) {
             
             // Prioritize the focus on objects near to the device
-            if ([_captureDevice respondsToSelector:@selector(setAutoFocusRangeRestriction:)]) {
+            if ([_captureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+                _captureDevice.isAutoFocusRangeRestrictionSupported) {
                 _captureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
             }
             
             // Focus on the center of the image
-            if ([_captureDevice respondsToSelector:@selector(setFocusPointOfInterest:)]) {
+            if ([_captureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+                _captureDevice.isFocusPointOfInterestSupported) {
                 _captureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
             }
             
