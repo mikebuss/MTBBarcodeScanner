@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.3
+
+Bug Fixes:
+- Fixed issue with setting auto range restriction and focus point of interest on older models of iPads
+
 ## 0.1.2
 
 Version 0.1.2 adds improvements to documentation and formatting.
