@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.4
+
+Bug Fixes:
+- The logic to check for the unsupported type (`AVMetadataObjectTypeFace`) was inverted. Thanks to [@Dario848](https://github.com/Dario848) for the fix!
+
 ## 0.1.3
 
 Bug Fixes:
