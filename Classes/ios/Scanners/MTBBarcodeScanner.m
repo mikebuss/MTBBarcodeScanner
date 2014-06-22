@@ -126,15 +126,26 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)stopScanning {
-    if ([MTBBarcodeScanner scanningIsAvailable]) {
-        [self.session stopRunning];
-        [self.capturePreviewLayer removeFromSuperlayer];
-        
-        self.resultBlock = nil;
-        self.capturePreviewLayer = nil;
-        self.captureDevice = nil;
-        self.session = nil;
-    }
+	if ([MTBBarcodeScanner scanningIsAvailable] && self.capturePreviewLayer.superlayer) {
+		[self.capturePreviewLayer removeFromSuperlayer];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			
+			for(AVCaptureInput *input1 in self.session.inputs) {
+				[self.session removeInput:input1];
+			}
+			
+			for(AVCaptureOutput *output1 in self.session.outputs) {
+				[self.session removeOutput:output1];
+			}
+			
+			[self.session stopRunning];
+			self.session = nil;
+			self.resultBlock = nil;
+			self.capturePreviewLayer = nil;
+			self.captureDevice = nil;
+		});
+	}
 }
 
 - (BOOL)isScanning {
