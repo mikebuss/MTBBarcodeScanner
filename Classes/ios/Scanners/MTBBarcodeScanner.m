@@ -149,7 +149,9 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)stopScanning {
-	if ([MTBBarcodeScanner scanningIsAvailable] && self.capturePreviewLayer.superlayer) {
+	if ([MTBBarcodeScanner scanningIsAvailable] && self.hasExistingSession) {
+		
+		self.hasExistingSession = NO;
 		[self.capturePreviewLayer removeFromSuperlayer];
 		
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
