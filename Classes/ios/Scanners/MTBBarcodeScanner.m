@@ -65,6 +65,22 @@
  The returned array consists of AVMetadataMachineReadableCodeObject objects.
  */
 @property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
+
+/*!
+ @property hasExistingSession
+ @abstract
+ BOOL that is set to YES when a new valid session is created and set to NO when stopScanning
+ is called.
+ 
+ @discussion
+ stopScanning now discards the session asynchronously and hasExistingSession is set to NO before
+ that block is called. If startScanning is called while the discard block is still in progress
+ hasExistingSession will be NO so we can create a new session instead of attempting to use
+ the session that is being discarded.
+ */
+
+@property (nonatomic, assign) BOOL hasExistingSession;
+
 @end
 
 CGFloat const kFocalPointOfInterestX = 0.5;
@@ -118,11 +134,18 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
-    NSAssert([MTBBarcodeScanner scanningIsAvailable], @"Scanning is not available on this device. \
-             Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
-    self.resultBlock = resultBlock;
-    [self.session startRunning];
-    [self.previewView.layer addSublayer:self.capturePreviewLayer];
+	NSAssert([MTBBarcodeScanner scanningIsAvailable], @"Scanning is not available on this device. \
+			 Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
+	self.resultBlock = resultBlock;
+	
+	if (!self.hasExistingSession){
+		self.captureDevice = [self newCaptureDevice];
+		self.session = [self newSession];
+		self.hasExistingSession = YES;
+	}
+	
+	[self.session startRunning];
+	[self.previewView.layer addSublayer:self.capturePreviewLayer];
 }
 
 - (void)stopScanning {
@@ -192,58 +215,60 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Session Configuration
 
-- (AVCaptureSession *)session {
-    if (!_session) {
-        NSError *inputError = nil;
-        _session = [[AVCaptureSession alloc] init];
-        AVCaptureDevice *captureDevice = self.captureDevice;
-        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
-                                                                            error:&inputError];
-        
-        if (input) {
-            // Set an optimized preset for barcode scanning
-            [_session setSessionPreset:AVCaptureSessionPreset640x480];
-            [_session addInput:input];
-            
-            AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-            [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-            [_session addOutput:captureOutput];
-            captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-            
-            self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
-            self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-            self.capturePreviewLayer.frame = self.previewView.bounds;
-            
-            [_session commitConfiguration];
-        } else {
-            NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
-        }
-    }
-    return _session;
+- (AVCaptureSession *)newSession {
+	AVCaptureSession *newSession = nil;
+	NSError *inputError = nil;
+	newSession = [[AVCaptureSession alloc] init];
+	AVCaptureDevice *captureDevice = self.captureDevice;
+	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
+																		error:&inputError];
+	
+	if (input) {
+		// Set an optimized preset for barcode scanning
+		[newSession setSessionPreset:AVCaptureSessionPreset640x480];
+		[newSession addInput:input];
+		
+		AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
+		[captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+		[newSession addOutput:captureOutput];
+		captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+		
+		self.capturePreviewLayer = nil;
+		self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
+		self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+		self.capturePreviewLayer.frame = self.previewView.bounds;
+		
+		[newSession commitConfiguration];
+	} else {
+		NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
+	}
+	
+	return newSession;
 }
 
-- (AVCaptureDevice *)captureDevice {
-    if (!_captureDevice) {
-        NSError *lockError = nil;
-        _captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        if ([_captureDevice lockForConfiguration:&lockError] == YES) {
-            
-            // Prioritize the focus on objects near to the device
-            if ([_captureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-                _captureDevice.isAutoFocusRangeRestrictionSupported) {
-                _captureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-            }
-            
-            // Focus on the center of the image
-            if ([_captureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-                _captureDevice.isFocusPointOfInterestSupported) {
-                _captureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
-            }
-            
-            [_captureDevice unlockForConfiguration];
-        }
-    }
-    return _captureDevice;
+- (AVCaptureDevice *)newCaptureDevice {
+	
+	AVCaptureDevice *newCaptureDevice = nil;
+	NSError *lockError = nil;
+	newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+	if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
+		
+		// Prioritize the focus on objects near to the device
+		if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+			newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
+			newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
+		}
+		
+		// Focus on the center of the image
+		if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+			newCaptureDevice.isFocusPointOfInterestSupported) {
+			newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
+		}
+		
+		[newCaptureDevice unlockForConfiguration];
+	}
+	
+	return newCaptureDevice;
 }
 
 #pragma mark - Default Values
