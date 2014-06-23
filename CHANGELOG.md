@@ -1,5 +1,13 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.5
+
+Bug Fixes:
+- `stopScanning` was not correctly discarding the existing session, causing a lock.
+- Scanner now stops scanning on a background thread
+
+Thanks to [@brandonschlenker](https://github.com/brandonschlenker) for the fix!
+
 ## 0.1.4
 
 Bug Fixes:
