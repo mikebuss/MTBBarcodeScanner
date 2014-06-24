@@ -19,6 +19,8 @@ See demo project for examples of capturing one code, multiple codes, or highligh
 
 <img src="https://raw.githubusercontent.com/mikebuss/MTBBarcodeScanner/enhancement/readme-updates/Assets/MTBBarcodeScanner.png" width=100% height=100%>
 
+#### Sample Barcodes
+
 <img src="https://raw.githubusercontent.com/mikebuss/MTBBarcodeScanner/enhancement/readme-updates/Assets/sample-barcodes.png" width=50% height=50%>
 
 ## Installation
