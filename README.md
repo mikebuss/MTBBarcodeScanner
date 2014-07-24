@@ -1,5 +1,9 @@
 # MTBBarcodeScanner
 
+[![Version](https://img.shields.io/cocoapods/v/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
+[![License](https://img.shields.io/cocoapods/l/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
+[![Platform](https://img.shields.io/cocoapods/p/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
+
 A lightweight, easy-to-use barcode scanning library for iOS 7. 
 
 With this library you can:
@@ -13,21 +17,11 @@ See demo project for examples of capturing one code, multiple codes, or highligh
 
 ---
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/basic.PNG" width=50% height=50%>
+<img src="https://raw.githubusercontent.com/mikebuss/MTBBarcodeScanner/develop/Assets/MTBBarcodeScanner.png" width=100% height=100%>
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/advanced.PNG" width=50% height=50%>
+#### Sample Barcodes
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/book.PNG" width=50% height=50%>
-
-## Design Considerations
-
-The primary goals of this library are:
-
-- Provide an easy-to-use interface for barcode scanning
-- Make as few assumptions about the scanning process as possible
-	- Don't assume the user wants to scan one code at a time
-	- Don't assume the camera input view should be a particular size
-	- Don't assume the scanning process will have it's own view controller
+<img src="https://raw.githubusercontent.com/mikebuss/MTBBarcodeScanner/develop/Assets/sample-barcodes.png" width=50% height=50%>
 
 ## Installation
 
@@ -41,7 +35,7 @@ If you'd prefer not to use CocoaPods, you can download [these two files](https:/
 
 [`MTBBarcodeScanner.m`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.m)
 
-## Example Usage
+## Usage
 
 To import the library: `#import "MTBBarcodeScanner.h"`
 
@@ -100,11 +94,15 @@ To continuously read and only output unique codes:
     }];
 ```
 
-## Sample Barcodes
+## Design Considerations
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/valid.png" width=150 height=150>
+The primary goals of this library are:
 
-<img src="https://raw2.github.com/mikebuss/MTBBarcodeScanner/master/Assets/invalid.png" width=150 height=150>
+- Provide an easy-to-use interface for barcode scanning
+- Make as few assumptions about the scanning process as possible
+	- Don't assume the user wants to scan one code at a time
+	- Don't assume the camera input view should be a particular size
+	- Don't assume the scanning process will have it's own view controller
 
 ## Developer
 

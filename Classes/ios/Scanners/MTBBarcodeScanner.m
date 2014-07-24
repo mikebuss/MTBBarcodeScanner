@@ -212,6 +212,8 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             return AVCaptureVideoOrientationLandscapeLeft;
         case UIInterfaceOrientationLandscapeRight:
             return AVCaptureVideoOrientationLandscapeRight;
+        default:
+            return AVCaptureVideoOrientationPortrait;
     }
 }
 

@@ -1,5 +1,11 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.6
+
+Bug Fixes:
+- Updated `captureOrientationForInterfaceOrientation` to handle all cases, including the new `UIInterfaceOrientationUnknown`. Thanks to [@emilstahl](https://github.com/emilstahl) for the fix!
+- Updated sample project to recommended settings for Xcode 6
+
 ## 0.1.5
 
 Bug Fixes:
