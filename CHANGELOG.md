@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.7
+
+Bug Fixes:
+- Fixed issue with preview orientation when starting in landscape. Thanks to [@laptobbe](https://github.com/laptobbe) for the fix!
+
 ## 0.1.6
 
 Bug Fixes:
