@@ -146,6 +146,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 	
 	[self.session startRunning];
 	[self.previewView.layer addSublayer:self.capturePreviewLayer];
+    [self refreshVideoOrientation];
 }
 
 - (void)stopScanning {
@@ -195,6 +196,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 #pragma mark - Rotation
 
 - (void)handleDeviceOrientationDidChangeNotification:(NSNotification *)notification {
+    [self refreshVideoOrientation];
+}
+
+- (void)refreshVideoOrientation {
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     self.capturePreviewLayer.frame = self.previewView.bounds;
     if ([self.capturePreviewLayer.connection isVideoOrientationSupported]) {
