@@ -19,6 +19,13 @@
 
 @implementation MTBBasicExampleViewController
 
+#pragma mark - Properties
+
+- (void)setUniqueCodes:(NSMutableArray *)uniqueCodes {
+    _uniqueCodes = uniqueCodes;
+    [self.tableView reloadData];
+}
+
 #pragma mark - Lifecycle
 
 - (void)viewWillDisappear:(BOOL)animated {
