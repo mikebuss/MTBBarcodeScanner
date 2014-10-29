@@ -38,11 +38,32 @@
                                 previewView:(UIView *)previewView;
 
 /**
+ *  Returns whether the camera exists in this device.
+ *
+ *  @return YES if the device has a camera.
+ */
++ (BOOL)cameraIsPresent;
+
+/**
  *  Returns whether barcode scanning is supported on this device.
  *
  *  @return YES if barcode scanning is supported on this device.
  */
-+ (BOOL)scanningIsAvailable;
++ (BOOL)scanningIsAvailable __deprecated_msg("use scanningIsAvailableAndAllowed instead.");
+
+/**
+ *  Returns whether barcode scanning is supported on this device and allowed by the user.
+ *
+ *  @return YES if barcode scanning is supported and allowed.
+ */
++ (BOOL)scanningIsAvailableAndAllowed;
+
+/**
+ *  Returns whether scanning is prohibited by the user of the device.
+ *
+ *  @return YES if the user has prohibited access to (or is himself prohibited from accessing) the camera.
+ */
++ (BOOL)scanningIsProhibited;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer

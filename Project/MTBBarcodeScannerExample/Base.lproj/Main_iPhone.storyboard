@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -19,7 +21,7 @@
             </objects>
             <point key="canvasLocation" x="-743" y="307"/>
         </scene>
-        <!--Table View Controller - MTBBarcodeScanner-->
+        <!--MTBBarcodeScanner-->
         <scene sceneID="Xom-Za-8HX">
             <objects>
                 <tableViewController id="YMy-63-W0h" sceneMemberID="viewController">
@@ -84,7 +86,7 @@
             </objects>
             <point key="canvasLocation" x="-266" y="307"/>
         </scene>
-        <!--Basic Example View Controller - Basic Example-->
+        <!--Basic Example-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="MTBBasicExampleViewController" sceneMemberID="viewController">
@@ -98,7 +100,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0nU-Cv-XFM">
                                 <rect key="frame" x="20" y="508" width="280" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Kew-4l-scK"/>
@@ -114,12 +115,10 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lzf-he-w5i">
                                 <rect key="frame" x="20" y="73" width="280" height="367"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.94128667091836737" green="0.94128667091836737" blue="0.94128667091836737" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="8Zj-eW-H7l">
                                 <rect key="frame" x="20" y="448" width="280" height="52"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="52" id="UI4-dV-Hu0"/>
@@ -174,7 +173,7 @@
             </objects>
             <point key="canvasLocation" x="381" y="-99"/>
         </scene>
-        <!--Advanced Example View Controller - Advanced Example-->
+        <!--Advanced Example-->
         <scene sceneID="lVu-9h-hOD">
             <objects>
                 <viewController id="8m2-Sm-2OA" customClass="MTBAdvancedExampleViewController" sceneMemberID="viewController">
@@ -188,10 +187,8 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qBU-Rk-IPl">
                                 <rect key="frame" x="20" y="508" width="280" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="280" id="N1X-op-w7A"/>
                                     <constraint firstAttribute="height" constant="40" id="Q1q-SY-OLJ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -206,13 +203,13 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8W3-3h-rMY">
                                 <rect key="frame" x="20" y="73" width="280" height="427"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.94128667089999996" green="0.94128667089999996" blue="0.94128667089999996" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="8W3-3h-rMY" secondAttribute="trailing" constant="20" id="DTi-YN-StC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="qBU-Rk-IPl" secondAttribute="trailing" constant="4" id="Mp9-cy-Bp7"/>
                             <constraint firstItem="qBU-Rk-IPl" firstAttribute="leading" secondItem="IGr-OQ-yDV" secondAttribute="leading" constant="20" id="VJC-SE-vle"/>
                             <constraint firstItem="qBU-Rk-IPl" firstAttribute="top" secondItem="8W3-3h-rMY" secondAttribute="bottom" constant="8" id="Xu2-mu-hWD"/>
                             <constraint firstItem="8W3-3h-rMY" firstAttribute="top" secondItem="E35-2b-ddv" secondAttribute="bottom" constant="9" id="gYf-ET-MGx"/>

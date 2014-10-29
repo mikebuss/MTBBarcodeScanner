@@ -129,49 +129,76 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Scanning
 
++ (BOOL)cameraIsPresent {
+    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+}
+
 + (BOOL)scanningIsAvailable {
     return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
 }
 
++ (BOOL)scanningIsAvailableAndAllowed {
+    
+    if (![self cameraIsPresent] || [self scanningIsProhibited]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
++ (BOOL)scanningIsProhibited {
+    
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            return YES;
+            break;
+            
+        default:
+            return NO;
+            break;
+    }
+}
+
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
-	NSAssert([MTBBarcodeScanner scanningIsAvailable], @"Scanning is not available on this device. \
-			 Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
-	self.resultBlock = resultBlock;
-	
-	if (!self.hasExistingSession){
-		self.captureDevice = [self newCaptureDevice];
-		self.session = [self newSession];
-		self.hasExistingSession = YES;
-	}
-	
-	[self.session startRunning];
-	[self.previewView.layer addSublayer:self.capturePreviewLayer];
+    NSAssert([MTBBarcodeScanner scanningIsAvailableAndAllowed], @"Scanning is not available on this device. \
+             Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
+    self.resultBlock = resultBlock;
+    
+    if (!self.hasExistingSession){
+        self.captureDevice = [self newCaptureDevice];
+        self.session = [self newSession];
+        self.hasExistingSession = YES;
+    }
+    
+    [self.session startRunning];
+    [self.previewView.layer addSublayer:self.capturePreviewLayer];
     [self refreshVideoOrientation];
 }
 
 - (void)stopScanning {
-	if ([MTBBarcodeScanner scanningIsAvailable] && self.hasExistingSession) {
-		
-		self.hasExistingSession = NO;
-		[self.capturePreviewLayer removeFromSuperlayer];
-		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			
-			for(AVCaptureInput *input1 in self.session.inputs) {
-				[self.session removeInput:input1];
-			}
-			
-			for(AVCaptureOutput *output1 in self.session.outputs) {
-				[self.session removeOutput:output1];
-			}
-			
-			[self.session stopRunning];
-			self.session = nil;
-			self.resultBlock = nil;
-			self.capturePreviewLayer = nil;
-			self.captureDevice = nil;
-		});
-	}
+    if ([MTBBarcodeScanner scanningIsAvailableAndAllowed] && self.hasExistingSession) {
+        
+        self.hasExistingSession = NO;
+        [self.capturePreviewLayer removeFromSuperlayer];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            for(AVCaptureInput *input1 in self.session.inputs) {
+                [self.session removeInput:input1];
+            }
+            
+            for(AVCaptureOutput *output1 in self.session.outputs) {
+                [self.session removeOutput:output1];
+            }
+            
+            [self.session stopRunning];
+            self.session = nil;
+            self.resultBlock = nil;
+            self.capturePreviewLayer = nil;
+            self.captureDevice = nil;
+        });
+    }
 }
 
 - (BOOL)isScanning {
@@ -225,59 +252,59 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 #pragma mark - Session Configuration
 
 - (AVCaptureSession *)newSession {
-	AVCaptureSession *newSession = nil;
-	NSError *inputError = nil;
-	newSession = [[AVCaptureSession alloc] init];
-	AVCaptureDevice *captureDevice = self.captureDevice;
-	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
-																		error:&inputError];
-	
-	if (input) {
-		// Set an optimized preset for barcode scanning
-		[newSession setSessionPreset:AVCaptureSessionPreset640x480];
-		[newSession addInput:input];
-		
-		AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-		[captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-		[newSession addOutput:captureOutput];
-		captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-		
-		self.capturePreviewLayer = nil;
-		self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
-		self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-		self.capturePreviewLayer.frame = self.previewView.bounds;
-		
-		[newSession commitConfiguration];
-	} else {
-		NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
-	}
-	
-	return newSession;
+    AVCaptureSession *newSession = nil;
+    NSError *inputError = nil;
+    newSession = [[AVCaptureSession alloc] init];
+    AVCaptureDevice *captureDevice = self.captureDevice;
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
+                                                                        error:&inputError];
+    
+    if (input) {
+        // Set an optimized preset for barcode scanning
+        [newSession setSessionPreset:AVCaptureSessionPreset640x480];
+        [newSession addInput:input];
+        
+        AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
+        [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+        [newSession addOutput:captureOutput];
+        captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+        
+        self.capturePreviewLayer = nil;
+        self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
+        self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        self.capturePreviewLayer.frame = self.previewView.bounds;
+        
+        [newSession commitConfiguration];
+    } else {
+        NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
+    }
+    
+    return newSession;
 }
 
 - (AVCaptureDevice *)newCaptureDevice {
-	
-	AVCaptureDevice *newCaptureDevice = nil;
-	NSError *lockError = nil;
-	newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-	if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
-		
-		// Prioritize the focus on objects near to the device
-		if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-			newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
-			newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-		}
-		
-		// Focus on the center of the image
-		if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-			newCaptureDevice.isFocusPointOfInterestSupported) {
-			newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
-		}
-		
-		[newCaptureDevice unlockForConfiguration];
-	}
-	
-	return newCaptureDevice;
+    
+    AVCaptureDevice *newCaptureDevice = nil;
+    NSError *lockError = nil;
+    newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
+        
+        // Prioritize the focus on objects near to the device
+        if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+            newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
+            newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
+        }
+        
+        // Focus on the center of the image
+        if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+            newCaptureDevice.isFocusPointOfInterestSupported) {
+            newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
+        }
+        
+        [newCaptureDevice unlockForConfiguration];
+    }
+    
+    return newCaptureDevice;
 }
 
 #pragma mark - Default Values

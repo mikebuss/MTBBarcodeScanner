@@ -160,7 +160,7 @@
 #pragma mark - Actions
 
 - (IBAction)toggleScanningTapped:(id)sender {
-    if (![MTBBarcodeScanner scanningIsAvailable]) {
+    if (![MTBBarcodeScanner scanningIsAvailableAndAllowed]) {
         [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
                                     message:@"Barcode scanning is unavailable on this device."
                                    delegate:nil
