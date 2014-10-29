@@ -129,8 +129,35 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Scanning
 
++ (BOOL)cameraIsPresent {
+    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+}
+
 + (BOOL)scanningIsAvailable {
     return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+}
+
++ (BOOL)scanningIsAvailableAndAllowed {
+    
+    if (![self cameraIsPresent] || [self scanningIsProhibited]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
++ (BOOL)scanningIsProhibited {
+    
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            return YES;
+            break;
+            
+        default:
+            return NO;
+            break;
+    }
 }
 
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
