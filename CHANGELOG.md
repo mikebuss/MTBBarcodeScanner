@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 0.1.8
+
+Enhancements:
+- Added `scanningIsAvailableAndAllowed` and `scanningIsProhibited` methods. Thanks to [@MattLewin](https://github.com/MattLewin) for the fix!
+
 ## 0.1.7
 
 Bug Fixes:

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2763D16B1A01432B0001EA05 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2763D1691A01432B0001EA05 /* LaunchScreen.xib */; };
 		27C265E318A9B85E008E2A33 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C265E218A9B85E008E2A33 /* QuartzCore.framework */; };
 		27C265EB18A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C265E818A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m */; };
 		27C265EC18A9CDEF008E2A33 /* MTBBasicExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C265EA18A9CDEF008E2A33 /* MTBBasicExampleViewController.m */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2763D16A1A01432B0001EA05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		27B417E418A8A501004B70AE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		27C265E218A9B85E008E2A33 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		27C265E718A9CDEF008E2A33 /* MTBAdvancedExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTBAdvancedExampleViewController.h; path = Classes/Controllers/MTBAdvancedExampleViewController.h; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				27C3BF5618A7140F00C44713 /* Main_iPad.storyboard */,
 				27C3BF5C18A7140F00C44713 /* Images.xcassets */,
 				27C3BF4818A7140F00C44713 /* Supporting Files */,
+				2763D1691A01432B0001EA05 /* LaunchScreen.xib */,
 			);
 			path = MTBBarcodeScannerExample;
 			sourceTree = "<group>";
@@ -286,6 +289,9 @@
 				CLASSPREFIX = MTB;
 				LastUpgradeCheck = 0600;
 				TargetAttributes = {
+					27C3BF3D18A7140F00C44713 = {
+						DevelopmentTeam = K83F2KZFM9;
+					};
 					27C3BF6118A7140F00C44713 = {
 						TestTargetID = 27C3BF3D18A7140F00C44713;
 					};
@@ -315,6 +321,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2763D16B1A01432B0001EA05 /* LaunchScreen.xib in Resources */,
 				27C3BF5818A7140F00C44713 /* Main_iPad.storyboard in Resources */,
 				27C3BF5D18A7140F00C44713 /* Images.xcassets in Resources */,
 				27C3BF5518A7140F00C44713 /* Main_iPhone.storyboard in Resources */,
@@ -396,6 +403,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		2763D1691A01432B0001EA05 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2763D16A1A01432B0001EA05 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
 		27C3BF4A18A7140F00C44713 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -508,11 +523,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
 				INFOPLIST_FILE = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -522,11 +540,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
 				INFOPLIST_FILE = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
