@@ -49,7 +49,7 @@
  *
  *  @return YES if barcode scanning is supported on this device.
  */
-+ (BOOL)scanningIsAvailable;
++ (BOOL)scanningIsAvailable __deprecated_msg("use scanningIsAvailableAndAllowed instead.");
 
 /**
  *  Returns whether barcode scanning is supported on this device and allowed by the user.
