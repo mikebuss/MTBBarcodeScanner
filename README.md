@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/cocoapods/l/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
 [![Platform](https://img.shields.io/cocoapods/p/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
 
-A lightweight, easy-to-use barcode scanning library for iOS 7. 
+A lightweight, easy-to-use barcode scanning library for iOS 7+.
 
 With this library you can:
 
