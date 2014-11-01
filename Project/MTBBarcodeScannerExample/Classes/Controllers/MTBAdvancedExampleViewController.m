@@ -160,24 +160,40 @@
 #pragma mark - Actions
 
 - (IBAction)toggleScanningTapped:(id)sender {
-    if (![MTBBarcodeScanner scanningIsAvailableAndAllowed]) {
-        [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
-                                    message:@"Barcode scanning is unavailable on this device."
-                                   delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
-        return;
-    }
-    
-    if (![self.scanner isScanning]) {
-        [self startScanning];
-    } else {
+    if ([self.scanner isScanning]) {
         [self stopScanning];
+    } else {
+        [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
+            if (success) {
+                [self startScanning];
+            } else {
+                [self displayPermissionMissingAlert];
+            }
+        }];
     }
 }
 
 - (void)backTapped {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Helper Methods
+
+- (void)displayPermissionMissingAlert {
+    NSString *message = nil;
+    if ([MTBBarcodeScanner scanningIsProhibited]) {
+        message = @"This app does not have permission to use the camera.";
+    } else if (![MTBBarcodeScanner cameraIsPresent]) {
+        message = @"This device does not have a camera.";
+    } else {
+        message = @"An unknown error occurred.";
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
+                                message:message
+                               delegate:nil
+                      cancelButtonTitle:@"Ok"
+                      otherButtonTitles:nil] show];
 }
 
 @end
