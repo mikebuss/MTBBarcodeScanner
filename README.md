@@ -62,19 +62,19 @@ To read the first code and stop scanning:
 
 ```objective-c
 [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
-        if (success) {
+    if (success) {
+        
+        [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
+            AVMetadataMachineReadableCodeObject *code = [codes firstObject];
+            NSLog(@"Found code: %@", code.stringValue);
             
-            [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
-                AVMetadataMachineReadableCodeObject *code = [codes firstObject];
-                NSLog(@"Found code: %@", code.stringValue);
-                
-                [self.scanner stopScanning];
-            }];
-            
-        } else {
-            // The user denied access to the camera
-        }
-    }];
+            [self.scanner stopScanning];
+        }];
+        
+    } else {
+        // The user denied access to the camera
+    }
+}];
 ```
 
 If the camera is pointed at more than one 2-dimensional code, you can read all of them:
