@@ -61,10 +61,19 @@ s = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTyp
 To read the first code and stop scanning:
 
 ```objective-c
-[self.scanner startScanningWithResultBlock:^(NSArray *codes) {
-        AVMetadataMachineReadableCodeObject *code = [codes firstObject];
-        NSLog(@"Found code: %@", code.stringValue);
-        [self.scanner stopScanning];
+[MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
+        if (success) {
+            
+            [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
+                AVMetadataMachineReadableCodeObject *code = [codes firstObject];
+                NSLog(@"Found code: %@", code.stringValue);
+                
+                [self.scanner stopScanning];
+            }];
+            
+        } else {
+            // The user denied access to the camera
+        }
     }];
 ```
 
@@ -72,11 +81,11 @@ If the camera is pointed at more than one 2-dimensional code, you can read all o
 
 ```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
-        for (AVMetadataMachineReadableCodeObject *code in codes) {
-            NSLog(@"Found code: %@", code.stringValue);
-        }
-        [self.scanner stopScanning];
-    }];
+    for (AVMetadataMachineReadableCodeObject *code in codes) {
+        NSLog(@"Found code: %@", code.stringValue);
+    }
+    [self.scanner stopScanning];
+}];
 ```
 
 **Note:** This only applies to 2-dimensional barcodes as 1-dimensional barcodes can only be read one at a time. See [relevant Apple document](https://developer.apple.com/library/ios/technotes/tn2325/_index.html).
@@ -85,13 +94,13 @@ To continuously read and only output unique codes:
 
 ```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
-        for (AVMetadataMachineReadableCodeObject *code in codes) {
-            if ([self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
-                [self.uniqueCodes addObject:code.stringValue];
-                NSLog(@"Found unique code: %@", code.stringValue);
-            }
+    for (AVMetadataMachineReadableCodeObject *code in codes) {
+        if ([self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
+            [self.uniqueCodes addObject:code.stringValue];
+            NSLog(@"Found unique code: %@", code.stringValue);
         }
-    }];
+    }
+}];
 ```
 
 ## Design Considerations
