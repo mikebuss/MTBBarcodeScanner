@@ -45,25 +45,19 @@
 + (BOOL)cameraIsPresent;
 
 /**
- *  Returns whether barcode scanning is supported on this device.
- *
- *  @return YES if barcode scanning is supported on this device.
- */
-+ (BOOL)scanningIsAvailable __deprecated_msg("use scanningIsAvailableAndAllowed instead.");
-
-/**
- *  Returns whether barcode scanning is supported on this device and allowed by the user.
- *
- *  @return YES if barcode scanning is supported and allowed.
- */
-+ (BOOL)scanningIsAvailableAndAllowed;
-
-/**
  *  Returns whether scanning is prohibited by the user of the device.
  *
- *  @return YES if the user has prohibited access to (or is himself prohibited from accessing) the camera.
+ *  @return YES if the user has prohibited access to (or is prohibited from accessing) the camera.
  */
 + (BOOL)scanningIsProhibited;
+
+/**
+ *  Request permission to access the camera on the device.
+ *
+ *  The success block will return YES if the user granted permission, has granted permission in the past, or if the device is running iOS 7.
+ *  The success block will return NO if the user denied permission, is restricted from the camera, or if there is no camera present.
+ */
++ (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer

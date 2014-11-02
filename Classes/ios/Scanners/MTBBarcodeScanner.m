@@ -133,21 +133,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
 }
 
-+ (BOOL)scanningIsAvailable {
-    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-}
-
-+ (BOOL)scanningIsAvailableAndAllowed {
-    
-    if (![self cameraIsPresent] || [self scanningIsProhibited]) {
-        return NO;
-    } else {
-        return YES;
-    }
-}
-
 + (BOOL)scanningIsProhibited {
-    
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
         case AVAuthorizationStatusDenied:
         case AVAuthorizationStatusRestricted:
@@ -160,9 +146,40 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
++ (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock {
+    if (![self cameraIsPresent]) {
+        successBlock(NO);
+        return;
+    }
+    
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusAuthorized:
+            successBlock(YES);
+            break;
+            
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            successBlock(NO);
+            break;
+            
+        case AVAuthorizationStatusNotDetermined:
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
+                                     completionHandler:^(BOOL granted) {
+                                         
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             successBlock(granted);
+                                         });
+                                         
+                                     }];
+            break;
+    }
+}
+
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
-    NSAssert([MTBBarcodeScanner scanningIsAvailableAndAllowed], @"Scanning is not available on this device. \
-             Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
+    NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
+             Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    
     self.resultBlock = resultBlock;
     
     if (!self.hasExistingSession){
@@ -177,19 +194,19 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)stopScanning {
-    if ([MTBBarcodeScanner scanningIsAvailableAndAllowed] && self.hasExistingSession) {
+    if (self.hasExistingSession) {
         
         self.hasExistingSession = NO;
         [self.capturePreviewLayer removeFromSuperlayer];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
-            for(AVCaptureInput *input1 in self.session.inputs) {
-                [self.session removeInput:input1];
+            for(AVCaptureInput *input in self.session.inputs) {
+                [self.session removeInput:input];
             }
             
-            for(AVCaptureOutput *output1 in self.session.outputs) {
-                [self.session removeOutput:output1];
+            for(AVCaptureOutput *output in self.session.outputs) {
+                [self.session removeOutput:output];
             }
             
             [self.session stopRunning];
