@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.2.0
+
+Enhancements:
+- The capture preview layer now inherits the corner radius of the previewView's layer. Thanks [@tupps](https://github.com/tupps)!
+
 ## 1.1.18
 
 Enhancements:
