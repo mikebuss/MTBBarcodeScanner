@@ -1,6 +1,11 @@
 # MTBBarcodeScanner CHANGELOG
 
-## 1.1.8
+## 1.2.0
+
+Enhancements:
+- The capture preview layer now inherits the corner radius of the previewView's layer. Thanks [@tupps](https://github.com/tupps)!
+
+## 1.1.18
 
 Enhancements:
 - Removed `scanningIsAvailable` and `scanningIsAvailableAndAllowed` methods in favor of `requestCameraPermissionWithSuccess:`, which requests camera permission and returns the result in a block.
