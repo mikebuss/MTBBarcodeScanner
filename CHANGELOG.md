@@ -1,5 +1,15 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.3.0
+
+Enhancements:
+- Added support for the following:
+  - AVMetadataObjectTypeInterleaved2of5Code
+  - AVMetadataObjectTypeITF14Code
+  - AVMetadataObjectTypeDataMatrixCode
+  
+Thanks to [@hdoria](https://github.com/hdoria) for [bringing this](https://github.com/mikebuss/MTBBarcodeScanner/issues/15) to my attention!
+
 ## 1.2.0
 
 Enhancements:

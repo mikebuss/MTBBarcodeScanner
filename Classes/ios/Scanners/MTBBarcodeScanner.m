@@ -328,16 +328,26 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 #pragma mark - Default Values
 
 - (NSArray *)defaultMetaDataObjectTypes {
-    return @[AVMetadataObjectTypeQRCode,
-             AVMetadataObjectTypeUPCECode,
-             AVMetadataObjectTypeCode39Code,
-             AVMetadataObjectTypeCode39Mod43Code,
-             AVMetadataObjectTypeEAN13Code,
-             AVMetadataObjectTypeEAN8Code,
-             AVMetadataObjectTypeCode93Code,
-             AVMetadataObjectTypeCode128Code,
-             AVMetadataObjectTypePDF417Code,
-             AVMetadataObjectTypeAztecCode];
+    NSMutableArray *types = [@[AVMetadataObjectTypeQRCode,
+                               AVMetadataObjectTypeUPCECode,
+                               AVMetadataObjectTypeCode39Code,
+                               AVMetadataObjectTypeCode39Mod43Code,
+                               AVMetadataObjectTypeEAN13Code,
+                               AVMetadataObjectTypeEAN8Code,
+                               AVMetadataObjectTypeCode93Code,
+                               AVMetadataObjectTypeCode128Code,
+                               AVMetadataObjectTypePDF417Code,
+                               AVMetadataObjectTypeAztecCode] mutableCopy];
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        [types addObjectsFromArray:@[
+                                     AVMetadataObjectTypeInterleaved2of5Code,
+                                     AVMetadataObjectTypeITF14Code,
+                                     AVMetadataObjectTypeDataMatrixCode
+                                     ]];
+    }
+    
+    return types;
 }
 
 #pragma mark - Helper Methods
