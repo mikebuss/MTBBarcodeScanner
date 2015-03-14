@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.3.1
+
+Bug Fixes:
+- Removed CocoaPods build phases from test target to fix issue [#19](https://github.com/mikebuss/MTBBarcodeScanner/issues/19).
+
 ## 1.3.0
 
 Enhancements:
