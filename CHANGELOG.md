@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.3.2
+
+Enhancements:
+- Use AVCaptureSessionPresetHigh for session preset for higher quality video. (Thanks [@rshevchuk](https://github.com/rshevchuk)!)
+
 ## 1.3.1
 
 Bug Fixes:
