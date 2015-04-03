@@ -38,6 +38,8 @@
 - (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
                                 previewView:(UIView *)previewView;
 
+@property (nonatomic) BOOL useFrontCamera;
+
 /**
  *  Returns whether the camera exists in this device.
  *

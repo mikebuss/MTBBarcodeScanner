@@ -304,7 +304,25 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     
     AVCaptureDevice *newCaptureDevice = nil;
     NSError *lockError = nil;
-    newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+    if (self.useFrontCamera) {
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        for (AVCaptureDevice *device in videoDevices)
+        {
+            if (device.position == AVCaptureDevicePositionFront)
+            {
+                newCaptureDevice = device;
+                break;
+            }
+        }
+    }
+
+    //  couldn't find one on the front, so just get the default video device.
+    if ( ! newCaptureDevice)
+    {
+        newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+
     if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
         
         // Prioritize the focus on objects near to the device
