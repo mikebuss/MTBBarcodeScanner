@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -28,7 +28,7 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="Pxv-sH-nOX">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection id="daf-7b-oAl">
                                 <cells>
@@ -43,7 +43,7 @@
                                                     <rect key="frame" x="15" y="0.0" width="270" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -63,7 +63,7 @@
                                                     <rect key="frame" x="15" y="0.0" width="270" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -135,7 +135,7 @@
                                                     <rect key="frame" x="15" y="0.0" width="250" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -162,7 +162,13 @@
                             <constraint firstItem="0nU-Cv-XFM" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="xMN-zd-ZdW"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Basic Example" id="rOr-Ag-4hd"/>
+                    <navigationItem key="navigationItem" title="Basic Example" id="rOr-Ag-4hd">
+                        <barButtonItem key="rightBarButtonItem" image="Flip" id="GAQ-G2-jAE">
+                            <connections>
+                                <action selector="switchCameraTapped:" destination="vXZ-lx-hvc" id="myQ-ok-1iW"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="previewView" destination="Lzf-he-w5i" id="E4r-Z5-uz5"/>
                         <outlet property="tableView" destination="8Zj-eW-H7l" id="0TY-f1-BcJ"/>
@@ -217,7 +223,13 @@
                             <constraint firstItem="8W3-3h-rMY" firstAttribute="leading" secondItem="IGr-OQ-yDV" secondAttribute="leading" constant="20" id="sLz-10-Ruh"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Advanced Example" id="2xs-hY-3Xu"/>
+                    <navigationItem key="navigationItem" title="Advanced Example" id="2xs-hY-3Xu">
+                        <barButtonItem key="rightBarButtonItem" image="Flip" id="1Jz-G3-CyN">
+                            <connections>
+                                <action selector="switchCameraTapped:" destination="8m2-Sm-2OA" id="vDs-hP-qSZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="previewView" destination="8W3-3h-rMY" id="ure-lB-fGD"/>
                         <outlet property="toggleScanningButton" destination="qBU-Rk-IPl" id="Mle-I6-TWr"/>
@@ -228,6 +240,9 @@
             <point key="canvasLocation" x="381" y="607"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Flip" width="32" height="32"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

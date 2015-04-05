@@ -19,13 +19,6 @@
 
 @implementation MTBBasicExampleViewController
 
-#pragma mark - Properties
-
-- (void)setUniqueCodes:(NSMutableArray *)uniqueCodes {
-    _uniqueCodes = uniqueCodes;
-    [self.tableView reloadData];
-}
-
 #pragma mark - Lifecycle
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -88,6 +81,10 @@
     }
 }
 
+- (IBAction)switchCameraTapped:(id)sender {
+    [self.scanner flipCamera];
+}
+
 - (void)backTapped {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -131,6 +128,13 @@
     [self.tableView scrollToRowAtIndexPath:indexPath
                           atScrollPosition:UITableViewScrollPositionTop
                                   animated:YES];
+}
+
+#pragma mark - Setters
+
+- (void)setUniqueCodes:(NSMutableArray *)uniqueCodes {
+    _uniqueCodes = uniqueCodes;
+    [self.tableView reloadData];
 }
 
 @end

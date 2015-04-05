@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
     </dependencies>
     <scenes>
-        <!--Table View Controller - MTBBarcodeScanner-->
+        <!--MTBBarcodeScanner-->
         <scene sceneID="XsN-Gh-ZsV">
             <objects>
                 <tableViewController id="vtL-Xu-I08" sceneMemberID="viewController">
@@ -84,7 +85,7 @@
             </objects>
             <point key="canvasLocation" x="-1881" y="-68"/>
         </scene>
-        <!--Advanced Example View Controller - Advanced Example-->
+        <!--Advanced Example-->
         <scene sceneID="3Gd-ef-gh4">
             <objects>
                 <viewController id="HfW-Iu-Gio" customClass="MTBAdvancedExampleViewController" sceneMemberID="viewController">
@@ -98,7 +99,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kgz-vX-7jO">
                                 <rect key="frame" x="218" y="933" width="333" height="71"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="333" id="Pjg-tJ-aZx"/>
@@ -115,12 +115,10 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HBk-GX-vlW">
                                 <rect key="frame" x="20" y="78" width="728" height="781"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The camera preview will highlight valid codes green and invalid codes red. See GitHub README for example barcodes." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="484" translatesAutoresizingMaskIntoConstraints="NO" id="s9y-rC-wX8">
                                 <rect key="frame" x="142" y="867" width="484" height="58"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="pRt-aq-dnT"/>
                                 </constraints>
@@ -141,7 +139,13 @@
                             <constraint firstItem="s9y-rC-wX8" firstAttribute="centerX" secondItem="Kgz-vX-7jO" secondAttribute="centerX" id="wmA-bQ-iGZ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5"/>
+                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5">
+                        <barButtonItem key="rightBarButtonItem" image="Flip" id="p66-IL-mZU">
+                            <connections>
+                                <action selector="switchCameraTapped:" destination="HfW-Iu-Gio" id="a7E-QI-Yvy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="instructions" destination="s9y-rC-wX8" id="YK2-cc-BeF"/>
                         <outlet property="previewView" destination="HBk-GX-vlW" id="Qt1-YC-1KP"/>
@@ -150,9 +154,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="370-UV-CIz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="319" y="472"/>
+            <point key="canvasLocation" x="215" y="668"/>
         </scene>
-        <!--Basic Example View Controller - Basic Example-->
+        <!--Basic Example-->
         <scene sceneID="bF2-wK-4Uf">
             <objects>
                 <viewController id="uM7-fn-iuC" customClass="MTBBasicExampleViewController" sceneMemberID="viewController">
@@ -166,7 +170,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xad-It-gmb">
                                 <rect key="frame" x="218" y="933" width="333" height="71"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="333" id="HSI-ah-AhX"/>
@@ -183,12 +186,10 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hJR-r2-GXG">
                                 <rect key="frame" x="20" y="79" width="728" height="600"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Mw0-co-fNB">
                                 <rect key="frame" x="20" y="687" width="728" height="238"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="238" id="6Py-nj-fNL"/>
@@ -230,7 +231,13 @@
                             <constraint firstItem="xad-It-gmb" firstAttribute="top" secondItem="Mw0-co-fNB" secondAttribute="bottom" constant="8" symbolic="YES" id="oKB-Oy-24P"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0"/>
+                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0">
+                        <barButtonItem key="rightBarButtonItem" image="Flip" id="c2I-WJ-YYp">
+                            <connections>
+                                <action selector="switchCameraTapped:" destination="uM7-fn-iuC" id="Qx9-Z7-9dh"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="previewView" destination="hJR-r2-GXG" id="uG4-dV-8n6"/>
                         <outlet property="tableView" destination="Mw0-co-fNB" id="aUv-Vf-sLo"/>
@@ -242,6 +249,9 @@
             <point key="canvasLocation" x="215" y="-479"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Flip" width="32" height="32"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>
         <simulatedOrientationMetrics key="orientation"/>
