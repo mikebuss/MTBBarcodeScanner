@@ -103,9 +103,33 @@ To continuously read and only output unique codes:
 }];
 ```
 
+## Switching Cameras
+
+Switch to the opposite camera with the `flipCamera` method on the scanner:
+
+```objective-c
+
+- (IBAction)switchCameraTapped:(id)sender {
+    [self.scanner flipCamera];
+}
+
+```
+
+
+Or specify the camera directly using the `camera` property, like so:
+
+```objective-c
+
+MTBBarcodeScanner *scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
+scanner.camera = MTBCameraFront;
+
+```
+
+Examples for these are in the demo project. 
+
 ## Design Considerations
 
-The primary goals of this library are:
+The primary goals of this library are to:
 
 - Provide an easy-to-use interface for barcode scanning
 - Make as few assumptions about the scanning process as possible
