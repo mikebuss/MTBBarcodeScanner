@@ -173,6 +173,10 @@
     }
 }
 
+- (IBAction)switchCameraTapped:(id)sender {
+    [self.scanner flipCamera];
+}
+
 - (void)backTapped {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }

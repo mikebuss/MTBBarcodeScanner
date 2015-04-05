@@ -18,13 +18,6 @@
 @property (strong, nonatomic) AVCaptureSession *session;
 
 /*!
- @property captureDevice
- @abstract
- Object that represents the physical camera on the device.
- */
-@property (strong, nonatomic) AVCaptureDevice *captureDevice;
-
-/*!
  @property capturePreviewLayer
  @abstract
  The layer used to view the camera input. This layer is added to the
@@ -182,9 +175,9 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     
     self.resultBlock = resultBlock;
     
-    if (!self.hasExistingSession){
-        self.captureDevice = [self newCaptureDevice];
-        self.session = [self newSession];
+    if (!self.hasExistingSession) {
+        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:self.camera];
+        self.session = [self newSessionWithCaptureDevice:captureDevice];
         self.hasExistingSession = YES;
     }
     
@@ -214,7 +207,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             self.session = nil;
             self.resultBlock = nil;
             self.capturePreviewLayer = nil;
-            self.captureDevice = nil;
         });
     }
 }
@@ -223,16 +215,29 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     return [self.session isRunning];
 }
 
+- (void)flipCamera {
+    if (self.isScanning) {
+        if (self.camera == MTBCameraFront) {
+            self.camera = MTBCameraBack;
+        } else {
+            self.camera = MTBCameraFront;
+        }
+    }
+}
+
 #pragma mark - AVCaptureMetadataOutputObjects Delegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    
     NSMutableArray *codes = [[NSMutableArray alloc] init];
+    
     for (AVMetadataObject *metaData in metadataObjects) {
         AVMetadataMachineReadableCodeObject *barCodeObject = (AVMetadataMachineReadableCodeObject *)[self.capturePreviewLayer transformedMetadataObjectForMetadataObject:(AVMetadataMachineReadableCodeObject *)metaData];
         if (barCodeObject) {
             [codes addObject:barCodeObject];
         }
     }
+    
     if (self.resultBlock) {
         self.resultBlock(codes);
     }
@@ -269,49 +274,52 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Session Configuration
 
-- (AVCaptureSession *)newSession {
-    AVCaptureSession *newSession = nil;
-    NSError *inputError = nil;
-    newSession = [[AVCaptureSession alloc] init];
-    AVCaptureDevice *captureDevice = self.captureDevice;
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
-                                                                        error:&inputError];
+- (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice {
+    AVCaptureSession *newSession = [[AVCaptureSession alloc] init];
+    AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
     
-    if (input) {
-        // Set an optimized preset for barcode scanning
-        [newSession setSessionPreset:AVCaptureSessionPresetHigh];
-        [newSession addInput:input];
-        
-        AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-        [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-        [newSession addOutput:captureOutput];
-        captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-        
-        self.capturePreviewLayer = nil;
-        self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
-        self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-        self.capturePreviewLayer.frame = self.previewView.bounds;
-        
-        [newSession commitConfiguration];
-    } else {
-        NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
-    }
+    // Set an optimized preset for barcode scanning
+    [newSession setSessionPreset:AVCaptureSessionPresetHigh];
+    [newSession addInput:input];
+    
+    AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
+    [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+    [newSession addOutput:captureOutput];
+    captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    
+    self.capturePreviewLayer = nil;
+    self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
+    self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    self.capturePreviewLayer.frame = self.previewView.bounds;
+    
+    [newSession commitConfiguration];
     
     return newSession;
 }
 
-- (AVCaptureDevice *)newCaptureDevice {
+- (AVCaptureDeviceInput *)deviceInputForCaptureDevice:(AVCaptureDevice *)captureDevice {
+    NSError *inputError = nil;
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
+                                                                        error:&inputError];
+    
+    if (!input) {
+        NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
+    }
+    
+    return input;
+}
+
+- (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
     
     AVCaptureDevice *newCaptureDevice = nil;
     NSError *lockError = nil;
     
-    if (self.useFrontCamera) {
-        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-        for (AVCaptureDevice *device in videoDevices) {
-            if (device.position == AVCaptureDevicePositionFront) {
-                newCaptureDevice = device;
-                break;
-            }
+    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
+    for (AVCaptureDevice *device in videoDevices) {
+        if (device.position == position) {
+            newCaptureDevice = device;
+            break;
         }
     }
 
@@ -338,6 +346,18 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     return newCaptureDevice;
+}
+
+- (AVCaptureDevicePosition)devicePositionForCamera:(MTBCamera)camera {
+    switch (camera) {
+        case MTBCameraFront:
+            return AVCaptureDevicePositionFront;
+        case MTBCameraBack:
+            return AVCaptureDevicePositionBack;
+        default:
+            return AVCaptureDevicePositionUnspecified;
+            break;
+    }
 }
 
 #pragma mark - Default Values
@@ -374,5 +394,23 @@ CGFloat const kFocalPointOfInterestY = 0.5;
                                                object:nil];
 }
 
+#pragma mark - Setters
+
+- (void)setCamera:(MTBCamera)camera {
+    
+    if (self.isScanning && camera != _camera) {
+        
+        for (AVCaptureInput *input in self.session.inputs) {
+            [self.session removeInput:input];
+        }
+        
+        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
+        AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
+        [self.session addInput:input];
+        
+    }
+    
+    _camera = camera;
+}
 
 @end

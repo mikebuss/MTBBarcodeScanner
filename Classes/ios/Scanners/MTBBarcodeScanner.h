@@ -10,12 +10,17 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, MTBCamera) {
+    MTBCameraBack,
+    MTBCameraFront
+};
+
 @interface MTBBarcodeScanner : NSObject
 
 /**
  *  YES if the scanner should use the front camera.
  */
-@property (nonatomic, assign) BOOL useFrontCamera;
+@property (nonatomic, assign) MTBCamera camera;
 
 /**
  *  Initialize a scanner that will feed the camera input
@@ -84,5 +89,11 @@
  *  @return YES if the scanner is currently scanning for barcodes
  */
 - (BOOL)isScanning;
+
+/**
+ *  If using the front camera, switch to the back, or visa-versa.
+ *  If this method is called when isScanning=NO, it has no effect
+ */
+- (void)flipCamera;
 
 @end
