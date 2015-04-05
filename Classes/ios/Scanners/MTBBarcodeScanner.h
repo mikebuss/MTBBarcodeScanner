@@ -13,6 +13,11 @@
 @interface MTBBarcodeScanner : NSObject
 
 /**
+ *  YES if the scanner should use the front camera.
+ */
+@property (nonatomic, assign) BOOL useFrontCamera;
+
+/**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.
  *
@@ -37,8 +42,6 @@
  */
 - (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
                                 previewView:(UIView *)previewView;
-
-@property (nonatomic) BOOL useFrontCamera;
 
 /**
  *  Returns whether the camera exists in this device.

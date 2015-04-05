@@ -38,6 +38,7 @@
 - (MTBBarcodeScanner *)scanner {
     if (!_scanner) {
         _scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
+        _scanner.useFrontCamera = YES;
     }
     return _scanner;
 }

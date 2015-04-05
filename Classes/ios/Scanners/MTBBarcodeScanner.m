@@ -307,19 +307,16 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     
     if (self.useFrontCamera) {
         NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-        for (AVCaptureDevice *device in videoDevices)
-        {
-            if (device.position == AVCaptureDevicePositionFront)
-            {
+        for (AVCaptureDevice *device in videoDevices) {
+            if (device.position == AVCaptureDevicePositionFront) {
                 newCaptureDevice = device;
                 break;
             }
         }
     }
 
-    //  couldn't find one on the front, so just get the default video device.
-    if ( ! newCaptureDevice)
-    {
+    // If the front camera is not available, use the back camera
+    if (!newCaptureDevice) {
         newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     }
 
