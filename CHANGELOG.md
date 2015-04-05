@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.4.0
+
+Enhancements:
+- Scan codes from the front or back camera! Thanks to [lanbozhang](https://github.com/lanbozhang).
+
 ## 1.3.2
 
 Enhancements:
