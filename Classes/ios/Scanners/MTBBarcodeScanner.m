@@ -122,7 +122,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (instancetype)initWithPreviewView:(UIView *)previewView {
-    NSParameterAssert(previewView);
     self = [super init];
     if (self) {
         _previewView = previewView;
@@ -135,7 +134,9 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 - (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
                                 previewView:(UIView *)previewView {
     NSParameterAssert(metaDataObjectTypes);
-    NSParameterAssert(previewView);
+    NSAssert(metaDataObjectTypes.count > 0,
+             @"Must initialize MTBBarcodeScanner with at least one metaDataObjectTypes value.");
+    
     self = [super init];
     if (self) {
         NSAssert(!([metaDataObjectTypes indexOfObject:AVMetadataObjectTypeFace] != NSNotFound),
