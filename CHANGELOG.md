@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.5.0
+
+Bug Fixes:
+- Fixed an issue with the auto focus range restriction and focus point incorrectly persisting. (Thanks [sebastianludwig](https://github.com/sebastianludwig)!). Read more [here](https://github.com/mikebuss/MTBBarcodeScanner/issues/25).
+
 ## 1.4.0
 
 Enhancements:
