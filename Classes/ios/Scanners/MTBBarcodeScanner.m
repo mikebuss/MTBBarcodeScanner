@@ -15,7 +15,7 @@
  @abstract
  The capture session used for scanning barcodes.
  */
-@property (strong, nonatomic) AVCaptureSession *session;
+@property (nonatomic, strong) AVCaptureSession *session;
 
 /*!
  @property capturePreviewLayer
@@ -23,7 +23,7 @@
  The layer used to view the camera input. This layer is added to the
  previewView when scanning starts.
  */
-@property (strong, nonatomic) AVCaptureVideoPreviewLayer *capturePreviewLayer;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *capturePreviewLayer;
 
 /*!
  @property currentCaptureDeviceInput
@@ -42,7 +42,7 @@
  Only objects with a MetaDataObjectType found in this array will be
  reported to the result block.
  */
-@property (strong, nonatomic) NSArray *metaDataObjectTypes;
+@property (nonatomic, strong) NSArray *metaDataObjectTypes;
 
 /*!
  @property previewView
@@ -54,7 +54,7 @@
  camera input when scanning starts. When scanning stops, the layer is
  removed.
  */
-@property (weak, nonatomic) UIView *previewView;
+@property (nonatomic, weak) UIView *previewView;
 
 /*!
  @property resultBlock
