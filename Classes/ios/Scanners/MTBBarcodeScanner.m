@@ -195,11 +195,11 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
-            for(AVCaptureInput *input in self.session.inputs) {
+            for (AVCaptureInput *input in self.session.inputs) {
                 [self.session removeInput:input];
             }
             
-            for(AVCaptureOutput *output in self.session.outputs) {
+            for (AVCaptureOutput *output in self.session.outputs) {
                 [self.session removeOutput:output];
             }
             
@@ -310,7 +310,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
-    
     AVCaptureDevice *newCaptureDevice = nil;
     NSError *lockError = nil;
     
