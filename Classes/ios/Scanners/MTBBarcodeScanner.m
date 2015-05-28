@@ -338,11 +338,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     NSError *inputError = nil;
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
                                                                         error:&inputError];
-    
-    if (!input) {
-        NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
-    }
-    
     return input;
 }
 
