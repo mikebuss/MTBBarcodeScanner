@@ -287,8 +287,6 @@
 				CLASSPREFIX = MTB;
 				LastUpgradeCheck = 0600;
 				TargetAttributes = {
-					27C3BF3D18A7140F00C44713 = {
-					};
 					27C3BF6118A7140F00C44713 = {
 						TestTargetID = 27C3BF3D18A7140F00C44713;
 					};

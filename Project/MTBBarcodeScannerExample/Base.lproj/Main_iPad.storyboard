@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--MTBBarcodeScanner-->
@@ -126,26 +127,44 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverse" translatesAutoresizingMaskIntoConstraints="NO" id="dOo-OC-Vf9">
+                                <rect key="frame" x="695" y="91" width="45" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="36N-gG-m9t"/>
+                                    <constraint firstAttribute="width" constant="45" id="WbE-QE-d51"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mps-6Q-bx6" userLabel="Flip Camera Button">
+                                <rect key="frame" x="683" y="84" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="VHq-4b-CTD"/>
+                                    <constraint firstAttribute="height" constant="50" id="eUG-Ws-DFj"/>
+                                </constraints>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="switchCameraTapped:" destination="HfW-Iu-Gio" eventType="touchUpInside" id="8Ye-p9-N0e"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="Mps-6Q-bx6" secondAttribute="trailing" constant="15" id="64o-sv-fvB"/>
                             <constraint firstAttribute="bottom" secondItem="Kgz-vX-7jO" secondAttribute="bottom" constant="20" symbolic="YES" id="GQI-oU-Qzc"/>
                             <constraint firstItem="s9y-rC-wX8" firstAttribute="top" secondItem="HBk-GX-vlW" secondAttribute="bottom" constant="8" symbolic="YES" id="Q9L-CT-6Nu"/>
                             <constraint firstItem="Kgz-vX-7jO" firstAttribute="top" secondItem="s9y-rC-wX8" secondAttribute="bottom" constant="8" symbolic="YES" id="SQs-ld-0t4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dOo-OC-Vf9" secondAttribute="trailing" constant="8" id="Tn9-rm-tk3"/>
                             <constraint firstItem="HBk-GX-vlW" firstAttribute="top" secondItem="uDK-yO-MDc" secondAttribute="bottom" constant="14" id="U2X-lg-tEq"/>
                             <constraint firstItem="s9y-rC-wX8" firstAttribute="centerX" secondItem="HBk-GX-vlW" secondAttribute="centerX" id="cNA-k5-8aK"/>
                             <constraint firstItem="HBk-GX-vlW" firstAttribute="leading" secondItem="k2m-e9-swB" secondAttribute="leading" constant="20" symbolic="YES" id="g4e-lj-rcW"/>
+                            <constraint firstItem="dOo-OC-Vf9" firstAttribute="top" secondItem="uDK-yO-MDc" secondAttribute="bottom" constant="27" id="jbM-YE-6OZ"/>
+                            <constraint firstItem="Mps-6Q-bx6" firstAttribute="top" secondItem="uDK-yO-MDc" secondAttribute="bottom" constant="20" id="t15-Dn-bmU"/>
                             <constraint firstAttribute="trailing" secondItem="HBk-GX-vlW" secondAttribute="trailing" constant="20" symbolic="YES" id="uBP-Rl-Unz"/>
                             <constraint firstItem="s9y-rC-wX8" firstAttribute="centerX" secondItem="Kgz-vX-7jO" secondAttribute="centerX" id="wmA-bQ-iGZ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="p66-IL-mZU">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="HfW-Iu-Gio" id="a7E-QI-Yvy"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5"/>
                     <connections>
                         <outlet property="instructions" destination="s9y-rC-wX8" id="YK2-cc-BeF"/>
                         <outlet property="previewView" destination="HBk-GX-vlW" id="Qt1-YC-1KP"/>
@@ -217,9 +236,31 @@
                                     <outlet property="dataSource" destination="uM7-fn-iuC" id="YLb-aY-rLw"/>
                                 </connections>
                             </tableView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverse" translatesAutoresizingMaskIntoConstraints="NO" id="vxy-OW-Bmf">
+                                <rect key="frame" x="688" y="88" width="45" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="4Ai-46-BgG"/>
+                                    <constraint firstAttribute="width" constant="45" id="bYl-kw-zZU"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MbT-EL-aiO" userLabel="Flip Camera Button">
+                                <rect key="frame" x="676" y="81" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="dVQ-hf-zcT"/>
+                                    <constraint firstAttribute="width" constant="50" id="e9g-gH-aM3"/>
+                                </constraints>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="switchCameraTapped:" destination="uM7-fn-iuC" eventType="touchUpInside" id="wzw-t0-yiR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="MbT-EL-aiO" firstAttribute="top" secondItem="7ze-es-1fF" secondAttribute="bottom" constant="17" id="6hc-bE-3fw"/>
+                            <constraint firstItem="vxy-OW-Bmf" firstAttribute="top" secondItem="7ze-es-1fF" secondAttribute="bottom" constant="24" id="Fdy-Dq-dmU"/>
                             <constraint firstAttribute="trailing" secondItem="hJR-r2-GXG" secondAttribute="trailing" constant="20" symbolic="YES" id="RyG-bh-bd6"/>
                             <constraint firstItem="hJR-r2-GXG" firstAttribute="leading" secondItem="47V-3G-ScE" secondAttribute="leading" constant="20" symbolic="YES" id="W4K-jD-lOg"/>
                             <constraint firstItem="Mw0-co-fNB" firstAttribute="centerX" secondItem="xad-It-gmb" secondAttribute="centerX" id="cvx-S2-sJJ"/>
@@ -229,15 +270,11 @@
                             <constraint firstItem="Mw0-co-fNB" firstAttribute="leading" secondItem="hJR-r2-GXG" secondAttribute="leading" id="l09-WS-w56"/>
                             <constraint firstItem="hJR-r2-GXG" firstAttribute="top" secondItem="7ze-es-1fF" secondAttribute="bottom" constant="15" id="lLw-BD-Wfp"/>
                             <constraint firstItem="xad-It-gmb" firstAttribute="top" secondItem="Mw0-co-fNB" secondAttribute="bottom" constant="8" symbolic="YES" id="oKB-Oy-24P"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="vxy-OW-Bmf" secondAttribute="trailing" constant="15" id="pE1-81-W44"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="MbT-EL-aiO" secondAttribute="trailing" constant="22" id="wn5-7i-WvQ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="c2I-WJ-YYp">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="uM7-fn-iuC" id="Qx9-Z7-9dh"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0"/>
                     <connections>
                         <outlet property="previewView" destination="hJR-r2-GXG" id="uG4-dV-8n6"/>
                         <outlet property="tableView" destination="Mw0-co-fNB" id="aUv-Vf-sLo"/>
@@ -250,7 +287,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Flip" width="32" height="32"/>
+        <image name="reverse" width="60" height="48"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>

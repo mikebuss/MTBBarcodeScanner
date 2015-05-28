@@ -10,11 +10,11 @@
 #import "MTBBarcodeScanner.h"
 
 @interface MTBBasicExampleViewController () <UITableViewDataSource>
-@property (weak, nonatomic) IBOutlet UIView *previewView;
-@property (weak, nonatomic) IBOutlet UIButton *toggleScanningButton;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) MTBBarcodeScanner *scanner;
-@property (strong, nonatomic) NSMutableArray *uniqueCodes;
+@property (nonatomic, weak) IBOutlet UIView *previewView;
+@property (nonatomic, weak) IBOutlet UIButton *toggleScanningButton;
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) MTBBarcodeScanner *scanner;
+@property (nonatomic, strong) NSMutableArray *uniqueCodes;
 @end
 
 @implementation MTBBasicExampleViewController
