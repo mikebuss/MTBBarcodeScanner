@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="8HW-OG-a4Z">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--MTBBarcodeScanner-->
@@ -139,13 +139,7 @@
                             <constraint firstItem="s9y-rC-wX8" firstAttribute="centerX" secondItem="Kgz-vX-7jO" secondAttribute="centerX" id="wmA-bQ-iGZ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="p66-IL-mZU">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="HfW-Iu-Gio" id="a7E-QI-Yvy"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Advanced Example" id="OdX-oA-5d5"/>
                     <connections>
                         <outlet property="instructions" destination="s9y-rC-wX8" id="YK2-cc-BeF"/>
                         <outlet property="previewView" destination="HBk-GX-vlW" id="Qt1-YC-1KP"/>
@@ -231,13 +225,7 @@
                             <constraint firstItem="xad-It-gmb" firstAttribute="top" secondItem="Mw0-co-fNB" secondAttribute="bottom" constant="8" symbolic="YES" id="oKB-Oy-24P"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="c2I-WJ-YYp">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="uM7-fn-iuC" id="Qx9-Z7-9dh"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Basic Example" id="pvk-zm-5W0"/>
                     <connections>
                         <outlet property="previewView" destination="hJR-r2-GXG" id="uG4-dV-8n6"/>
                         <outlet property="tableView" destination="Mw0-co-fNB" id="aUv-Vf-sLo"/>
@@ -249,9 +237,6 @@
             <point key="canvasLocation" x="215" y="-479"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Flip" width="32" height="32"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>
         <simulatedOrientationMetrics key="orientation"/>

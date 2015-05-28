@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="s5e-Fs-lix">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -162,13 +162,7 @@
                             <constraint firstItem="0nU-Cv-XFM" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="xMN-zd-ZdW"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Basic Example" id="rOr-Ag-4hd">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="GAQ-G2-jAE">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="vXZ-lx-hvc" id="myQ-ok-1iW"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Basic Example" id="rOr-Ag-4hd"/>
                     <connections>
                         <outlet property="previewView" destination="Lzf-he-w5i" id="E4r-Z5-uz5"/>
                         <outlet property="tableView" destination="8Zj-eW-H7l" id="0TY-f1-BcJ"/>
@@ -223,13 +217,7 @@
                             <constraint firstItem="8W3-3h-rMY" firstAttribute="leading" secondItem="IGr-OQ-yDV" secondAttribute="leading" constant="20" id="sLz-10-Ruh"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Advanced Example" id="2xs-hY-3Xu">
-                        <barButtonItem key="rightBarButtonItem" image="Flip" id="1Jz-G3-CyN">
-                            <connections>
-                                <action selector="switchCameraTapped:" destination="8m2-Sm-2OA" id="vDs-hP-qSZ"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Advanced Example" id="2xs-hY-3Xu"/>
                     <connections>
                         <outlet property="previewView" destination="8W3-3h-rMY" id="ure-lB-fGD"/>
                         <outlet property="toggleScanningButton" destination="qBU-Rk-IPl" id="Mle-I6-TWr"/>
@@ -240,9 +228,6 @@
             <point key="canvasLocation" x="381" y="607"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Flip" width="32" height="32"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

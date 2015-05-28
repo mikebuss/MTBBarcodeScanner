@@ -15,7 +15,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *instructions;
 @property (nonatomic, strong) MTBBarcodeScanner *scanner;
 @property (nonatomic, strong) NSMutableDictionary *overlayViews;
-@property (nonatomic) BOOL didShowAlert;
+@property (nonatomic, assign) BOOL didShowAlert;
 @end
 
 @implementation MTBAdvancedExampleViewController
