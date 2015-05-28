@@ -146,15 +146,40 @@
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="jYY-5I-ejA"/>
                                 </connections>
                             </tableView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverse" translatesAutoresizingMaskIntoConstraints="NO" id="wbA-f9-9UU">
+                                <rect key="frame" x="262" y="80" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Jb6-zV-4Kh"/>
+                                    <constraint firstAttribute="width" constant="30" id="YzG-bU-Yy7"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4X6-XX-Pk2" userLabel="Flip Camera Button">
+                                <rect key="frame" x="257" y="79" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="1La-La-seB"/>
+                                    <constraint firstAttribute="width" constant="40" id="Ux3-Ht-TK4"/>
+                                </constraints>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="switchCameraTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="U77-Tt-msS"/>
+                                    <action selector="switchCameraTapped:" destination="8m2-Sm-2OA" eventType="touchUpInside" id="mPk-G8-nIP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="4X6-XX-Pk2" secondAttribute="trailing" constant="7" id="5z6-4x-BTf"/>
                             <constraint firstAttribute="trailing" secondItem="0nU-Cv-XFM" secondAttribute="trailing" constant="20" id="8J9-XV-lwN"/>
                             <constraint firstItem="0nU-Cv-XFM" firstAttribute="top" secondItem="8Zj-eW-H7l" secondAttribute="bottom" constant="8" symbolic="YES" id="CtH-NN-aWF"/>
                             <constraint firstItem="qxP-kU-oK0" firstAttribute="top" secondItem="0nU-Cv-XFM" secondAttribute="bottom" constant="20" id="F6p-m3-Mh8"/>
                             <constraint firstItem="8Zj-eW-H7l" firstAttribute="top" secondItem="Lzf-he-w5i" secondAttribute="bottom" constant="8" symbolic="YES" id="PWO-gM-e4g"/>
                             <constraint firstItem="8Zj-eW-H7l" firstAttribute="trailing" secondItem="0nU-Cv-XFM" secondAttribute="trailing" id="WVy-cu-Kbs"/>
                             <constraint firstItem="0nU-Cv-XFM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="b7V-cD-dnH"/>
+                            <constraint firstItem="wbA-f9-9UU" firstAttribute="top" secondItem="DKV-5D-lKM" secondAttribute="bottom" constant="16" id="fCM-2q-r7B"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="wbA-f9-9UU" secondAttribute="trailing" constant="12" id="gha-xX-aUv"/>
+                            <constraint firstItem="4X6-XX-Pk2" firstAttribute="top" secondItem="DKV-5D-lKM" secondAttribute="bottom" constant="15" id="iaa-VX-eFi"/>
                             <constraint firstItem="8Zj-eW-H7l" firstAttribute="leading" secondItem="0nU-Cv-XFM" secondAttribute="leading" id="j0q-7m-jWw"/>
                             <constraint firstItem="Lzf-he-w5i" firstAttribute="trailing" secondItem="8Zj-eW-H7l" secondAttribute="trailing" id="rpb-zE-WJa"/>
                             <constraint firstItem="Lzf-he-w5i" firstAttribute="leading" secondItem="8Zj-eW-H7l" secondAttribute="leading" id="tao-bQ-bG5"/>
@@ -205,15 +230,39 @@
                                 <rect key="frame" x="20" y="73" width="280" height="427"/>
                                 <color key="backgroundColor" red="0.94128667089999996" green="0.94128667089999996" blue="0.94128667089999996" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reverse" translatesAutoresizingMaskIntoConstraints="NO" id="lOP-HW-1JA">
+                                <rect key="frame" x="258" y="82" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="Dna-1y-IbJ"/>
+                                    <constraint firstAttribute="height" constant="30" id="p1e-nc-bV7"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lIx-Fy-dtJ" userLabel="Flip Camera Button">
+                                <rect key="frame" x="258" y="75" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="0iY-AV-0Ob"/>
+                                    <constraint firstAttribute="height" constant="40" id="eZh-lM-5nd"/>
+                                </constraints>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="switchCameraTapped:" destination="8m2-Sm-2OA" eventType="touchUpInside" id="y7G-oE-4Iw"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="lOP-HW-1JA" secondAttribute="trailing" constant="16" id="5Vc-58-Z9A"/>
                             <constraint firstAttribute="trailing" secondItem="8W3-3h-rMY" secondAttribute="trailing" constant="20" id="DTi-YN-StC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lIx-Fy-dtJ" secondAttribute="trailing" constant="6" id="I9a-is-iFX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="qBU-Rk-IPl" secondAttribute="trailing" constant="4" id="Mp9-cy-Bp7"/>
                             <constraint firstItem="qBU-Rk-IPl" firstAttribute="leading" secondItem="IGr-OQ-yDV" secondAttribute="leading" constant="20" id="VJC-SE-vle"/>
                             <constraint firstItem="qBU-Rk-IPl" firstAttribute="top" secondItem="8W3-3h-rMY" secondAttribute="bottom" constant="8" id="Xu2-mu-hWD"/>
                             <constraint firstItem="8W3-3h-rMY" firstAttribute="top" secondItem="E35-2b-ddv" secondAttribute="bottom" constant="9" id="gYf-ET-MGx"/>
                             <constraint firstItem="qZM-QE-DYM" firstAttribute="top" secondItem="qBU-Rk-IPl" secondAttribute="bottom" constant="20" id="kg9-xz-KRS"/>
+                            <constraint firstItem="lIx-Fy-dtJ" firstAttribute="top" secondItem="E35-2b-ddv" secondAttribute="bottom" constant="11" id="ngH-5T-UXr"/>
+                            <constraint firstItem="lOP-HW-1JA" firstAttribute="top" secondItem="E35-2b-ddv" secondAttribute="bottom" constant="18" id="qIq-rl-n2G"/>
                             <constraint firstItem="8W3-3h-rMY" firstAttribute="leading" secondItem="IGr-OQ-yDV" secondAttribute="leading" constant="20" id="sLz-10-Ruh"/>
                         </constraints>
                     </view>
@@ -228,6 +277,9 @@
             <point key="canvasLocation" x="381" y="607"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="reverse" width="60" height="48"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
