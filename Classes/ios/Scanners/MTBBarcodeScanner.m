@@ -232,8 +232,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             // to their orignal states
             [self removeDeviceInput];
             
-            [self removeDeviceInput];
-            
             for (AVCaptureOutput *output in self.session.outputs) {
                 [self.session removeOutput:output];
             }

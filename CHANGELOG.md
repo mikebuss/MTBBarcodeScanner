@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.6.1
+
+Bug Fixes:
+- Removed duplicate method call
+
 ## 1.6.0
 
 Bug Fixes:
