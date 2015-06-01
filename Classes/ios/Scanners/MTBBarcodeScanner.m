@@ -230,11 +230,9 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             
             // When we're finished scanning, reset the settings for the camera
             // to their orignal states
-            [self resetCaptureDeviceToInitialSettings:self.currentCaptureDeviceInput];
+            [self removeDeviceInput];
             
-            for (AVCaptureInput *input in self.session.inputs) {
-                [self.session removeInput:input];
-            }
+            [self removeDeviceInput];
             
             for (AVCaptureOutput *output in self.session.outputs) {
                 [self.session removeOutput:output];
@@ -313,11 +311,12 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 - (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice {
     AVCaptureSession *newSession = [[AVCaptureSession alloc] init];
+    
     AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
+    [self setDeviceInput:input session:newSession];
     
     // Set an optimized preset for barcode scanning
     [newSession setSessionPreset:AVCaptureSessionPresetHigh];
-    [newSession addInput:input];
     
     AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
     [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
@@ -343,7 +342,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 - (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
     AVCaptureDevice *newCaptureDevice = nil;
-    NSError *lockError = nil;
     
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
@@ -359,53 +357,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     }
     
-    if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
-        
-        // Prioritize the focus on objects near to the device
-        if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-            newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
-            
-            // Store the previous range restriction so newCaptureDevice can reset to this later
-            self.initialAutoFocusRangeRestriction = newCaptureDevice.autoFocusRangeRestriction;
-            newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-        }
-        
-        // Focus on the center of the image
-        if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-            newCaptureDevice.isFocusPointOfInterestSupported) {
-            
-            // Store the previous focus point of interest so newCaptureDevice can reset to this later
-            newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
-        }
-        
-        [newCaptureDevice unlockForConfiguration];
-    }
-    
     return newCaptureDevice;
-}
-
-- (void)resetCaptureDeviceToInitialSettings:(AVCaptureDeviceInput *)deviceInput {
-    
-    AVCaptureDevice *device = deviceInput.device;
-    
-    if ([deviceInput.device lockForConfiguration:nil] == YES) {
-        if ([deviceInput.device respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-            deviceInput.device.isAutoFocusRangeRestrictionSupported) {
-            
-            // Reset the auto focus range restriction
-            device.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
-        }
-        
-        if ([deviceInput.device respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-            deviceInput.device.isFocusPointOfInterestSupported) {
-            
-            // Reset the focus point of interest
-            device.focusPointOfInterest = self.initialFocusPoint;
-        }
-        
-        [deviceInput.device unlockForConfiguration];
-    }
-    
 }
 
 - (AVCaptureDevicePosition)devicePositionForCamera:(MTBCamera)camera {
@@ -454,28 +406,66 @@ CGFloat const kFocalPointOfInterestY = 0.5;
                                                object:nil];
 }
 
+- (void)setDeviceInput:(AVCaptureDeviceInput *)deviceInput session:(AVCaptureSession *)session {
+    [self removeDeviceInput];
+    
+    self.currentCaptureDeviceInput = deviceInput;
+    
+    if ([deviceInput.device lockForConfiguration:nil] == YES) {
+        
+        // Prioritize the focus on objects near to the device
+        if ([deviceInput.device respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+            deviceInput.device.isAutoFocusRangeRestrictionSupported) {
+            
+            self.initialAutoFocusRangeRestriction = deviceInput.device.autoFocusRangeRestriction;
+            deviceInput.device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
+        }
+        
+        // Focus on the center of the image
+        if ([deviceInput.device respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+            deviceInput.device.isFocusPointOfInterestSupported) {
+            
+            self.initialFocusPoint = deviceInput.device.focusPointOfInterest;
+            deviceInput.device.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
+        }
+        
+        [deviceInput.device unlockForConfiguration];
+    }
+    
+    [session addInput:deviceInput];
+}
+
+- (void)removeDeviceInput {
+    
+    AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
+    
+    // Restore focus settings to the previously saved state
+    if ([deviceInput.device lockForConfiguration:nil] == YES) {
+        if ([deviceInput.device respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+            deviceInput.device.isAutoFocusRangeRestrictionSupported) {
+            deviceInput.device.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
+        }
+        
+        if ([deviceInput.device respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+            deviceInput.device.isFocusPointOfInterestSupported) {
+            deviceInput.device.focusPointOfInterest = self.initialFocusPoint;
+        }
+        
+        [deviceInput.device unlockForConfiguration];
+    }
+    
+    [self.session removeInput:deviceInput];
+    self.currentCaptureDeviceInput = nil;
+}
+
 #pragma mark - Setters
 
 - (void)setCamera:(MTBCamera)camera {
     
     if (self.isScanning && camera != _camera) {
-        
-        for (AVCaptureInput *input in self.session.inputs) {
-            [self.session removeInput:input];
-        }
-        
-        // If we were using one of the cameras, be sure to reset the settings back
-        // to their original state before switching
-        [self resetCaptureDeviceToInitialSettings:self.currentCaptureDeviceInput];
-        
         AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
         AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
-        [self.session addInput:input];
-        
-        // Store a reference to the current capture device input
-        // so we can reset its properties when we're finished scanning
-        self.currentCaptureDeviceInput = input;
-        
+        [self setDeviceInput:input session:self.session];
     }
     
     _camera = camera;
