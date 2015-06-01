@@ -12,6 +12,7 @@ With this library you can:
 - Read any number of barcodes before stopping
 - Read multiple codes on the screen at the same time (2D barcodes only)
 - Easily receive codes with a block, including the string value and position in the preview
+- Easily flip from the back to the front camera
 
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
 
