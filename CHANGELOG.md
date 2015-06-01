@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.6.0
+
+Bug Fixes:
+- Further fixes for issue #25: focus issue
+
 ## 1.5.0
 
 Bug Fixes:
