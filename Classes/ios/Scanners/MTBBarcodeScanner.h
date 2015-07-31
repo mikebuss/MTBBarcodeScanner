@@ -18,7 +18,7 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
 @interface MTBBarcodeScanner : NSObject
 
 /**
- *  YES if the scanner should use the front camera.
+ *  Set which camera to use. See MTBCamera for options.
  */
 @property (nonatomic, assign) MTBCamera camera;
 
