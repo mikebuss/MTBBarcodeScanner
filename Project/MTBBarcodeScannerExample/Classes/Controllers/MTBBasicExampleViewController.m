@@ -13,6 +13,7 @@
 @property (nonatomic, weak) IBOutlet UIView *previewView;
 @property (nonatomic, weak) IBOutlet UIButton *toggleScanningButton;
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *toggleTorchButton;
 @property (nonatomic, strong) MTBBarcodeScanner *scanner;
 @property (nonatomic, strong) NSMutableArray *uniqueCodes;
 @end
@@ -70,6 +71,7 @@
 - (IBAction)toggleScanningTapped:(id)sender {
     if ([self.scanner isScanning]) {
         [self stopScanning];
+        self.toggleTorchButton.title = @"Enable Torch";
     } else {
         [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
             if (success) {
@@ -83,6 +85,26 @@
 
 - (IBAction)switchCameraTapped:(id)sender {
     [self.scanner flipCamera];
+}
+
+- (IBAction)toggleTorchTapped:(id)sender {
+    if ([self.scanner isScanning]) {
+        
+        if (self.scanner.torchMode == MTBTorchModeOff || self.scanner.torchMode == MTBTorchModeAuto) {
+            self.scanner.torchMode = MTBTorchModeOn;
+            self.toggleTorchButton.title = @"Disable Torch";
+        } else {
+            self.scanner.torchMode = MTBTorchModeOff;
+            self.toggleTorchButton.title = @"Enable Torch";
+        }
+        
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"Start Scanning"
+                                    message:@"To toggle the torch, start scanning for barcodes."
+                                   delegate:nil
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil] show];
+    }
 }
 
 - (void)backTapped {
