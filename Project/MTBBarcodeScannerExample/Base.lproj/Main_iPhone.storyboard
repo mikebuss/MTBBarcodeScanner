@@ -188,7 +188,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Basic Example" id="rOr-Ag-4hd">
-                        <barButtonItem key="leftBarButtonItem" title="Enable Torch" id="wGe-Tf-5iw">
+                        <barButtonItem key="rightBarButtonItem" title="Enable Torch" id="wGe-Tf-5iw">
                             <connections>
                                 <action selector="toggleTorchTapped:" destination="vXZ-lx-hvc" id="ikv-tB-YpG"/>
                             </connections>
