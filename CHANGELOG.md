@@ -2,7 +2,7 @@
 
 ## 1.7.0
 
-Added support for controlling the torch
+Added support for controlling the torch (Thanks [felipowsky](https://github.com/felipowsky)!)
 
 ## 1.6.1
 
