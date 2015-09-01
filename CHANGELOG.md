@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.7.0
+
+Added support for controlling the torch
+
 ## 1.6.1
 
 Bug Fixes:
