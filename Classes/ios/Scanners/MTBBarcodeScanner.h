@@ -15,6 +15,12 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
     MTBCameraFront
 };
 
+typedef NS_ENUM(NSUInteger, MTBTorchMode) {
+    MTBTorchModeOff,
+    MTBTorchModeOn,
+    MTBTorchModeAuto
+};
+
 @interface MTBBarcodeScanner : NSObject
 
 /**
@@ -22,7 +28,10 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
  */
 @property (nonatomic, assign) MTBCamera camera;
 
-@property (nonatomic, assign) AVCaptureTorchMode torchMode;
+/**
+ *  Control the torch on the device, if present.
+ */
+@property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
  *  Initialize a scanner that will feed the camera input
@@ -97,5 +106,13 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
  *  If this method is called when isScanning=NO, it has no effect
  */
 - (void)flipCamera;
+
+/**
+ *  Toggle the torch from on to off, or off to on.
+ *  If the torch was previously set to Auto, the torch will turn on.
+ *  If the device does not support a torch, calling this method will have no effect.
+ *  To set the torch to on/off/auto directly, set the `torchMode` property.
+ */
+- (void)toggleTorch;
 
 @end

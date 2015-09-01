@@ -427,9 +427,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             deviceInput.device.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
         }
         
-        if ([deviceInput.device hasTorch]) {
-            [deviceInput.device setTorchMode:self.torchMode];
-        }
+        [self updateTorchModeForCurrentSettings];
         
         [deviceInput.device unlockForConfiguration];
     }
@@ -460,6 +458,48 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     self.currentCaptureDeviceInput = nil;
 }
 
+#pragma mark - Torch Control
+
+- (void)setTorchMode:(MTBTorchMode)torchMode {
+    _torchMode = torchMode;
+    [self updateTorchModeForCurrentSettings];
+}
+
+- (void)toggleTorch {
+    if (self.torchMode == MTBTorchModeAuto || self.torchMode == MTBTorchModeOff) {
+        self.torchMode = MTBTorchModeOn;
+    } else {
+        self.torchMode = MTBTorchModeOff;
+    }
+}
+
+- (void)updateTorchModeForCurrentSettings {
+    if (self.hasExistingSession && [self.currentCaptureDeviceInput.device hasTorch]) {
+        [self.session beginConfiguration];
+        
+        if ([self.currentCaptureDeviceInput.device lockForConfiguration:nil] == YES) {
+            
+            AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
+            [self.currentCaptureDeviceInput.device setTorchMode:mode];
+            [self.currentCaptureDeviceInput.device unlockForConfiguration];
+        }
+        
+        [self.session commitConfiguration];
+    }
+}
+
+- (AVCaptureTorchMode)avTorchModeForMTBTorchMode:(MTBTorchMode)torchMode {
+    AVCaptureTorchMode mode = AVCaptureTorchModeOff;
+    
+    if (torchMode == MTBTorchModeOn) {
+        mode = AVCaptureTorchModeOn;
+    } else if (torchMode == MTBTorchModeAuto) {
+        mode = AVCaptureTorchModeAuto;
+    }
+    
+    return mode;
+}
+
 #pragma mark - Setters
 
 - (void)setCamera:(MTBCamera)camera {
@@ -471,27 +511,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     _camera = camera;
-}
-
-- (void)setTorchMode:(AVCaptureTorchMode)torchMode
-{
-    if (torchMode != _torchMode) {
-        _torchMode = torchMode;
-        
-        if (self.hasExistingSession) {
-            
-            if ([self.currentCaptureDeviceInput.device hasTorch]) {
-                [self.session beginConfiguration];
-                
-                if ([self.currentCaptureDeviceInput.device lockForConfiguration:nil] == YES) {
-                    [self.currentCaptureDeviceInput.device setTorchMode:_torchMode];
-                    [self.currentCaptureDeviceInput.device unlockForConfiguration];
-                }
-                
-                [self.session commitConfiguration];
-            }
-        }
-    }
 }
 
 @end
