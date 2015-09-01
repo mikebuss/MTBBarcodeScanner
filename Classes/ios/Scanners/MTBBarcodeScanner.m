@@ -427,6 +427,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
             deviceInput.device.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
         }
         
+        if ([deviceInput.device hasTorch]) {
+            [deviceInput.device setTorchMode:self.torchMode];
+        }
+        
         [deviceInput.device unlockForConfiguration];
     }
     
@@ -467,6 +471,27 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     _camera = camera;
+}
+
+- (void)setTorchMode:(AVCaptureTorchMode)torchMode
+{
+    if (torchMode != _torchMode) {
+        _torchMode = torchMode;
+        
+        if (self.hasExistingSession) {
+            
+            if ([self.currentCaptureDeviceInput.device hasTorch]) {
+                [self.session beginConfiguration];
+                
+                if ([self.currentCaptureDeviceInput.device lockForConfiguration:nil] == YES) {
+                    [self.currentCaptureDeviceInput.device setTorchMode:_torchMode];
+                    [self.currentCaptureDeviceInput.device unlockForConfiguration];
+                }
+                
+                [self.session commitConfiguration];
+            }
+        }
+    }
 }
 
 @end

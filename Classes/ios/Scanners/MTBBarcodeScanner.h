@@ -22,6 +22,8 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
  */
 @property (nonatomic, assign) MTBCamera camera;
 
+@property (nonatomic, assign) AVCaptureTorchMode torchMode;
+
 /**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.
