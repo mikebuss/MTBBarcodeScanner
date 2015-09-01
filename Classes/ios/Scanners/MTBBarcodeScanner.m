@@ -88,7 +88,7 @@
  The auto focus range restriction the AVCaptureDevice was initially configured for when scanning started.
  
  @discussion
- Then startScanning is called, the auto focus range restriction of the default AVCaptureDevice
+ When startScanning is called, the auto focus range restriction of the default AVCaptureDevice
  is stored. When stopScanning is called, the AVCaptureDevice is reset to the initial range restriction
  to prevent a bug in the AVFoundation framework.
  */
@@ -100,7 +100,7 @@
  The focus point the AVCaptureDevice was initially configured for when scanning started.
  
  @discussion
- Then startScanning is called, the focus point of the default AVCaptureDevice
+ When startScanning is called, the focus point of the default AVCaptureDevice
  is stored. When stopScanning is called, the AVCaptureDevice is reset to the initial focal point
  to prevent a bug in the AVFoundation framework.
  */
