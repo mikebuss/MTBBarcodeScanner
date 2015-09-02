@@ -115,4 +115,15 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 - (void)toggleTorch;
 
+/**
+ *  Freeze capture keeping the last frame on previewView.
+ *  If this method is called before startScanning, it has no effect.
+ */
+- (void)freezeCapture;
+
+/**
+ *  Unfreeze a frozen capture
+ */
+- (void)unfreezeCapture;
+
 @end
