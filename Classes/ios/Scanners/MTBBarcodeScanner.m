@@ -502,8 +502,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Capture
 
-- (void)freezeCapture
-{
+- (void)freezeCapture {
     self.capturePreviewLayer.connection.enabled = NO;
     
     if (self.hasExistingSession) {
@@ -511,8 +510,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
-- (void)unfreezeCapture
-{
+- (void)unfreezeCapture {
     self.capturePreviewLayer.connection.enabled = YES;
     
     if (self.hasExistingSession && !self.session.isRunning) {

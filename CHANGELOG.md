@@ -1,5 +1,12 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.0
+
+Features:
+
+- Added [hasTorch](https://github.com/mikebuss/MTBBarcodeScanner/pull/40) method. (Thanks to [felipowsky](https://github.com/felipowsky) for the implementation, and [jaybowong](https://github.com/jaybowong) for the suggestion!)
+- Added `freezeCapture` and `unfreezeCapture` methods. (Thanks [felipowsky](https://github.com/felipowsky)!)
+
 ## 1.7.1
 
 Allow setting torchMode to On before scanner starts. (Thanks [felipowsky](https://github.com/felipowsky)!)
