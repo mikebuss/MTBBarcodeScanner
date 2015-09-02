@@ -16,11 +16,21 @@
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *toggleTorchButton;
 @property (nonatomic, strong) MTBBarcodeScanner *scanner;
 @property (nonatomic, strong) NSMutableArray *uniqueCodes;
+@property (nonatomic, assign) BOOL captureIsFrozen;
+@property (nonatomic, assign) BOOL didShowCaptureWarning;
 @end
 
 @implementation MTBBasicExampleViewController
 
 #pragma mark - Lifecycle
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewTapped)];
+    [self.previewView addGestureRecognizer:tapGesture];
+    
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self.scanner stopScanning];
@@ -64,6 +74,8 @@
     
     [self.toggleScanningButton setTitle:@"Start Scanning" forState:UIControlStateNormal];
     self.toggleScanningButton.backgroundColor = self.view.tintColor;
+    
+    self.captureIsFrozen = NO;
 }
 
 #pragma mark - Actions
@@ -150,6 +162,32 @@
     [self.tableView scrollToRowAtIndexPath:indexPath
                           atScrollPosition:UITableViewScrollPositionTop
                                   animated:YES];
+}
+
+#pragma mark - Gesture Handlers
+
+- (void)previewTapped {
+    if (![self.scanner isScanning]) {
+        return;
+    }
+    
+    if (!self.didShowCaptureWarning) {
+        [[[UIAlertView alloc] initWithTitle:@"Capture Frozen"
+                                    message:@"The capture is now frozen. Tap the preview again to unfreeze."
+                                   delegate:nil
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil] show];
+        
+        self.didShowCaptureWarning = YES;
+    }
+    
+    if (self.captureIsFrozen) {
+        [self.scanner unfreezeCapture];
+    } else {
+        [self.scanner freezeCapture];
+    }
+    
+    self.captureIsFrozen = !self.captureIsFrozen;
 }
 
 #pragma mark - Setters
