@@ -474,17 +474,13 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)updateTorchModeForCurrentSettings {
-    if (self.hasExistingSession && [self.currentCaptureDeviceInput.device hasTorch]) {
-        [self.session beginConfiguration];
-        
+    if ([self.currentCaptureDeviceInput.device hasTorch]) {
         if ([self.currentCaptureDeviceInput.device lockForConfiguration:nil] == YES) {
             
             AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
             [self.currentCaptureDeviceInput.device setTorchMode:mode];
             [self.currentCaptureDeviceInput.device unlockForConfiguration];
         }
-        
-        [self.session commitConfiguration];
     }
 }
 
