@@ -216,7 +216,7 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     
     [self.session startRunning];
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
-    [self.previewView.layer addSublayer:self.capturePreviewLayer];
+    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
     [self refreshVideoOrientation];
 }
 
@@ -484,6 +484,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
+- (BOOL)hasTorch {
+    return self.currentCaptureDeviceInput.device.hasTorch;
+}
+
 - (AVCaptureTorchMode)avTorchModeForMTBTorchMode:(MTBTorchMode)torchMode {
     AVCaptureTorchMode mode = AVCaptureTorchModeOff;
     
@@ -494,6 +498,25 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     return mode;
+}
+
+#pragma mark - Capture
+
+- (void)freezeCapture {
+    self.capturePreviewLayer.connection.enabled = NO;
+    
+    if (self.hasExistingSession) {
+        [self.session stopRunning];
+    }
+}
+
+- (void)unfreezeCapture {
+    self.capturePreviewLayer.connection.enabled = YES;
+    
+    if (self.hasExistingSession && !self.session.isRunning) {
+        [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
+        [self.session startRunning];
+    }
 }
 
 #pragma mark - Setters
