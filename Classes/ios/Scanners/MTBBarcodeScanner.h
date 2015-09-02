@@ -108,6 +108,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 - (void)flipCamera;
 
 /**
+ *  Return a BOOL value that specifies whether the current capture device has a torch.
+ *  This method will only return the correct value if the scanner is currently scanning.
+ *
+ *  @return YES if the the current capture device has a torch.
+ */
+- (BOOL)hasTorch;
+
+/**
  *  Toggle the torch from on to off, or off to on.
  *  If the torch was previously set to Auto, the torch will turn on.
  *  If the device does not support a torch, calling this method will have no effect.

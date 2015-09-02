@@ -484,6 +484,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
+- (BOOL)hasTorch {
+    return self.currentCaptureDeviceInput.device.hasTorch;
+}
+
 - (AVCaptureTorchMode)avTorchModeForMTBTorchMode:(MTBTorchMode)torchMode {
     AVCaptureTorchMode mode = AVCaptureTorchModeOff;
     
