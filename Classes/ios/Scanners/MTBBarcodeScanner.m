@@ -496,6 +496,27 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     return mode;
 }
 
+#pragma mark - Capture
+
+- (void)freezeCapture
+{
+    self.capturePreviewLayer.connection.enabled = NO;
+    
+    if (self.hasExistingSession) {
+        [self.session stopRunning];
+    }
+}
+
+- (void)unfreezeCapture
+{
+    self.capturePreviewLayer.connection.enabled = YES;
+    
+    if (self.hasExistingSession && !self.session.isRunning) {
+        [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
+        [self.session startRunning];
+    }
+}
+
 #pragma mark - Setters
 
 - (void)setCamera:(MTBCamera)camera {
