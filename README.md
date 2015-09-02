@@ -128,6 +128,22 @@ scanner.camera = MTBCameraFront;
 
 Examples for these are in the demo project. 
 
+## Freezing Capture
+
+Under some circumstances you may want to freeze the video feed when capturing barcodes. To do this, call the `freezeCapture` and `unfreezeCapture` methods.
+
+## Controlling the Torch
+
+To control the torch, set the `torchMode` property or call the `toggleTorch` method.
+
+Available values include:
+
+```objective-c
+MTBTorchModeOff,
+MTBTorchModeOn,
+MTBTorchModeAuto
+```
+
 ## Design Considerations
 
 The primary goals of this library are to:
