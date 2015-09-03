@@ -109,7 +109,6 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  Return a BOOL value that specifies whether the current capture device has a torch.
- *  This method will only return the correct value if the scanner is currently scanning.
  *
  *  @return YES if the the current capture device has a torch.
  */
