@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.1
+
+- The `hasTorch` method can now be called when the scanner is not scanning. (Thanks [felipowsky](https://github.com/felipowsky)!)
+
 ## 1.8.0
 
 Features:
