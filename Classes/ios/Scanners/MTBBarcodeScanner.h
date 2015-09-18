@@ -39,10 +39,15 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 @property (nonatomic, strong) CALayer *previewLayer;
 
-/**
- *  Optional callback that will be called when the scanner is initialized and the view
- *  is presented on the screen. This is useful for presenting an activity indicator
- *  while the scanner is initializing.
+/*!
+ @property didStartScanningBlock
+ @abstract
+ Optional callback block that's called when the scanner finished initializing.
+ 
+ @discussion
+ Optional callback that will be called when the scanner is initialized and the view
+ is presented on the screen. This is useful for presenting an activity indicator
+ while the scanner is initializing.
  */
 @property (nonatomic, copy) void (^didStartScanningBlock)();
 
