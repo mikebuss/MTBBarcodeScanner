@@ -1,5 +1,11 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.3
+
+- Added the `didStartScanningBlock` property, which stores a block that's called when the barcode scanner initializes. This is useful for presenting an activity spinner while the scanner loads. Thanks to [@jaybowong](https://github.com/jaybowong) for the suggestion!
+- Exposed the `resultBlock` property, which will allow the results to be dynamically set before or after the scanner starts scanning.
+- Added a `startScanning` method, which will start scanning using the block properties set by the user. See README for sample usage of this.
+
 ## 1.8.2
 
 - Added the `previewLayer` property to expose the underlying preview layer. For those not using auto layout, it may be necessary to adjust this layer when the device rotates.
