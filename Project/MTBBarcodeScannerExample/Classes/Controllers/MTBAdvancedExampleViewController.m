@@ -59,6 +59,11 @@
 #pragma mark - Scanning
 
 - (void)startScanning {
+    
+    self.scanner.didStartScanningBlock = ^{
+        NSLog(@"The scanner started scanning!");
+    };
+    
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
     }];

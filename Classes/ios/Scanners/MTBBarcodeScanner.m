@@ -218,6 +218,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
     [self refreshVideoOrientation];
+    
+    if (self.didStartScanningBlock) {
+        self.didStartScanningBlock();
+    }
 }
 
 - (void)stopScanning {
