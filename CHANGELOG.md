@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.2
+
+- Added the `previewLayer` property to expose the underlying preview layer. For those not using auto layout, it may be necessary to adjust this layer when the device rotates.
+
 ## 1.8.1
 
 - The `hasTorch` method can now be called when the scanner is not scanning. (Thanks [felipowsky](https://github.com/felipowsky)!)

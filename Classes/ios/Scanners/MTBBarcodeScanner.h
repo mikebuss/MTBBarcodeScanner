@@ -34,6 +34,12 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
+ *  Layer used to present the camera input. If the previewView
+ *  does not use auto layout, it may be necessary to adjust the layers frame.
+ */
+@property (nonatomic, strong) CALayer *previewLayer;
+
+/**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.
  *

@@ -9,6 +9,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "MTBBarcodeScanner.h"
 
+CGFloat const kFocalPointOfInterestX = 0.5;
+CGFloat const kFocalPointOfInterestY = 0.5;
+
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
 /*!
  @property session
@@ -107,9 +110,6 @@
 @property (nonatomic, assign) CGPoint initialFocusPoint;
 
 @end
-
-CGFloat const kFocalPointOfInterestX = 0.5;
-CGFloat const kFocalPointOfInterestY = 0.5;
 
 @implementation MTBBarcodeScanner
 
@@ -532,6 +532,12 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     _camera = camera;
+}
+
+#pragma mark - Getters
+
+- (CALayer *)previewLayer {
+    return self.capturePreviewLayer;
 }
 
 @end
