@@ -4,15 +4,17 @@
 [![License](https://img.shields.io/cocoapods/l/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
 [![Platform](https://img.shields.io/cocoapods/p/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
 
-A lightweight, easy-to-use barcode scanning library for iOS 7+.
+A lightweight, easy-to-use barcode scanning library for iOS 7+. This library is built on top of Apple's excellent AVFoundation framework, and will continue to receive updates as Apple releases them.
 
 With this library you can:
 
 - Supply a custom UIView for displaying camera input
 - Read any number of barcodes before stopping
 - Read multiple codes on the screen at the same time (2D barcodes only)
-- Easily receive codes with a block, including the string value and position in the preview
+- Easily read codes with a block, including the string value and position in the preview
 - Easily flip from the back to the front camera
+- Toggle the device's torch on and off
+- Freeze and unfreeze capture to display a still image from the camera
 
 See demo project for examples of capturing one code, multiple codes, or highlighting codes as valid or invalid in the live preview.
 
@@ -104,6 +106,35 @@ To continuously read and only output unique codes:
 }];
 ```
 
+#### Callback Blocks
+
+An alternative way to setup MTBBarcodeScanner is to configure the blocks directly, like so:
+
+```objective-c
+self.scanner.didStartScanningBlock = ^{
+    NSLog(@"The scanner started scanning! We can now hide any activity spinners.");
+};
+
+self.scanner.resultBlock = ^(NSArray *codes){
+    NSLog(@"Found these codes: %@", codes);
+};
+
+[self.scanner startScanning];
+```
+
+This is useful if you would like to present a spinner while MTBBarcodeScanner is initializing.
+
+If you would like to reference `self` in one of these blocks, remember to use a weak reference to avoid a retain cycle:
+
+```objective-c
+__weak MyViewController *weakSelf = self;
+self.scanner.resultBlock = ^(NSArray *codes){
+    [weakSelf drawOverlaysOnCodes:codes];
+};
+```
+
+---
+
 ## Switching Cameras
 
 Switch to the opposite camera with the `flipCamera` method on the scanner:
@@ -128,9 +159,13 @@ scanner.camera = MTBCameraFront;
 
 Examples for these are in the demo project. 
 
+---
+
 ## Freezing Capture
 
 Under some circumstances you may want to freeze the video feed when capturing barcodes. To do this, call the `freezeCapture` and `unfreezeCapture` methods.
+
+---
 
 ## Controlling the Torch
 
@@ -143,6 +178,8 @@ MTBTorchModeOff,
 MTBTorchModeOn,
 MTBTorchModeAuto
 ```
+
+---
 
 ## Design Considerations
 
