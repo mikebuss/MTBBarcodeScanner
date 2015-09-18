@@ -51,6 +51,17 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 @property (nonatomic, copy) void (^didStartScanningBlock)();
 
+/*!
+ @property resultBlock
+ @abstract
+ Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
+ 
+ @discussion
+ The resultBlock is called once for every frame that at least one valid barcode is found.
+ The returned array consists of AVMetadataMachineReadableCodeObject objects.
+ */
+@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
+
 /**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.

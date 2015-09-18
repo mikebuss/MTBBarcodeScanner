@@ -60,17 +60,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 @property (nonatomic, weak) UIView *previewView;
 
 /*!
- @property resultBlock
- @abstract
- Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
- 
- @discussion
- The resultBlock is called once for every frame that at least one valid barcode is found.
- The returned array consists of AVMetadataMachineReadableCodeObject objects.
- */
-@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
-
-/*!
  @property hasExistingSession
  @abstract
  BOOL that is set to YES when a new valid session is created and set to NO when stopScanning
