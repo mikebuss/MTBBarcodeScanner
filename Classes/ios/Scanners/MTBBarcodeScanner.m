@@ -60,17 +60,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 @property (nonatomic, weak) UIView *previewView;
 
 /*!
- @property resultBlock
- @abstract
- Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
- 
- @discussion
- The resultBlock is called once for every frame that at least one valid barcode is found.
- The returned array consists of AVMetadataMachineReadableCodeObject objects.
- */
-@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
-
-/*!
  @property hasExistingSession
  @abstract
  BOOL that is set to YES when a new valid session is created and set to NO when stopScanning
@@ -201,6 +190,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
+- (void)startScanning {
+    [self startScanningWithResultBlock:self.resultBlock];
+}
+
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
@@ -218,6 +211,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
     [self refreshVideoOrientation];
+    
+    if (self.didStartScanningBlock) {
+        self.didStartScanningBlock();
+    }
 }
 
 - (void)stopScanning {

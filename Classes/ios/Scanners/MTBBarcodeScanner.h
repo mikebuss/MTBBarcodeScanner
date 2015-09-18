@@ -39,6 +39,30 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 @property (nonatomic, strong) CALayer *previewLayer;
 
+/*!
+ @property didStartScanningBlock
+ @abstract
+ Optional callback block that's called when the scanner finished initializing.
+ 
+ @discussion
+ Optional callback that will be called when the scanner is initialized and the view
+ is presented on the screen. This is useful for presenting an activity indicator
+ while the scanner is initializing.
+ */
+@property (nonatomic, copy) void (^didStartScanningBlock)();
+
+/*!
+ @property resultBlock
+ @abstract
+ Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
+ 
+ @discussion
+ The resultBlock is called once for every frame that at least one valid barcode is found.
+ The returned array consists of AVMetadataMachineReadableCodeObject objects.
+ This block is automatically set when you call startScanningWithResultBlock:
+ */
+@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
+
 /**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.
@@ -86,6 +110,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  The success block will return NO if the user denied permission, is restricted from the camera, or if there is no camera present.
  */
 + (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock;
+
+/**
+ *  Start scanning for barcodes. The camera input will be added as a sublayer
+ *  to the UIView given for previewView during initialization.
+ *
+ *  This method assumes you have already set the `resultBlock` property directly.
+ */
+- (void)startScanning;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
