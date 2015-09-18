@@ -190,6 +190,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
 }
 
+- (void)startScanning {
+    [self startScanningWithResultBlock:self.resultBlock];
+}
+
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \

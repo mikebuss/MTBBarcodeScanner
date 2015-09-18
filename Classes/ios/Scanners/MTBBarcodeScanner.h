@@ -59,6 +59,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  @discussion
  The resultBlock is called once for every frame that at least one valid barcode is found.
  The returned array consists of AVMetadataMachineReadableCodeObject objects.
+ This block is automatically set when you call startScanningWithResultBlock:
  */
 @property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
 
@@ -109,6 +110,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  The success block will return NO if the user denied permission, is restricted from the camera, or if there is no camera present.
  */
 + (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock;
+
+/**
+ *  Start scanning for barcodes. The camera input will be added as a sublayer
+ *  to the UIView given for previewView during initialization.
+ *
+ *  This method assumes you have already set the `resultBlock` property directly.
+ */
+- (void)startScanning;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
