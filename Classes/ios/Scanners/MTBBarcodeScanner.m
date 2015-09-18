@@ -534,4 +534,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     _camera = camera;
 }
 
+#pragma mark - Getters
+
+- (CALayer *)previewLayer {
+    return self.capturePreviewLayer;
+}
+
 @end
