@@ -34,6 +34,11 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
+ *  If set, only barcodes inside this area will be scanned.
+ */
+@property (nonatomic, assign) CGRect scanRect;
+
+/**
  *  Layer used to present the camera input. If the previewView
  *  does not use auto layout, it may be necessary to adjust the layers frame.
  */

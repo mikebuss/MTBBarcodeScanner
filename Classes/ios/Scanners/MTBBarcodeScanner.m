@@ -36,6 +36,13 @@ CGFloat const kFocalPointOfInterestY = 0.5;
  */
 @property (nonatomic, strong) AVCaptureDeviceInput *currentCaptureDeviceInput;
 
+/*
+ @property captureDeviceOnput
+ @abstract
+ The capture device output for capturing video.
+ */
+@property (nonatomic, strong) AVCaptureMetadataOutput *captureOutput;
+
 /*!
  @property metaDataObjectTypes
  @abstract
@@ -208,7 +215,10 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     [self.session startRunning];
+    
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
+    self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
+    
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
     [self refreshVideoOrientation];
     
@@ -313,10 +323,14 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     // Set an optimized preset for barcode scanning
     [newSession setSessionPreset:AVCaptureSessionPresetHigh];
     
-    AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-    [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    [newSession addOutput:captureOutput];
-    captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
+    [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+    [newSession addOutput:self.captureOutput];
+    self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    
+    if (!CGRectIsEmpty(self.scanRect)) {
+        self.captureOutput.rectOfInterest = self.scanRect;
+    }
     
     self.capturePreviewLayer = nil;
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
@@ -535,6 +549,13 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 - (CALayer *)previewLayer {
     return self.capturePreviewLayer;
+}
+
+- (void)setScanRect:(CGRect)scanRect {
+    NSAssert(!CGRectIsEmpty(scanRect), @"Unable to set an empty rectangle as the scanRect of MTBBarcodeScanner");
+    
+    _scanRect = scanRect;
+    self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
 }
 
 @end
