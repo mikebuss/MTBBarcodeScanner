@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.4
+
+- Added the ability to limit scanning to only a section of the screen using the new `scanRect` property. See the file `MTBAdvancedExampleViewController` in the demo project for an example. Thanks [@Shannon-Yang](https://github.com/Shannon-Yang)!
+
 ## 1.8.3
 
 - Added the `didStartScanningBlock` property, which stores a block that's called when the barcode scanner initializes. This is useful for presenting an activity spinner while the scanner loads. Thanks to [@jaybowong](https://github.com/jaybowong) for the suggestion!
