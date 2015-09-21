@@ -10,9 +10,12 @@
 #import "MTBBarcodeScanner.h"
 
 @interface MTBAdvancedExampleViewController ()
+
 @property (nonatomic, weak) IBOutlet UIView *previewView;
 @property (nonatomic, weak) IBOutlet UIButton *toggleScanningButton;
 @property (nonatomic, weak) IBOutlet UILabel *instructions;
+@property (nonatomic, weak) IBOutlet UIView *viewOfInterest;
+
 @property (nonatomic, strong) MTBBarcodeScanner *scanner;
 @property (nonatomic, strong) NSMutableDictionary *overlayViews;
 @property (nonatomic, assign) BOOL didShowAlert;
@@ -43,6 +46,9 @@
 - (MTBBarcodeScanner *)scanner {
     if (!_scanner) {
         _scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
+        
+        // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
+        _scanner.scanRect = self.viewOfInterest.frame;
     }
     return _scanner;
 }

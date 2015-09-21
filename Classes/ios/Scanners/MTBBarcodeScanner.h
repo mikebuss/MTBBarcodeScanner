@@ -34,7 +34,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
- *  Set custom scan area. If you do not set the default previewView.frame
+ *  If set, only barcodes inside this area will be scanned.
  */
 @property (nonatomic, assign) CGRect scanRect;
 
