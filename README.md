@@ -167,6 +167,12 @@ Under some circumstances you may want to freeze the video feed when capturing ba
 
 ---
 
+## Limiting the Scan Zone
+
+To limit the section of the screen that barcodes can be scanned in, set the `scanRect` property on MTBBarcodeScanner. See `MTBAdvancedExampleViewController` for an example of this.
+
+---
+
 ## Controlling the Torch
 
 To control the torch, set the `torchMode` property or call the `toggleTorch` method.
