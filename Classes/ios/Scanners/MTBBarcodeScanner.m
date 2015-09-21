@@ -545,27 +545,6 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 }
 
 - (void)setScanFrame:(CGRect)scanFrame {
-	CGSize size = self.previewView.bounds.size;
-
-	CGRect cropRect = scanFrame;
-	CGFloat p1 = size.height / size.width;
-	// use 1080p to output
-	CGFloat p2 = 1920. / 1080.;
-	if (p1 < p2) {
-		CGFloat fixHeight = size.width * 1920. / 1080.;
-		CGFloat fixPadding = (fixHeight - size.height) / 2;
-		self.captureOutput.rectOfInterest = CGRectMake((cropRect.origin.y + fixPadding) / fixHeight,
-		                                               cropRect.origin.x / size.width,
-		                                               cropRect.size.height / fixHeight,
-		                                               cropRect.size.width / size.width);
-	}
-	else {
-		CGFloat fixWidth = size.height * 1080. / 1920.;
-		CGFloat fixPadding = (fixWidth - size.width) / 2;
-		self.captureOutput.rectOfInterest = CGRectMake(cropRect.origin.y / size.height,
-		                                               (cropRect.origin.x + fixPadding) / fixWidth,
-		                                               cropRect.size.height / size.height,
-		                                               cropRect.size.width / fixWidth);
-	}
+    self.captureOutput.rectOfInterest = scanFrame;
 }
 @end
