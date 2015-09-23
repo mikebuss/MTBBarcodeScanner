@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.5
+
+- Fixed issue where the `scanRect` property needed to be explicitly set in order to scan barcodes.
+
 ## 1.8.4
 
 - Added the ability to limit scanning to only a section of the screen using the new `scanRect` property. See the file `MTBAdvancedExampleViewController` in the demo project for an example. Thanks [@Shannon-Yang](https://github.com/Shannon-Yang)!
