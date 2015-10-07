@@ -567,6 +567,15 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     }
     
     AVCaptureConnection *stillConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
+    
+    if (stillConnection == nil) {
+        if (captureBlock) {
+            NSError * error = [NSError errorWithDomain:NSStringFromClass([self class]) code:1001 userInfo:@{NSLocalizedDescriptionKey:@"AVCaptureConnection is closed"}];
+            captureBlock(nil, error);
+        }
+        return;
+    }
+    
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
     
         if (error) {
