@@ -187,6 +187,12 @@ MTBTorchModeAuto
 
 ---
 
+## Capturing Still Images
+
+To capture a still image, call the `captureStillImage:` method after you've started scanning.
+
+---
+
 ## Design Considerations
 
 The primary goals of this library are to:
