@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.6
+
+- Added support for capturing still images with new `captureStillImage:` method. Thanks [@peterpaulis](https://github.com/peterpaulis)!
+
 ## 1.8.5
 
 - Fixed issue where the `scanRect` property needed to be explicitly set in order to scan barcodes.
