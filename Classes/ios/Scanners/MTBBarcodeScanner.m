@@ -105,6 +105,15 @@ CGFloat const kFocalPointOfInterestY = 0.5;
  */
 @property (nonatomic, assign) CGPoint initialFocusPoint;
 
+/*!
+ @property stillImageOutput
+ @abstract
+ Used for still image capture
+ 
+ @discussion
+ */
+@property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+
 @end
 
 @implementation MTBBarcodeScanner
@@ -331,6 +340,17 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
+    // Still image capture configuration
+    {
+        self.stillImageOutput = [AVCaptureStillImageOutput new];
+        self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+        if ([self.stillImageOutput isStillImageStabilizationSupported]) {
+            self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
+        }
+        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+        [newSession addOutput:self.stillImageOutput];
+    }
+    
     if (!CGRectIsEmpty(self.scanRect)) {
         self.captureOutput.rectOfInterest = self.scanRect;
     }
@@ -533,6 +553,48 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
         [self.session startRunning];
     }
+}
+
+
+- (void)capturStillImage:(void (^)(UIImage * image, NSError *error))captureBlock {
+    
+    if ([self isCapturingStillImage]) {
+        if (captureBlock) {
+            NSError * error = [NSError errorWithDomain:NSStringFromClass([self class]) code:1000 userInfo:@{NSLocalizedDescriptionKey:@"Still image capture already in progress, check with isCapturingStillImage"}];
+            captureBlock(nil, error);
+        }
+        return;
+    }
+    
+    AVCaptureConnection *stillConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
+    
+    if (stillConnection == nil) {
+        if (captureBlock) {
+            NSError * error = [NSError errorWithDomain:NSStringFromClass([self class]) code:1001 userInfo:@{NSLocalizedDescriptionKey:@"AVCaptureConnection is closed"}];
+            captureBlock(nil, error);
+        }
+        return;
+    }
+    
+    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+    
+        if (error) {
+            captureBlock(nil, error);
+            return;
+        }
+        
+        NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        UIImage * image = [UIImage imageWithData:jpegData];
+        if (captureBlock) {
+            captureBlock(image, nil);
+        }
+        
+    }];
+    
+}
+
+- (BOOL)isCapturingStillImage {
+    return self.stillImageOutput.isCapturingStillImage;
 }
 
 #pragma mark - Setters

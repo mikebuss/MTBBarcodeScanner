@@ -176,4 +176,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 - (void)unfreezeCapture;
 
+/**
+ *  Captures a still image
+ */
+- (void)capturStillImage:(void (^)(UIImage * image, NSError *error))captureBlock;
+
+/**
+ *  Determine if capturing a still image
+ */
+- (BOOL)isCapturingStillImage;
+
 @end
