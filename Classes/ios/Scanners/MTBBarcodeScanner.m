@@ -12,6 +12,12 @@
 CGFloat const kFocalPointOfInterestX = 0.5;
 CGFloat const kFocalPointOfInterestY = 0.5;
 
+static NSString *kErrorDomain = @"MTBBarcodeScannerError";
+
+// Error Codes
+static const NSInteger kErrorCodeStillImageCaptureInProgress = 1000;
+static const NSInteger kErrorCodeSessionIsClosed = 1001;
+
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
 /*!
  @property session
@@ -104,6 +110,13 @@ CGFloat const kFocalPointOfInterestY = 0.5;
  to prevent a bug in the AVFoundation framework.
  */
 @property (nonatomic, assign) CGPoint initialFocusPoint;
+
+/*!
+ @property stillImageOutput
+ @abstract
+ Used for still image capture
+ */
+@property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
 
 @end
 
@@ -331,6 +344,17 @@ CGFloat const kFocalPointOfInterestY = 0.5;
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
+    // Still image capture configuration
+    {
+        self.stillImageOutput = [AVCaptureStillImageOutput new];
+        self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+        if ([self.stillImageOutput isStillImageStabilizationSupported]) {
+            self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
+        }
+        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+        [newSession addOutput:self.stillImageOutput];
+    }
+    
     if (!CGRectIsEmpty(self.scanRect)) {
         self.captureOutput.rectOfInterest = self.scanRect;
     }
@@ -533,6 +557,52 @@ CGFloat const kFocalPointOfInterestY = 0.5;
         [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
         [self.session startRunning];
     }
+}
+
+
+- (void)captureStillImage:(void (^)(UIImage *image, NSError *error))captureBlock {
+    
+    if ([self isCapturingStillImage]) {
+        if (captureBlock) {
+            NSError *error = [NSError errorWithDomain:kErrorDomain
+                                                 code:kErrorCodeStillImageCaptureInProgress
+                                             userInfo:@{NSLocalizedDescriptionKey : @"Still image capture is already in progress. Check with isCapturingStillImage"}];
+            captureBlock(nil, error);
+        }
+        return;
+    }
+    
+    AVCaptureConnection *stillConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
+    
+    if (stillConnection == nil) {
+        if (captureBlock) {
+            NSError *error = [NSError errorWithDomain:kErrorDomain
+                                                 code:kErrorCodeSessionIsClosed
+                                             userInfo:@{NSLocalizedDescriptionKey : @"AVCaptureConnection is closed"}];
+            captureBlock(nil, error);
+        }
+        return;
+    }
+    
+    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection
+                                                       completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        if (error) {
+            captureBlock(nil, error);
+            return;
+        }
+        
+        NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        UIImage *image = [UIImage imageWithData:jpegData];
+        if (captureBlock) {
+            captureBlock(image, nil);
+        }
+        
+    }];
+    
+}
+
+- (BOOL)isCapturingStillImage {
+    return self.stillImageOutput.isCapturingStillImage;
 }
 
 #pragma mark - Setters
