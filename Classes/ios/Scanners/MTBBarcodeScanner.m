@@ -627,6 +627,8 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 - (void)setScanRect:(CGRect)scanRect {
     NSAssert(!CGRectIsEmpty(scanRect), @"Unable to set an empty rectangle as the scanRect of MTBBarcodeScanner");
     
+    [self refreshVideoOrientation];
+    
     _scanRect = scanRect;
     self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
 }

@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.7
+
+- Setting the `scanRect` value now correctly checks the video orientation. Thanks [@peterpaulis](https://github.com/peterpaulis)!
+
 ## 1.8.6
 
 - Added support for capturing still images with new `captureStillImage:` method. Thanks [@peterpaulis](https://github.com/peterpaulis)!
