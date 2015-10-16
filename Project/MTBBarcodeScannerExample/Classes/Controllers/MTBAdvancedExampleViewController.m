@@ -25,6 +25,19 @@
 
 #pragma mark - Lifecycle
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (!self.didShowAlert && !self.instructions) {
@@ -46,9 +59,6 @@
 - (MTBBarcodeScanner *)scanner {
     if (!_scanner) {
         _scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
-        
-        // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
-        _scanner.scanRect = self.viewOfInterest.frame;
     }
     return _scanner;
 }
@@ -73,6 +83,9 @@
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
     }];
+    
+    // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
+    self.scanner.scanRect = self.viewOfInterest.frame;
     
     [self.toggleScanningButton setTitle:@"Stop Scanning" forState:UIControlStateNormal];
     self.toggleScanningButton.backgroundColor = [UIColor redColor];
@@ -190,6 +203,12 @@
 
 - (void)backTapped {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Notifications
+
+- (void)deviceOrientationDidChange:(NSNotification *)notification {
+    self.scanner.scanRect = self.viewOfInterest.frame;
 }
 
 #pragma mark - Helper Methods
