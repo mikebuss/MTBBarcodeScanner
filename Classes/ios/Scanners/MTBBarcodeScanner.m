@@ -514,12 +514,20 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 - (void)updateTorchModeForCurrentSettings {
-    if ([self.currentCaptureDeviceInput.device hasTorch]) {
-        if ([self.currentCaptureDeviceInput.device lockForConfiguration:nil] == YES) {
+
+    AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
+        
+        BOOL success = [backCamera lockForConfiguration:nil];
+        if (success) {
             
             AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
-            [self.currentCaptureDeviceInput.device setTorchMode:mode];
-            [self.currentCaptureDeviceInput.device unlockForConfiguration];
+            
+            NSLog(@"Setting torch mode: %zd", mode);
+            
+            [backCamera setTorchMode:mode];
+            [backCamera unlockForConfiguration];
+            
         }
     }
 }
