@@ -246,6 +246,8 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 - (void)stopScanning {
     if (self.hasExistingSession) {
         
+        self.torchMode = MTBTorchModeOff;
+        
         self.hasExistingSession = NO;
         [self.capturePreviewLayer removeFromSuperlayer];
         
