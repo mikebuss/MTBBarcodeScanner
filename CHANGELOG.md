@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.8
+
+- Fixed flicker issue with setting `torchMode` property. To avoid flickering when turning on the torch, set the `torchMode` property *after* you call `startScanning`.
+
 ## 1.8.7
 
 - Setting the `scanRect` value now correctly checks the video orientation. Thanks [@peterpaulis](https://github.com/peterpaulis)!
