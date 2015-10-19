@@ -103,22 +103,12 @@
 }
 
 - (IBAction)toggleTorchTapped:(id)sender {
-    if ([self.scanner isScanning]) {
-        
-        if (self.scanner.torchMode == MTBTorchModeOff || self.scanner.torchMode == MTBTorchModeAuto) {
-            self.scanner.torchMode = MTBTorchModeOn;
-            self.toggleTorchButton.title = @"Disable Torch";
-        } else {
-            self.scanner.torchMode = MTBTorchModeOff;
-            self.toggleTorchButton.title = @"Enable Torch";
-        }
-        
+    if (self.scanner.torchMode == MTBTorchModeOff || self.scanner.torchMode == MTBTorchModeAuto) {
+        self.scanner.torchMode = MTBTorchModeOn;
+        self.toggleTorchButton.title = @"Disable Torch";
     } else {
-        [[[UIAlertView alloc] initWithTitle:@"Start Scanning"
-                                    message:@"To toggle the torch, start scanning for barcodes."
-                                   delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
+        self.scanner.torchMode = MTBTorchModeOff;
+        self.toggleTorchButton.title = @"Enable Torch";
     }
 }
 
