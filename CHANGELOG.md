@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.9
+
+- Fixed issue with scanning still images on iOS 7.
+
 ## 1.8.8
 
 - Fixed flicker issue with setting `torchMode` property. To avoid flickering when turning on the torch, set the `torchMode` property *after* you call `startScanning`.
