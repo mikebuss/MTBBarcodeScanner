@@ -84,7 +84,7 @@
 #pragma mark - Actions
 
 - (IBAction)toggleScanningTapped:(id)sender {
-    if ([self.scanner isScanning]) {
+    if ([self.scanner isScanning] || self.captureIsFrozen) {
         [self stopScanning];
         self.toggleTorchButton.title = @"Enable Torch";
     } else {
@@ -160,7 +160,7 @@
 #pragma mark - Gesture Handlers
 
 - (void)previewTapped {
-    if (![self.scanner isScanning]) {
+    if (![self.scanner isScanning] && !self.captureIsFrozen) {
         return;
     }
     
