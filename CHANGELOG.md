@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.8.10
+
+- Fixed an issue with freezing the camera and stopping capture in the demo project. Thanks [@huuang](https://github.com/huuang)!
+
 ## 1.8.9
 
 - Fixed issue with scanning still images on iOS 7.
