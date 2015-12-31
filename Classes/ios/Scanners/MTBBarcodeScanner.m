@@ -347,15 +347,13 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
     // Still image capture configuration
-    {
-        self.stillImageOutput = [AVCaptureStillImageOutput new];
-        self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
-        if ([self.stillImageOutput isStillImageStabilizationSupported]) {
-            self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
-        }
-        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
-        [newSession addOutput:self.stillImageOutput];
+    self.stillImageOutput = [AVCaptureStillImageOutput new];
+    self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+    if ([self.stillImageOutput isStillImageStabilizationSupported]) {
+        self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
     }
+    self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+    [newSession addOutput:self.stillImageOutput];
     
     if (!CGRectIsEmpty(self.scanRect)) {
         self.captureOutput.rectOfInterest = self.scanRect;
