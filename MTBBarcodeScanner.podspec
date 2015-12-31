@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "MTBBarcodeScanner"
-  s.version          = "1.8.10"
+  s.version          = "1.8.11"
   s.summary          = "A lightweight, easy-to-use barcode scanning library for iOS 7+."
   s.homepage         = "https://github.com/mikebuss/MTBBarcodeScanner"
   s.license          = 'MIT'
@@ -12,5 +12,5 @@ Pod::Spec.new do |s|
   s.requires_arc          = true
 
   s.source_files = 'Classes/ios/**/*.{h,m}'
-  s.frameworks = 'AVFoundation', 'QuartzCore'  
+  s.frameworks = 'AVFoundation', 'QuartzCore'
 end
