@@ -352,7 +352,11 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     if ([self.stillImageOutput isStillImageStabilizationSupported]) {
         self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
     }
-    self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8) {
+        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+    }
+    
     [newSession addOutput:self.stillImageOutput];
     
     if (!CGRectIsEmpty(self.scanRect)) {
