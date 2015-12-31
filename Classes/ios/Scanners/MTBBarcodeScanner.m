@@ -516,7 +516,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 - (void)updateTorchModeForCurrentSettings {
-
+    
     AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if ([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
         
@@ -598,18 +598,18 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection
                                                        completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-        if (error) {
-            captureBlock(nil, error);
-            return;
-        }
-        
-        NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        UIImage *image = [UIImage imageWithData:jpegData];
-        if (captureBlock) {
-            captureBlock(image, nil);
-        }
-        
-    }];
+                                                           if (error) {
+                                                               captureBlock(nil, error);
+                                                               return;
+                                                           }
+                                                           
+                                                           NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+                                                           UIImage *image = [UIImage imageWithData:jpegData];
+                                                           if (captureBlock) {
+                                                               captureBlock(image, nil);
+                                                           }
+                                                           
+                                                       }];
     
 }
 
