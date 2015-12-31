@@ -347,13 +347,14 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
     // Still image capture configuration
-    self.stillImageOutput = [AVCaptureStillImageOutput new];
+    self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
     self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+    
     if ([self.stillImageOutput isStillImageStabilizationSupported]) {
         self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
     }
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8) {
+    if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
         self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
     }
     
