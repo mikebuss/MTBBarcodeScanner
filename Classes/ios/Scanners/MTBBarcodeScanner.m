@@ -58,7 +58,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
  Only objects with a MetaDataObjectType found in this array will be
  reported to the result block.
  */
-@property (nonatomic, strong) NSArray *metaDataObjectTypes;
+@property (nonatomic, copy) NSArray *metaDataObjectTypes;
 
 /*!
  @property previewView
@@ -631,12 +631,6 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     _camera = camera;
 }
 
-#pragma mark - Getters
-
-- (CALayer *)previewLayer {
-    return self.capturePreviewLayer;
-}
-
 - (void)setScanRect:(CGRect)scanRect {
     NSAssert(!CGRectIsEmpty(scanRect), @"Unable to set an empty rectangle as the scanRect of MTBBarcodeScanner");
     
@@ -644,6 +638,12 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     _scanRect = scanRect;
     self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+}
+
+#pragma mark - Getters
+
+- (CALayer *)previewLayer {
+    return self.capturePreviewLayer;
 }
 
 @end
