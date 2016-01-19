@@ -131,17 +131,11 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 - (instancetype)initWithPreviewView:(UIView *)previewView {
-    self = [super init];
-    if (self) {
-        _previewView = previewView;
-        _metaDataObjectTypes = [self defaultMetaDataObjectTypes];
-        [self addRotationObserver];
-    }
-    return self;
+    NSArray *defaultTypes = [self defaultMetaDataObjectTypes];
+    return [self initWithMetadataObjectTypes:defaultTypes previewView:previewView];
 }
 
-- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
-                                previewView:(UIView *)previewView {
+- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes previewView:(UIView *)previewView {
     NSParameterAssert(metaDataObjectTypes);
     NSAssert(metaDataObjectTypes.count > 0,
              @"Must initialize MTBBarcodeScanner with at least one metaDataObjectTypes value.");
@@ -153,6 +147,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         
         _metaDataObjectTypes = metaDataObjectTypes;
         _previewView = previewView;
+        _allowTapToFocus = YES;
         [self addRotationObserver];
     }
     return self;
