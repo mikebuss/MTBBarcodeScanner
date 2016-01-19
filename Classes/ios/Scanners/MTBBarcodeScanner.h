@@ -34,6 +34,12 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
+ *  Allow the user to tap the previewView to focus a specific area.
+ *  Defaults to YES.
+ */
+@property (nonatomic, assign) BOOL allowTapToFocus;
+
+/**
  *  If set, only barcodes inside this area will be scanned.
  */
 @property (nonatomic, assign) CGRect scanRect;
@@ -55,6 +61,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  while the scanner is initializing.
  */
 @property (nonatomic, copy) void (^didStartScanningBlock)();
+
+/*!
+ @property didTapToFocusBlock
+ @abstract
+ Block that's called when the user taps the screen to focus the camera. If allowsTapToFocus
+ is set to NO, this will never be called.
+ */
+@property (nonatomic, copy) void (^didTapToFocusBlock)(CGPoint point);
 
 /*!
  @property resultBlock

@@ -27,6 +27,13 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 @property (nonatomic, strong) AVCaptureSession *session;
 
 /*!
+ @property captureDevice
+ @abstract
+ Represents the physical device that is used for scanning barcodes.
+ */
+@property (nonatomic, strong) AVCaptureDevice *captureDevice;
+
+/*!
  @property capturePreviewLayer
  @abstract
  The layer used to view the camera input. This layer is added to the
@@ -58,7 +65,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
  Only objects with a MetaDataObjectType found in this array will be
  reported to the result block.
  */
-@property (nonatomic, strong) NSArray *metaDataObjectTypes;
+@property (nonatomic, copy) NSArray *metaDataObjectTypes;
 
 /*!
  @property previewView
@@ -116,7 +123,16 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
  @abstract
  Used for still image capture
  */
-@property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
+
+/*!
+ @property gestureRecognizer
+ @abstract
+ If allowTapToFocus is set to YES, this gesture recognizer is added to the `previewView`
+ when scanning starts. When the user taps the view, the `focusPointOfInterest` will change
+ to the location the user tapped.
+ */
+@property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
 
 @end
 
@@ -135,24 +151,26 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     if (self) {
         _previewView = previewView;
         _metaDataObjectTypes = [self defaultMetaDataObjectTypes];
+        _allowTapToFocus = YES;
         [self addRotationObserver];
     }
     return self;
 }
 
-- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
-                                previewView:(UIView *)previewView {
+- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes previewView:(UIView *)previewView {
     NSParameterAssert(metaDataObjectTypes);
     NSAssert(metaDataObjectTypes.count > 0,
              @"Must initialize MTBBarcodeScanner with at least one metaDataObjectTypes value.");
     
     self = [super init];
     if (self) {
+        // Library does not support scanning for faces
         NSAssert(!([metaDataObjectTypes indexOfObject:AVMetadataObjectTypeFace] != NSNotFound),
                  @"The type %@ is not supported by MTBBarcodeScanner.", AVMetadataObjectTypeFace);
         
         _metaDataObjectTypes = metaDataObjectTypes;
         _previewView = previewView;
+        _allowTapToFocus = YES;
         [self addRotationObserver];
     }
     return self;
@@ -218,43 +236,55 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    NSAssert(resultBlock, @"startScanningWithResultBlock: requires a non-nil resultBlock.");
     
-    self.resultBlock = resultBlock;
-    
+    // Configure the session
     if (!self.hasExistingSession) {
-        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:self.camera];
-        self.session = [self newSessionWithCaptureDevice:captureDevice];
+        self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
+        self.session = [self newSessionWithCaptureDevice:self.captureDevice];
         self.hasExistingSession = YES;
     }
     
-    [self.session startRunning];
+    // Configure the rect of interest
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
     
+    // Configure the preview layer
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
-    
-    if (!CGRectIsEmpty(self.scanRect)) {
-        self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
-    }
-    
-    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
+    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
     [self refreshVideoOrientation];
     
+    // Configure 'tap to focus' functionality
+    [self configureTapToFocus];
+    
+    self.resultBlock = resultBlock;
+    
+    // Start the session after all configurations
+    [self.session startRunning];
+    
+    // Call that block now that we've started scanning
     if (self.didStartScanningBlock) {
         self.didStartScanningBlock();
     }
+    
 }
 
 - (void)stopScanning {
     if (self.hasExistingSession) {
+        self.hasExistingSession = NO;
         
+        // Turn the torch off
         self.torchMode = MTBTorchModeOff;
         
-        self.hasExistingSession = NO;
+        // Remove the preview layer
         [self.capturePreviewLayer removeFromSuperlayer];
+        
+        // Stop recognizing taps for the 'Tap to Focus' feature
+        [self stopRecognizingTaps];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             // When we're finished scanning, reset the settings for the camera
-            // to their orignal states
+            // to their original states
             [self removeDeviceInput];
             
             for (AVCaptureOutput *output in self.session.outputs) {
@@ -283,6 +313,44 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     }
 }
 
+#pragma mark - Tap to Focus
+
+- (void)configureTapToFocus {
+    if (self.allowTapToFocus) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTapped:)];
+        [self.previewView addGestureRecognizer:tapGesture];
+        self.gestureRecognizer = tapGesture;
+    }
+}
+
+- (void)focusTapped:(UITapGestureRecognizer *)tapGesture {
+    CGPoint tapPoint = [self.gestureRecognizer locationInView:self.gestureRecognizer.view];
+    CGPoint devicePoint = [self.capturePreviewLayer captureDevicePointOfInterestForPoint:tapPoint];
+    
+    AVCaptureDevice *device = self.captureDevice;
+    NSError *error = nil;
+    
+    if ([device lockForConfiguration:&error]) {
+        if (device.isFocusPointOfInterestSupported &&
+            [device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
+            
+            device.focusPointOfInterest = devicePoint;
+            device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+        }
+        [device unlockForConfiguration];
+    }
+    
+    if (self.didTapToFocusBlock) {
+        self.didTapToFocusBlock(tapPoint);
+    }
+}
+
+- (void)stopRecognizingTaps {
+    if (self.gestureRecognizer) {
+        [self.previewView removeGestureRecognizer:self.gestureRecognizer];
+    }
+}
+
 #pragma mark - AVCaptureMetadataOutputObjects Delegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
@@ -296,9 +364,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         }
     }
     
-    if (self.resultBlock) {
-        self.resultBlock(codes);
-    }
+    self.resultBlock(codes);
 }
 
 #pragma mark - Rotation
@@ -343,6 +409,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
     [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+    
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
@@ -357,12 +424,9 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
         self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
     }
-    
     [newSession addOutput:self.stillImageOutput];
     
-    if (!CGRectIsEmpty(self.scanRect)) {
-        self.captureOutput.rectOfInterest = self.scanRect;
-    }
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
     
     self.capturePreviewLayer = nil;
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
@@ -428,8 +492,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
                                AVMetadataObjectTypeAztecCode] mutableCopy];
     
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
-        [types addObjectsFromArray:@[
-                                     AVMetadataObjectTypeInterleaved2of5Code,
+        [types addObjectsFromArray:@[AVMetadataObjectTypeInterleaved2of5Code,
                                      AVMetadataObjectTypeITF14Code,
                                      AVMetadataObjectTypeDataMatrixCode
                                      ]];
@@ -621,20 +684,12 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 #pragma mark - Setters
 
 - (void)setCamera:(MTBCamera)camera {
-    
     if (self.isScanning && camera != _camera) {
         AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
         AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
         [self setDeviceInput:input session:self.session];
     }
-    
     _camera = camera;
-}
-
-#pragma mark - Getters
-
-- (CALayer *)previewLayer {
-    return self.capturePreviewLayer;
 }
 
 - (void)setScanRect:(CGRect)scanRect {
@@ -644,6 +699,24 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     _scanRect = scanRect;
     self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+}
+
+#pragma mark - Getters
+
+- (CALayer *)previewLayer {
+    return self.capturePreviewLayer;
+}
+
+#pragma mark - Helper Methods
+
+- (CGRect)rectOfInterestFromScanRect:(CGRect)scanRect {
+    CGRect rect = CGRectZero;
+    if (!CGRectIsEmpty(self.scanRect)) {
+        rect = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
+    } else {
+        rect = CGRectMake(0, 0, 1, 1); // Default rectOfInterest for AVCaptureMetadataOutput
+    }
+    return rect;
 }
 
 @end
