@@ -66,14 +66,14 @@ To read the first code and stop scanning:
 ```objective-c
 [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
     if (success) {
-        
+
         [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
             AVMetadataMachineReadableCodeObject *code = [codes firstObject];
             NSLog(@"Found code: %@", code.stringValue);
-            
+
             [self.scanner stopScanning];
         }];
-        
+
     } else {
         // The user denied access to the camera
     }
@@ -93,7 +93,7 @@ If the camera is pointed at more than one 2-dimensional code, you can read all o
 
 **Note:** This only applies to 2-dimensional barcodes as 1-dimensional barcodes can only be read one at a time. See [relevant Apple document](https://developer.apple.com/library/ios/technotes/tn2325/_index.html).
 
-To continuously read and only output unique codes: 
+To continuously read and only output unique codes:
 
 ```objective-c
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
@@ -119,6 +119,11 @@ self.scanner.resultBlock = ^(NSArray *codes){
     NSLog(@"Found these codes: %@", codes);
 };
 
+self.scanner.didTapToFocusBlock = ^(CGPoint point){
+    NSLog(@"The user tapped the screen to focus. \
+          Here we could present a view at %@", NSStringFromCGPoint(point));
+};
+
 [self.scanner startScanning];
 ```
 
@@ -130,6 +135,19 @@ If you would like to reference `self` in one of these blocks, remember to use a 
 __weak MyViewController *weakSelf = self;
 self.scanner.resultBlock = ^(NSArray *codes){
     [weakSelf drawOverlaysOnCodes:codes];
+};
+```
+
+---
+
+## Tap to Focus
+
+By default, MTBBarcodeScanner will allow the user to tap the screen to focus the camera. To disable this functionality, set the `allowTapToFocus` property to NO. To be notified when the user taps the screen, provide a block for the `didTapToFocusBlock` property, like so:
+
+```objective-c
+self.scanner.didTapToFocusBlock = ^(CGPoint point){
+    NSLog(@"The user tapped the screen to focus. \
+          Here we could present a view at %@", NSStringFromCGPoint(point));
 };
 ```
 
@@ -157,7 +175,7 @@ scanner.camera = MTBCameraFront;
 
 ```
 
-Examples for these are in the demo project. 
+Examples for these are in the demo project.
 
 ---
 
