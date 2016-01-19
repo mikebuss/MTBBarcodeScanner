@@ -116,7 +116,8 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
  @abstract
  Used for still image capture
  */
-@property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
+
 
 @end
 
