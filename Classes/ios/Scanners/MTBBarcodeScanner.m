@@ -142,6 +142,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     self = [super init];
     if (self) {
+        // Library does not support scanning for faces
         NSAssert(!([metaDataObjectTypes indexOfObject:AVMetadataObjectTypeFace] != NSNotFound),
                  @"The type %@ is not supported by MTBBarcodeScanner.", AVMetadataObjectTypeFace);
         
