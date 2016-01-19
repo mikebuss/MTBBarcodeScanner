@@ -214,6 +214,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    NSAssert(resultBlock, @"startScanningWithResultBlock: requires a non-nil resultBlock.");
     
     // Configure the session
     if (!self.hasExistingSession) {
