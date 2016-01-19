@@ -63,6 +63,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, copy) void (^didStartScanningBlock)();
 
 /*!
+ @property didTapToFocusBlock
+ @abstract
+ Block that's called when the user taps the screen to focus the camera. If allowsTapToFocus
+ is set to NO, this will never be called.
+ */
+@property (nonatomic, copy) void (^didTapToFocusBlock)(CGPoint point);
+
+/*!
  @property resultBlock
  @abstract
  Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.

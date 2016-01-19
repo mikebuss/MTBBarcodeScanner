@@ -80,6 +80,11 @@
         NSLog(@"The scanner started scanning!");
     };
     
+    self.scanner.didTapToFocusBlock = ^(CGPoint point){
+        NSLog(@"The user tapped the screen to focus. \
+              Here we could present a view at %@", NSStringFromCGPoint(point));
+    };
+    
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
     }];

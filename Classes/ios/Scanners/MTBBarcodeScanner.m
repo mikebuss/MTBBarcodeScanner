@@ -27,6 +27,13 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 @property (nonatomic, strong) AVCaptureSession *session;
 
 /*!
+ @property captureDevice
+ @abstract
+ Represents the physical device that is used for scanning barcodes.
+ */
+@property (nonatomic, strong) AVCaptureDevice *captureDevice;
+
+/*!
  @property capturePreviewLayer
  @abstract
  The layer used to view the camera input. This layer is added to the
@@ -118,6 +125,14 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
  */
 @property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 
+/*!
+ @property gestureRecognizer
+ @abstract
+ If allowTapToFocus is set to YES, this gesture recognizer is added to the `previewView`
+ when scanning starts. When the user taps the view, the `focusPointOfInterest` will change
+ to the location the user tapped.
+ */
+@property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
 
 @end
 
@@ -132,8 +147,14 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 - (instancetype)initWithPreviewView:(UIView *)previewView {
-    NSArray *defaultTypes = [self defaultMetaDataObjectTypes];
-    return [self initWithMetadataObjectTypes:defaultTypes previewView:previewView];
+    self = [super init];
+    if (self) {
+        _previewView = previewView;
+        _metaDataObjectTypes = [self defaultMetaDataObjectTypes];
+        _allowTapToFocus = YES;
+        [self addRotationObserver];
+    }
+    return self;
 }
 
 - (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes previewView:(UIView *)previewView {
@@ -219,8 +240,8 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     // Configure the session
     if (!self.hasExistingSession) {
-        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:self.camera];
-        self.session = [self newSessionWithCaptureDevice:captureDevice];
+        self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
+        self.session = [self newSessionWithCaptureDevice:self.captureDevice];
         self.hasExistingSession = YES;
     }
     
@@ -232,21 +253,19 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
     [self refreshVideoOrientation];
     
+    // Configure 'tap to focus' functionality
+    [self configureTapToFocus];
+    
+    self.resultBlock = resultBlock;
+    
     // Start the session after all configurations
     [self.session startRunning];
     
     // Call that block now that we've started scanning
-    self.didStartScanningBlock();
-}
-
-- (CGRect)rectOfInterestFromScanRect:(CGRect)scanRect {
-    CGRect rect = CGRectZero;
-    if (!CGRectIsEmpty(self.scanRect)) {
-        rect = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
-    } else {
-        rect = CGRectMake(0, 0, 1, 1); // Default rectOfInterest for AVCaptureMetadataOutput
+    if (self.didStartScanningBlock) {
+        self.didStartScanningBlock();
     }
-    return rect;
+    
 }
 
 - (void)stopScanning {
@@ -258,6 +277,9 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         
         // Remove the preview layer
         [self.capturePreviewLayer removeFromSuperlayer];
+        
+        // Stop recognizing taps for the 'Tap to Focus' feature
+        [self stopRecognizingTaps];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
@@ -288,6 +310,44 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         } else {
             self.camera = MTBCameraFront;
         }
+    }
+}
+
+#pragma mark - Tap to Focus
+
+- (void)configureTapToFocus {
+    if (self.allowTapToFocus) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTapped:)];
+        [self.previewView addGestureRecognizer:tapGesture];
+        self.gestureRecognizer = tapGesture;
+    }
+}
+
+- (void)focusTapped:(UITapGestureRecognizer *)tapGesture {
+    CGPoint tapPoint = [self.gestureRecognizer locationInView:self.gestureRecognizer.view];
+    CGPoint devicePoint = [self.capturePreviewLayer captureDevicePointOfInterestForPoint:tapPoint];
+    
+    AVCaptureDevice *device = self.captureDevice;
+    NSError *error = nil;
+    
+    if ([device lockForConfiguration:&error]) {
+        if (device.isFocusPointOfInterestSupported &&
+            [device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
+            
+            device.focusPointOfInterest = devicePoint;
+            device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+        }
+        [device unlockForConfiguration];
+    }
+    
+    if (self.didTapToFocusBlock) {
+        self.didTapToFocusBlock(tapPoint);
+    }
+}
+
+- (void)stopRecognizingTaps {
+    if (self.gestureRecognizer) {
+        [self.previewView removeGestureRecognizer:self.gestureRecognizer];
     }
 }
 
@@ -349,8 +409,9 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
     [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    
     [newSession addOutput:self.captureOutput];
+    self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
     // Still image capture configuration
     self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -644,6 +705,18 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 
 - (CALayer *)previewLayer {
     return self.capturePreviewLayer;
+}
+
+#pragma mark - Helper Methods
+
+- (CGRect)rectOfInterestFromScanRect:(CGRect)scanRect {
+    CGRect rect = CGRectZero;
+    if (!CGRectIsEmpty(self.scanRect)) {
+        rect = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
+    } else {
+        rect = CGRectMake(0, 0, 1, 1); // Default rectOfInterest for AVCaptureMetadataOutput
+    }
+    return rect;
 }
 
 @end
