@@ -215,28 +215,36 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     
-    self.resultBlock = resultBlock;
-    
+    // Configure the session
     if (!self.hasExistingSession) {
         AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:self.camera];
         self.session = [self newSessionWithCaptureDevice:captureDevice];
         self.hasExistingSession = YES;
     }
     
-    [self.session startRunning];
+    // Configure the rect of interest
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
     
+    // Configure the preview layer
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
-    
-    if (!CGRectIsEmpty(self.scanRect)) {
-        self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
-    }
-    
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
     [self refreshVideoOrientation];
     
-    if (self.didStartScanningBlock) {
-        self.didStartScanningBlock();
+    // Start the session after all configurations
+    [self.session startRunning];
+    
+    // Call that block now that we've started scanning
+    self.didStartScanningBlock();
+}
+
+- (CGRect)rectOfInterestFromScanRect:(CGRect)scanRect {
+    CGRect rect = CGRectZero;
+    if (!CGRectIsEmpty(self.scanRect)) {
+        rect = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self.scanRect];
+    } else {
+        rect = CGRectMake(0, 0, 1, 1); // Default rectOfInterest for AVCaptureMetadataOutput
     }
+    return rect;
 }
 
 - (void)stopScanning {
