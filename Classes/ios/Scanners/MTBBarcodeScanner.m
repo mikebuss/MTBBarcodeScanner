@@ -228,7 +228,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     // Configure the preview layer
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
-    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0];
+    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
     [self refreshVideoOrientation];
     
     // Start the session after all configurations
@@ -250,16 +250,18 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 
 - (void)stopScanning {
     if (self.hasExistingSession) {
+        self.hasExistingSession = NO;
         
+        // Turn the torch off
         self.torchMode = MTBTorchModeOff;
         
-        self.hasExistingSession = NO;
+        // Remove the preview layer
         [self.capturePreviewLayer removeFromSuperlayer];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             // When we're finished scanning, reset the settings for the camera
-            // to their orignal states
+            // to their original states
             [self removeDeviceInput];
             
             for (AVCaptureOutput *output in self.session.outputs) {
@@ -301,9 +303,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         }
     }
     
-    if (self.resultBlock) {
-        self.resultBlock(codes);
-    }
+    self.resultBlock(codes);
 }
 
 #pragma mark - Rotation
@@ -348,8 +348,8 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     
     self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
     [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    [newSession addOutput:self.captureOutput];
     
     // Still image capture configuration
     self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -362,12 +362,9 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
     if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
         self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
     }
-    
     [newSession addOutput:self.stillImageOutput];
     
-    if (!CGRectIsEmpty(self.scanRect)) {
-        self.captureOutput.rectOfInterest = self.scanRect;
-    }
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
     
     self.capturePreviewLayer = nil;
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
@@ -433,8 +430,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
                                AVMetadataObjectTypeAztecCode] mutableCopy];
     
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
-        [types addObjectsFromArray:@[
-                                     AVMetadataObjectTypeInterleaved2of5Code,
+        [types addObjectsFromArray:@[AVMetadataObjectTypeInterleaved2of5Code,
                                      AVMetadataObjectTypeITF14Code,
                                      AVMetadataObjectTypeDataMatrixCode
                                      ]];
@@ -626,13 +622,11 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 #pragma mark - Setters
 
 - (void)setCamera:(MTBCamera)camera {
-    
     if (self.isScanning && camera != _camera) {
         AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
         AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
         [self setDeviceInput:input session:self.session];
     }
-    
     _camera = camera;
 }
 
