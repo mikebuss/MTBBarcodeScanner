@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.9.0
+
+- Added support for tapping the view to focus the camera
+
 ## 1.8.11
 
 - Fixed an issue with iOS 7 support. Thanks [@kiwox](https://github.com/kiwox)!
