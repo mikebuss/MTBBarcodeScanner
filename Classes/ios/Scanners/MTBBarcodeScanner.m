@@ -589,8 +589,6 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
             
             AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
             
-            NSLog(@"Setting torch mode: %zd", mode);
-            
             [backCamera setTorchMode:mode];
             [backCamera unlockForConfiguration];
             
