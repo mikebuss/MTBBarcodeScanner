@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 1.9.1
+
+- Removed NSLog statement Thanks [@brblakley](https://github.com/brblakley)!
+
 ## 1.9.0
 
 - Added support for tapping the view to focus the camera
