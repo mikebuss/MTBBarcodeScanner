@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 2.0.0
+
+- Added support for Carthage. Thanks [@hardikdevios](https://github.com/hardikdevios)!
+
 ## 1.9.1
 
 - Removed NSLog statement Thanks [@brblakley](https://github.com/brblakley)!
