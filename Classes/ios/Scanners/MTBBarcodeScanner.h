@@ -9,7 +9,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "MTBBarcode.h"
 
 typedef NS_ENUM(NSUInteger, MTBCamera) {
     MTBCameraBack,

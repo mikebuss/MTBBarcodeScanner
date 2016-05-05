@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2705B1881CDBE53A00E30BED /* MTBBarcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2705B1871CDBE53A00E30BED /* MTBBarcode.h */; };
+		2705B18D1CDBE8D700E30BED /* MTBBarcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2705B18C1CDBE8D700E30BED /* MTBBarcode.h */; };
 		2763D16B1A01432B0001EA05 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2763D1691A01432B0001EA05 /* LaunchScreen.xib */; };
 		27C265E318A9B85E008E2A33 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C265E218A9B85E008E2A33 /* QuartzCore.framework */; };
 		27C265EB18A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C265E818A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m */; };
@@ -65,7 +65,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2705B1871CDBE53A00E30BED /* MTBBarcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTBBarcode.h; path = ../../Classes/ios/MTBBarcode.h; sourceTree = "<group>"; };
+		2705B18C1CDBE8D700E30BED /* MTBBarcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBBarcode.h; sourceTree = "<group>"; };
 		2763D16A1A01432B0001EA05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		27B417E418A8A501004B70AE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		27C265E218A9B85E008E2A33 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -282,7 +282,7 @@
 		563B264D1CD9F96100DE7D8D /* MTBBarcodeScanner */ = {
 			isa = PBXGroup;
 			children = (
-				2705B1871CDBE53A00E30BED /* MTBBarcode.h */,
+				2705B18C1CDBE8D700E30BED /* MTBBarcode.h */,
 				563B26501CD9F96100DE7D8D /* Info.plist */,
 			);
 			path = MTBBarcodeScanner;
@@ -296,7 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				563B26591CD9F98400DE7D8D /* MTBBarcodeScanner.h in Headers */,
-				2705B1881CDBE53A00E30BED /* MTBBarcode.h in Headers */,
+				2705B18D1CDBE8D700E30BED /* MTBBarcode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
