@@ -59,7 +59,7 @@ Run `carthage update` to build the framework and drag the built `MTBBarcodeScann
 ### Manual
 
 
-If you'd prefer not to use CocoaPods, you can download [these two files](https://github.com/mikebuss/MTBBarcodeScanner/tree/master/Classes/ios/Scanners) and add them to your project:
+If you'd prefer not to use a dependency manager, you can download [these two files](https://github.com/mikebuss/MTBBarcodeScanner/tree/master/Classes/ios/Scanners) and add them to your project:
 
 [`MTBBarcodeScanner.h`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.h)
 
