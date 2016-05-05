@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 2.0.2
+
+- Fixed bug with Carthage support and missing import
+
 ## 2.0.1
 
 - Added a minor bug fix for CocoaPods support
