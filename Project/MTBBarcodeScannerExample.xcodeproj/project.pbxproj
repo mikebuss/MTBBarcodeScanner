@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2705B1881CDBE53A00E30BED /* MTBBarcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 2705B1871CDBE53A00E30BED /* MTBBarcode.h */; };
 		2763D16B1A01432B0001EA05 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2763D1691A01432B0001EA05 /* LaunchScreen.xib */; };
 		27C265E318A9B85E008E2A33 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C265E218A9B85E008E2A33 /* QuartzCore.framework */; };
 		27C265EB18A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C265E818A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m */; };
@@ -26,7 +27,6 @@
 		27C3BF6E18A7140F00C44713 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF6C18A7140F00C44713 /* InfoPlist.strings */; };
 		27C3BF8318A73FE700C44713 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C3BF8218A73FE700C44713 /* MTBBarcodeScanner.m */; };
 		27C3BF8818A7475100C44713 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF8718A7475100C44713 /* AVFoundation.framework */; };
-		563B264F1CD9F96100DE7D8D /* MTBBarcode.h in Headers */ = {isa = PBXBuildFile; fileRef = 563B264E1CD9F96100DE7D8D /* MTBBarcode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		563B26531CD9F96100DE7D8D /* MTBBarcodeScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */; };
 		563B26541CD9F96100DE7D8D /* MTBBarcodeScanner.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		563B26591CD9F98400DE7D8D /* MTBBarcodeScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 27C3BF8118A73FE700C44713 /* MTBBarcodeScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -65,6 +65,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2705B1871CDBE53A00E30BED /* MTBBarcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTBBarcode.h; path = ../../Classes/ios/MTBBarcode.h; sourceTree = "<group>"; };
 		2763D16A1A01432B0001EA05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		27B417E418A8A501004B70AE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		27C265E218A9B85E008E2A33 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -93,7 +94,6 @@
 		27C3BF8218A73FE700C44713 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTBBarcodeScanner.m; path = ../../Classes/ios/Scanners/MTBBarcodeScanner.m; sourceTree = "<group>"; };
 		27C3BF8718A7475100C44713 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MTBBarcodeScanner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		563B264E1CD9F96100DE7D8D /* MTBBarcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MTBBarcode.h; sourceTree = "<group>"; };
 		563B26501CD9F96100DE7D8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -282,7 +282,7 @@
 		563B264D1CD9F96100DE7D8D /* MTBBarcodeScanner */ = {
 			isa = PBXGroup;
 			children = (
-				563B264E1CD9F96100DE7D8D /* MTBBarcode.h */,
+				2705B1871CDBE53A00E30BED /* MTBBarcode.h */,
 				563B26501CD9F96100DE7D8D /* Info.plist */,
 			);
 			path = MTBBarcodeScanner;
@@ -296,7 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				563B26591CD9F98400DE7D8D /* MTBBarcodeScanner.h in Headers */,
-				563B264F1CD9F96100DE7D8D /* MTBBarcode.h in Headers */,
+				2705B1881CDBE53A00E30BED /* MTBBarcode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

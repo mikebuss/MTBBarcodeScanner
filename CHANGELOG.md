@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 2.0.1
+
+- Added a minor bug fix for CocoaPods support
+
 ## 2.0.0
 
 - Added support for Carthage. Thanks [@hardikdevios](https://github.com/hardikdevios)!
