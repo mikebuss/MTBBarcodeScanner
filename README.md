@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-A lightweight, easy-to-use barcode scanning library for iOS 7+. This library is built on top of Apple's excellent AVFoundation framework, and will continue to receive updates as Apple releases them.
+A lightweight, easy-to-use barcode scanning library for iOS 8+. This library is built on top of Apple's excellent AVFoundation framework, and will continue to receive updates as Apple releases them.
 
 With this library you can:
 
