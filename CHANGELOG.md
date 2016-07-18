@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 2.0.3
+
+- Fixed bug where `resultBlock` could be called when nil. Thanks [@navicor90](https://github.com/navicor90)!
+
 ## 2.0.2
 
 - Fixed bug with Carthage support and missing import
