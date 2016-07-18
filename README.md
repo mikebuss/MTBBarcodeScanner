@@ -27,19 +27,15 @@ See demo project for examples of capturing one code, multiple codes, or highligh
 
 <img src="https://raw.githubusercontent.com/mikebuss/MTBBarcodeScanner/develop/Assets/sample-barcodes.png" width=50% height=50%>
 
+---
+
 ## Installation
+
+### CocoaPods
 
 MTBBarcodeScanner can be installed via [CocoaPods](http://cocoapods.org) by adding the following line to your Podfile:
 
 `pod "MTBBarcodeScanner"`
-
-
-If you'd prefer not to use CocoaPods, you can download [these two files](https://github.com/mikebuss/MTBBarcodeScanner/tree/master/Classes/ios/Scanners) and add them to your project:
-
-[`MTBBarcodeScanner.h`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.h)
-
-[`MTBBarcodeScanner.m`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.m)
-
 
 ### Carthage
 
@@ -60,6 +56,16 @@ github "mikebuss/MTBBarcodeScanner"
 
 Run `carthage update` to build the framework and drag the built `MTBBarcodeScanner.framework` into your Xcode project.
 
+### Manual
+
+
+If you'd prefer not to use a dependency manager, you can download [these two files](https://github.com/mikebuss/MTBBarcodeScanner/tree/master/Classes/ios/Scanners) and add them to your project:
+
+[`MTBBarcodeScanner.h`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.h)
+
+[`MTBBarcodeScanner.m`](https://github.com/mikebuss/MTBBarcodeScanner/blob/master/Classes/ios/Scanners/MTBBarcodeScanner.m)
+
+---
 
 ## Usage
 
