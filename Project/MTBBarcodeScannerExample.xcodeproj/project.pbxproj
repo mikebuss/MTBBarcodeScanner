@@ -21,10 +21,6 @@
 		27C3BF5518A7140F00C44713 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF5318A7140F00C44713 /* Main_iPhone.storyboard */; };
 		27C3BF5818A7140F00C44713 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF5618A7140F00C44713 /* Main_iPad.storyboard */; };
 		27C3BF5D18A7140F00C44713 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF5C18A7140F00C44713 /* Images.xcassets */; };
-		27C3BF6418A7140F00C44713 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF6318A7140F00C44713 /* XCTest.framework */; };
-		27C3BF6518A7140F00C44713 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF4118A7140F00C44713 /* Foundation.framework */; };
-		27C3BF6618A7140F00C44713 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF4518A7140F00C44713 /* UIKit.framework */; };
-		27C3BF6E18A7140F00C44713 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF6C18A7140F00C44713 /* InfoPlist.strings */; };
 		27C3BF8318A73FE700C44713 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C3BF8218A73FE700C44713 /* MTBBarcodeScanner.m */; };
 		27C3BF8818A7475100C44713 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF8718A7475100C44713 /* AVFoundation.framework */; };
 		563B26531CD9F96100DE7D8D /* MTBBarcodeScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */; };
@@ -34,13 +30,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		27C3BF6718A7140F00C44713 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 27C3BF3618A7140F00C44713 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 27C3BF3D18A7140F00C44713;
-			remoteInfo = MTBBarcodeScannerExample;
-		};
 		563B26511CD9F96100DE7D8D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 27C3BF3618A7140F00C44713 /* Project object */;
@@ -86,7 +75,6 @@
 		27C3BF5418A7140F00C44713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		27C3BF5718A7140F00C44713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		27C3BF5C18A7140F00C44713 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		27C3BF6218A7140F00C44713 /* MTBBarcodeScannerExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MTBBarcodeScannerExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		27C3BF6318A7140F00C44713 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		27C3BF6B18A7140F00C44713 /* MTBBarcodeScannerExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MTBBarcodeScannerExampleTests-Info.plist"; sourceTree = "<group>"; };
 		27C3BF6D18A7140F00C44713 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -108,16 +96,6 @@
 				27C3BF4418A7140F00C44713 /* CoreGraphics.framework in Frameworks */,
 				27C3BF4618A7140F00C44713 /* UIKit.framework in Frameworks */,
 				27C3BF4218A7140F00C44713 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		27C3BF5F18A7140F00C44713 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27C3BF6418A7140F00C44713 /* XCTest.framework in Frameworks */,
-				27C3BF6618A7140F00C44713 /* UIKit.framework in Frameworks */,
-				27C3BF6518A7140F00C44713 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +140,6 @@
 			isa = PBXGroup;
 			children = (
 				27C3BF3E18A7140F00C44713 /* MTBBarcodeScannerExample.app */,
-				27C3BF6218A7140F00C44713 /* MTBBarcodeScannerExampleTests.xctest */,
 				563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */,
 			);
 			name = Products;
@@ -322,24 +299,6 @@
 			productReference = 27C3BF3E18A7140F00C44713 /* MTBBarcodeScannerExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		27C3BF6118A7140F00C44713 /* MTBBarcodeScannerExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 27C3BF7618A7140F00C44713 /* Build configuration list for PBXNativeTarget "MTBBarcodeScannerExampleTests" */;
-			buildPhases = (
-				27C3BF5E18A7140F00C44713 /* Sources */,
-				27C3BF5F18A7140F00C44713 /* Frameworks */,
-				27C3BF6018A7140F00C44713 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				27C3BF6818A7140F00C44713 /* PBXTargetDependency */,
-			);
-			name = MTBBarcodeScannerExampleTests;
-			productName = MTBBarcodeScannerExampleTests;
-			productReference = 27C3BF6218A7140F00C44713 /* MTBBarcodeScannerExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		563B264B1CD9F95F00DE7D8D /* MTBBarcodeScanner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 563B26571CD9F96100DE7D8D /* Build configuration list for PBXNativeTarget "MTBBarcodeScanner" */;
@@ -367,8 +326,8 @@
 				CLASSPREFIX = MTB;
 				LastUpgradeCheck = 0720;
 				TargetAttributes = {
-					27C3BF6118A7140F00C44713 = {
-						TestTargetID = 27C3BF3D18A7140F00C44713;
+					27C3BF3D18A7140F00C44713 = {
+						DevelopmentTeam = K83F2KZFM9;
 					};
 					563B264B1CD9F95F00DE7D8D = {
 						CreatedOnToolsVersion = 7.3;
@@ -389,7 +348,6 @@
 			projectRoot = "";
 			targets = (
 				27C3BF3D18A7140F00C44713 /* MTBBarcodeScannerExample */,
-				27C3BF6118A7140F00C44713 /* MTBBarcodeScannerExampleTests */,
 				563B264B1CD9F95F00DE7D8D /* MTBBarcodeScanner */,
 			);
 		};
@@ -405,14 +363,6 @@
 				27C3BF5D18A7140F00C44713 /* Images.xcassets in Resources */,
 				27C3BF5518A7140F00C44713 /* Main_iPhone.storyboard in Resources */,
 				27C3BF4C18A7140F00C44713 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		27C3BF6018A7140F00C44713 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27C3BF6E18A7140F00C44713 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,13 +388,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		27C3BF5E18A7140F00C44713 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		563B26471CD9F95F00DE7D8D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -456,11 +399,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		27C3BF6818A7140F00C44713 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 27C3BF3D18A7140F00C44713 /* MTBBarcodeScannerExample */;
-			targetProxy = 27C3BF6718A7140F00C44713 /* PBXContainerItemProxy */;
-		};
 		563B26521CD9F96100DE7D8D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 563B264B1CD9F95F00DE7D8D /* MTBBarcodeScanner */;
@@ -592,6 +530,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = K83F2KZFM9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
 				INFOPLIST_FILE = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Info.plist";
@@ -611,6 +550,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = K83F2KZFM9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
 				INFOPLIST_FILE = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Info.plist";
@@ -620,48 +560,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		27C3BF7718A7140F00C44713 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MTBBarcodeScannerExample.app/MTBBarcodeScannerExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "MTBBarcodeScannerExampleTests/MTBBarcodeScannerExampleTests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mikebuss.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		27C3BF7818A7140F00C44713 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MTBBarcodeScannerExample.app/MTBBarcodeScannerExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Prefix.pch";
-				INFOPLIST_FILE = "MTBBarcodeScannerExampleTests/MTBBarcodeScannerExampleTests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mikebuss.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -742,15 +640,6 @@
 			buildConfigurations = (
 				27C3BF7418A7140F00C44713 /* Debug */,
 				27C3BF7518A7140F00C44713 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		27C3BF7618A7140F00C44713 /* Build configuration list for PBXNativeTarget "MTBBarcodeScannerExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				27C3BF7718A7140F00C44713 /* Debug */,
-				27C3BF7818A7140F00C44713 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
