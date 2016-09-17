@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 2.1.0
+
+- Now uses AVCaptureFocusModeContinuousAutoFocus by default, per issue [#81](https://github.com/mikebuss/MTBBarcodeScanner/issues/81). Thanks [@JacopoKenzo](https://github.com/JacopoKenzo)!
+
 ## 2.0.3
 
 - Fixed bug where `resultBlock` could be called when nil. Thanks [@navicor90](https://github.com/navicor90)!
