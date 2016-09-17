@@ -464,6 +464,16 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
         newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     }
     
+    // Using AVCaptureFocusModeContinuousAutoFocus helps improve scan times
+    NSError *error = nil;
+    if ([newCaptureDevice lockForConfiguration:&error]) {
+        if (newCaptureDevice.isFocusPointOfInterestSupported &&
+            [newCaptureDevice isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
+            newCaptureDevice.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+        }
+        [newCaptureDevice unlockForConfiguration];
+    }
+    
     return newCaptureDevice;
 }
 
