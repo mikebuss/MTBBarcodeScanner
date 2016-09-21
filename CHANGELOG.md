@@ -1,5 +1,15 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 3.0.0
+
+- Errors are now propagated to the `startScanning` methods. You may now supply an NSError to this method that will be updated in the event scanning could not be started.
+- The scanning methods have now been changed to:
+
+```
+- (void)startScanningWithError:(NSError **)error;
+- (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
+```
+
 ## 2.1.0
 
 - Now uses AVCaptureFocusModeContinuousAutoFocus by default, per issue [#81](https://github.com/mikebuss/MTBBarcodeScanner/issues/81). Thanks [@JacopoKenzo](https://github.com/JacopoKenzo)!

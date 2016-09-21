@@ -54,6 +54,7 @@
 - (void)startScanning {
     self.uniqueCodes = [[NSMutableArray alloc] init];
     
+    NSError *error = nil;
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         for (AVMetadataMachineReadableCodeObject *code in codes) {
             if (code.stringValue && [self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
@@ -66,7 +67,11 @@
                 [self scrollToLastTableViewCell];
             }
         }
-    }];
+    } error:&error];
+    
+    if (error) {
+        NSLog(@"An error occurred: %@", error.localizedDescription);
+    }
     
     [self.toggleScanningButton setTitle:@"Stop Scanning" forState:UIControlStateNormal];
     self.toggleScanningButton.backgroundColor = [UIColor redColor];
