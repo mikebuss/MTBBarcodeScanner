@@ -96,12 +96,13 @@ To read the first code and stop scanning:
 [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
     if (success) {
 
+        NSError *error = nil;
         [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
             AVMetadataMachineReadableCodeObject *code = [codes firstObject];
             NSLog(@"Found code: %@", code.stringValue);
 
             [self.scanner stopScanning];
-        }];
+        } error:&error];
 
     } else {
         // The user denied access to the camera
@@ -112,12 +113,13 @@ To read the first code and stop scanning:
 If the camera is pointed at more than one 2-dimensional code, you can read all of them:
 
 ```objective-c
+NSError *error = nil;
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
     for (AVMetadataMachineReadableCodeObject *code in codes) {
         NSLog(@"Found code: %@", code.stringValue);
     }
     [self.scanner stopScanning];
-}];
+} error:&error];
 ```
 
 **Note:** This only applies to 2-dimensional barcodes as 1-dimensional barcodes can only be read one at a time. See [relevant Apple document](https://developer.apple.com/library/ios/technotes/tn2325/_index.html).
@@ -125,6 +127,7 @@ If the camera is pointed at more than one 2-dimensional code, you can read all o
 To continuously read and only output unique codes:
 
 ```objective-c
+NSError *error = nil;
 [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
     for (AVMetadataMachineReadableCodeObject *code in codes) {
         if ([self.uniqueCodes indexOfObject:code.stringValue] == NSNotFound) {
@@ -132,7 +135,7 @@ To continuously read and only output unique codes:
             NSLog(@"Found unique code: %@", code.stringValue);
         }
     }
-}];
+} error:&error];
 ```
 
 #### Callback Blocks
