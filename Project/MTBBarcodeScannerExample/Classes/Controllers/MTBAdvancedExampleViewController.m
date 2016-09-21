@@ -85,9 +85,14 @@
               Here we could present a view at %@", NSStringFromCGPoint(point));
     };
     
+    NSError *error;
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
-    }];
+    } error:&error];
+    
+    if (error) {
+        NSLog(@"An error occurred: %@", error.localizedDescription);
+    }
     
     // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
     self.scanner.scanRect = self.viewOfInterest.frame;
