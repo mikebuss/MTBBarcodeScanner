@@ -1,5 +1,10 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 3.1.0
+
+- Fixed issue where calling a method on UIImagePickerController could prompt a rejection from the App Store if a `NSPhotoLibraryUsageDescription` is not provided in the Info.plist file. Details are [here](https://github.com/mikebuss/MTBBarcodeScanner/issues/86). Thanks @brblakley!
+- Fixed an issue with setting the camera using the `camera` property setter
+
 ## 3.0.0
 
 - Errors are now propagated to the `startScanning` methods. You may now supply an NSError to this method that will be updated in the event scanning could not be started.

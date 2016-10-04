@@ -164,8 +164,18 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 /**
  *  If using the front camera, switch to the back, or visa-versa.
  *  If this method is called when isScanning=NO, it has no effect
+ *
+ *  If the opposite camera is not available, this method will do nothing.
  */
 - (void)flipCamera;
+
+/**
+ *  If using the front camera, switch to the back, or visa-versa.
+ *  If this method is called when isScanning=NO, it has no effect
+ *
+ *  If the opposite camera is not available, the error property will explain the error.
+ */
+- (void)flipCameraWithError:(NSError **)error;
 
 /**
  *  Return a BOOL value that specifies whether the current capture device has a torch.

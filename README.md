@@ -88,6 +88,16 @@ s = [[MTBBarcodeScanner alloc] initWithMetadataObjectTypes:@[AVMetadataObjectTyp
                                                previewView:self.previewView];
 ```
 
+#### iOS 10 and later
+
+If you are using the `MTBBarcodeScanner` library on iOS 10 and later, you need to include the following `Info.plist` key in order to request camera access or the application will crash:
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Can we access your camera in order to scan barcodes?</string>
+```
+Of course you can also set your own (localized) message here. To find out more about privacy-keys in iOS, check the 
+[official Apple documentation](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html).
+
 #### Scanning
 
 To read the first code and stop scanning:
