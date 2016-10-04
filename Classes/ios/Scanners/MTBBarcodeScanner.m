@@ -310,11 +310,15 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 - (void)flipCamera {
+    [self flipCameraWithError:nil];
+}
+
+- (void)flipCameraWithError:(NSError **)error {
     if (self.isScanning) {
         if (self.camera == MTBCameraFront) {
-            self.camera = MTBCameraBack;
+            [self setCamera:MTBCameraBack error:error];
         } else {
-            self.camera = MTBCameraFront;
+            [self setCamera:MTBCameraFront error:error];
         }
     }
 }
@@ -711,6 +715,10 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 }
 
 #pragma mark - Setters
+
+- (void)setCamera:(MTBCamera)camera {
+    [self setCamera:camera error:nil];
+}
 
 - (void)setCamera:(MTBCamera)camera error:(NSError **)error {
     if (self.isScanning && camera != _camera) {
