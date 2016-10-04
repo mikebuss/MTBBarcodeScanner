@@ -183,7 +183,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 #pragma mark - Scanning
 
 + (BOOL)cameraIsPresent {
-    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    return [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] != nil;
 }
 
 + (BOOL)scanningIsProhibited {
