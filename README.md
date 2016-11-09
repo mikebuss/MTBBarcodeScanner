@@ -181,11 +181,39 @@ self.scanner.resultBlock = ^(NSArray *codes){
 ```
 ---
 
-## Usage in Swift Projects
+## Usage in Swift 3 Projects
 
-After running `pod install` it's generally a good idea to open the resulting workspace in Xcode and then run a build. This will prod Xcode into properly indexing the Objective-C files and building the appropriate import code for Swift. Carthage-based projects seems to have less issues with this, but it's a good idea anyway.
+```swift
+class ExampleViewController: UIViewController {
+    
+    @IBOutlet var previewView: UIView!
+    var scanner: MTBBarcodeScanner?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        scanner = MTBBarcodeScanner(previewView: previewView)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.scanner?.startScanning(resultBlock: { codes in
+            let codeObjects = codes as! [AVMetadataMachineReadableCodeObject]?
+            for code in codeObjects! {
+                let stringValue = code.stringValue!
+                print("Found code: \(stringValue)")
+            }
+            
+        }, error: nil)
+    }
+}
 
-You can then import MTBBarcodeScanner and use like the following example:
+```
+
+---
+
+## Usage in Swift 2.3 Projects
 
 ```swift
 import UIKit
@@ -197,24 +225,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
         scanner = MTBBarcodeScanner(previewView: self.view)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+
         scanner?.startScanningWithResultBlock({ (codes) in
-            for code in codes {
-                print(code)
-            }
+	            for code in codes {
+	                print(code)
+	            }
             }, error: nil)
     }
 }
 ```
-
-The rest of the documentation in the above Objective-C usage section is applicable. 
-
-Note that the above code is Swift 2.x compatible, but works with Swift 3 with minor revisions.
 
 ---
 
