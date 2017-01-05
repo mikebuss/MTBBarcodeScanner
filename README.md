@@ -102,6 +102,8 @@ Of course you can also set your own (localized) message here. To find out more a
 
 To read the first code and stop scanning:
 
+**Note:** To avoid a delay in the camera feed, start scanning in `viewDidAppear` and not `viewDidLoad`.
+
 ```objective-c
 [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
     if (success) {
