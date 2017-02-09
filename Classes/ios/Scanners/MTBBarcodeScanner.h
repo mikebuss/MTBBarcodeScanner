@@ -137,8 +137,10 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  This method assumes you have already set the `resultBlock` property directly.
  *
  *  @param error Error supplied if the scanning could not start.
+ *
+ *  @return YES if scanning started successfully, NO if there was an error.
  */
-- (void)startScanningWithError:(NSError **)error;
+- (BOOL)startScanningWithError:(NSError **)error;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
@@ -146,8 +148,10 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *
  *  @param resultBlock Callback block for captured codes. If the scanner was instantiated with initWithMetadataObjectTypes:previewView, only codes with a type given in metaDataObjectTypes will be reported.
  *  @param error Error supplied if the scanning could not start.
+ *
+ *  @return YES if scanning started successfully, NO if there was an error.
  */
-- (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
+- (BOOL)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
 
 /**
  *  Stop scanning for barcodes. The live feed from the camera will be removed as a sublayer from the previewView given during initialization.
@@ -171,11 +175,16 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  If using the front camera, switch to the back, or visa-versa.
- *  If this method is called when isScanning=NO, it has no effect
  *
- *  If the opposite camera is not available, the error property will explain the error.
+ *  If this method is called when (isScanning == NO), it will return
+ *  NO and provide an error.
+ *
+ *  If the opposite camera is not available, the error parameter
+ *  will explain the error.
+ *
+ *  @return YES if the camera was flipped, NO if any error occurred.
  */
-- (void)flipCameraWithError:(NSError **)error;
+- (BOOL)flipCameraWithError:(NSError **)error;
 
 /**
  *  Return a BOOL value that specifies whether the current capture device has a torch.
