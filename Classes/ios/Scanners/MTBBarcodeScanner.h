@@ -24,9 +24,11 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @interface MTBBarcodeScanner : NSObject
 
 /**
- *  Set which camera to use. See MTBCamera for options.
+ *  The currently set camera. See MTBCamera for options.
+ *
+ *  @sa setCamera:error:
  */
-@property (nonatomic, assign) MTBCamera camera;
+@property (nonatomic, assign, readonly) MTBCamera camera;
 
 /**
  *  Control the torch on the device, if present.
@@ -137,8 +139,10 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  This method assumes you have already set the `resultBlock` property directly.
  *
  *  @param error Error supplied if the scanning could not start.
+ *
+ *  @return YES if scanning started successfully, NO if there was an error.
  */
-- (void)startScanningWithError:(NSError **)error;
+- (BOOL)startScanningWithError:(NSError **)error;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
@@ -146,8 +150,10 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *
  *  @param resultBlock Callback block for captured codes. If the scanner was instantiated with initWithMetadataObjectTypes:previewView, only codes with a type given in metaDataObjectTypes will be reported.
  *  @param error Error supplied if the scanning could not start.
+ *
+ *  @return YES if scanning started successfully, NO if there was an error.
  */
-- (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
+- (BOOL)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
 
 /**
  *  Stop scanning for barcodes. The live feed from the camera will be removed as a sublayer from the previewView given during initialization.
@@ -170,12 +176,36 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 - (void)flipCamera;
 
 /**
- *  If using the front camera, switch to the back, or visa-versa.
- *  If this method is called when isScanning=NO, it has no effect
+ *  Sets the camera and ignores any errors.
  *
- *  If the opposite camera is not available, the error property will explain the error.
+ *  Deprecated.
+ *
+ *  @sa setCamera:error:
  */
-- (void)flipCameraWithError:(NSError **)error;
+- (void)setCamera:(MTBCamera)camera NS_DEPRECATED_IOS(2.0, 2.0, "Use setCamera:error: instead");
+
+/**
+ *  Sets the camera. This operation may fail, e.g., when the device
+ *  does not have the specified camera.
+ *
+ *  @param camera The camera to use, see MTBCamera for options.
+ *  @error Any error that occurred while trying to set the camera.
+ *  @return YES, if the specified camera was set successfully, NO if any error occurred.
+ */
+- (BOOL)setCamera:(MTBCamera)camera error:(NSError **)error;
+
+/**
+ *  If using the front camera, switch to the back, or visa-versa.
+ *
+ *  If this method is called when (isScanning == NO), it will return
+ *  NO and provide an error.
+ *
+ *  If the opposite camera is not available, the error parameter
+ *  will explain the error.
+ *
+ *  @return YES if the camera was flipped, NO if any error occurred.
+ */
+- (BOOL)flipCameraWithError:(NSError **)error;
 
 /**
  *  Return a BOOL value that specifies whether the current capture device has a torch.
