@@ -24,9 +24,11 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @interface MTBBarcodeScanner : NSObject
 
 /**
- *  Set which camera to use. See MTBCamera for options.
+ *  The currently set camera. See MTBCamera for options.
+ *
+ *  @sa setCamera:error:
  */
-@property (nonatomic, assign) MTBCamera camera;
+@property (nonatomic, assign, readonly) MTBCamera camera;
 
 /**
  *  Control the torch on the device, if present.
@@ -172,6 +174,25 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  If the opposite camera is not available, this method will do nothing.
  */
 - (void)flipCamera;
+
+/**
+ *  Sets the camera and ignores any errors.
+ *
+ *  Deprecated.
+ *
+ *  @sa setCamera:error:
+ */
+- (void)setCamera:(MTBCamera)camera NS_DEPRECATED_IOS(2.0, 2.0, "Use setCamera:error: instead");
+
+/**
+ *  Sets the camera. This operation may fail, e.g., when the device
+ *  does not have the specified camera.
+ *
+ *  @param camera The camera to use, see MTBCamera for options.
+ *  @error Any error that occurred while trying to set the camera.
+ *  @return YES, if the specified camera was set successfully, NO if any error occurred.
+ */
+- (BOOL)setCamera:(MTBCamera)camera error:(NSError **)error;
 
 /**
  *  If using the front camera, switch to the back, or visa-versa.

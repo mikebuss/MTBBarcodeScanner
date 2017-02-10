@@ -17,8 +17,10 @@ static NSString *kErrorDomain = @"MTBBarcodeScannerError";
 // Error Codes
 static const NSInteger kErrorCodeStillImageCaptureInProgress = 1000;
 static const NSInteger kErrorCodeSessionIsClosed = 1001;
+static const NSInteger kErrorCodeNotScanning = 1002;
 
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
+
 /*!
  @property session
  @abstract
@@ -320,9 +322,9 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 - (BOOL)flipCameraWithError:(NSError **)error {
     if (!self.isScanning) {
         if (error) {
-            *error = [NSError errorWithDomain:NSStringFromClass([self class])
-                                         code:0
-                                     userInfo:@{@"unlocalizedErrorHint": @"Camera cannot be flipped when isScanning is NO"}];
+            *error = [NSError errorWithDomain:kErrorDomain
+                                         code:kErrorCodeNotScanning
+                                     userInfo:@{NSLocalizedDescriptionKey : @"Camera cannot be flipped when isScanning is NO"}];
         }
 
         return NO;
@@ -722,18 +724,37 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 
 #pragma mark - Setters
 
-- (BOOL)setCamera:(MTBCamera)camera error:(NSError **)error {
-    AVCaptureDeviceInput *input;
+- (void)setCamera:(MTBCamera)camera {
+    [self setCamera:camera error:nil];
+}
 
-    if (self.isScanning && camera != _camera) {
-        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
-        input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
-        [self setDeviceInput:input session:self.session];
+- (BOOL)setCamera:(MTBCamera)camera error:(NSError **)error {
+    if (camera == _camera) {
+        return YES;
     }
 
+    if (!self.isScanning) {
+        if (error) {
+            *error = [NSError errorWithDomain:kErrorDomain
+                                         code:kErrorCodeNotScanning
+                                     userInfo:@{NSLocalizedDescriptionKey : @"Camera cannot be set when isScanning is NO"}];
+        }
+
+        return NO;
+    }
+
+    AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
+
+    if (!input) {
+        // we rely on deviceInputWithDevice:error to populate the error in this case
+        return NO;
+    }
+
+    [self setDeviceInput:input session:self.session];
     _camera = camera;
 
-    return (input != nil);
+    return YES;
 }
 
 - (void)setScanRect:(CGRect)scanRect {
