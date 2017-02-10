@@ -67,7 +67,7 @@ If you'd prefer not to use a dependency manager, you can download [these two fil
 
 ---
 
-## Usage
+## Usage in Objective-C Projects
 
 To import the library: `#import "MTBBarcodeScanner.h"`
 
@@ -101,6 +101,8 @@ Of course you can also set your own (localized) message here. To find out more a
 #### Scanning
 
 To read the first code and stop scanning:
+
+**Note:** To avoid a delay in the camera feed, start scanning in `viewDidAppear` and not `viewDidLoad`.
 
 ```objective-c
 [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
@@ -179,6 +181,67 @@ self.scanner.resultBlock = ^(NSArray *codes){
     [weakSelf drawOverlaysOnCodes:codes];
 };
 ```
+---
+
+## Usage in Swift 3 Projects
+
+```swift
+class ExampleViewController: UIViewController {
+    
+    @IBOutlet var previewView: UIView!
+    var scanner: MTBBarcodeScanner?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        scanner = MTBBarcodeScanner(previewView: previewView)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.scanner?.startScanning(resultBlock: { codes in
+            let codeObjects = codes as! [AVMetadataMachineReadableCodeObject]?
+            for code in codeObjects! {
+                let stringValue = code.stringValue!
+                print("Found code: \(stringValue)")
+            }
+            
+        }, error: nil)
+    }
+}
+
+```
+
+---
+
+## Usage in Swift 2.3 Projects
+
+```swift
+import UIKit
+import MTBBarcodeScanner
+
+class ViewController: UIViewController {
+
+    var scanner: MTBBarcodeScanner?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        scanner = MTBBarcodeScanner(previewView: self.view)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
+        scanner?.startScanningWithResultBlock({ (codes) in
+	            for code in codes {
+	                print(code)
+	            }
+            }, error: nil)
+    }
+}
+```
 
 ---
 
@@ -208,12 +271,13 @@ Switch to the opposite camera with the `flipCamera` method on the scanner:
 ```
 
 
-Or specify the camera directly using the `camera` property, like so:
+Or specify the camera directly using `setCamera:error`, like so:
 
 ```objective-c
 
+NSError *error = nil;
 MTBBarcodeScanner *scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
-scanner.camera = MTBCameraFront;
+[scanner setCamera:MTBCameraFront error:&error];
 
 ```
 

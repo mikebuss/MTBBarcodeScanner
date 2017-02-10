@@ -1,5 +1,12 @@
 # MTBBarcodeScanner CHANGELOG
 
+## 4.0.0
+
+- Setting the `camera` property directly is now deprecated in favor of the more-helpful `setCamera:error:` method.
+- Methods that accept an error argument now have a return value to satisfy Xcode analyzer.
+
+Special thanks to [@shagedorn](https://github.com/shagedorn) for all of the work on this release!
+
 ## 3.1.0
 
 - Fixed issue where calling a method on UIImagePickerController could prompt a rejection from the App Store if a `NSPhotoLibraryUsageDescription` is not provided in the Info.plist file. Details are [here](https://github.com/mikebuss/MTBBarcodeScanner/issues/86). Thanks @brblakley!
