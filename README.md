@@ -271,12 +271,13 @@ Switch to the opposite camera with the `flipCamera` method on the scanner:
 ```
 
 
-Or specify the camera directly using the `camera` property, like so:
+Or specify the camera directly using `setCamera:error`, like so:
 
 ```objective-c
 
+NSError *error = nil;
 MTBBarcodeScanner *scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:_previewView];
-scanner.camera = MTBCameraFront;
+[scanner setCamera:MTBCameraFront error:&error];
 
 ```
 
