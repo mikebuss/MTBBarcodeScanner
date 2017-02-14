@@ -245,70 +245,72 @@ static const NSInteger kErrorCodeNotScanning = 1002;
     // Configure the session
     if (!self.hasExistingSession) {
         self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
-        session = [self newSessionWithCaptureDevice:self.captureDevice
-                                              error:error];
-    }
-    
-    if (session) {
-        self.session = session;
-        self.hasExistingSession = YES;
-        
-        // Configure the rect of interest
-        self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
-        
-        // Configure the preview layer
-        self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
-        [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
-        [self refreshVideoOrientation];
-        
-        // Configure 'tap to focus' functionality
-        [self configureTapToFocus];
-        
-        self.resultBlock = resultBlock;
-        
-        // Start the session after all configurations
-        [self.session startRunning];
-        
-        // Call that block now that we've started scanning
-        if (self.didStartScanningBlock) {
-            self.didStartScanningBlock();
-        }
-
-        return YES;
+        session = [self newSessionWithCaptureDevice:self.captureDevice error:error];
     }
 
-    return NO;
+    if (!session) {
+        // we rely on newSessionWithCaptureDevice:error: to populate the error
+        return NO;
+    }
+
+    self.session = session;
+    self.hasExistingSession = YES;
+
+    // Configure the rect of interest
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
+
+    // Configure the preview layer
+    self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
+    [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
+    [self refreshVideoOrientation];
+
+    // Configure 'tap to focus' functionality
+    [self configureTapToFocus];
+
+    self.resultBlock = resultBlock;
+
+    // Start the session after all configurations
+    [self.session startRunning];
+
+    // Call that block now that we've started scanning
+    if (self.didStartScanningBlock) {
+        self.didStartScanningBlock();
+    }
+
+    return YES;
 }
 
 - (void)stopScanning {
-    if (self.hasExistingSession) {
-        self.hasExistingSession = NO;
-        
-        // Turn the torch off
-        self.torchMode = MTBTorchModeOff;
-        
-        // Remove the preview layer
-        [self.capturePreviewLayer removeFromSuperlayer];
-        
-        // Stop recognizing taps for the 'Tap to Focus' feature
-        [self stopRecognizingTaps];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            // When we're finished scanning, reset the settings for the camera
-            // to their original states
-            [self removeDeviceInput];
-            
-            for (AVCaptureOutput *output in self.session.outputs) {
-                [self.session removeOutput:output];
-            }
-            
-            [self.session stopRunning];
-            self.session = nil;
-            self.resultBlock = nil;
-            self.capturePreviewLayer = nil;
-        });
+    if (!self.hasExistingSession) {
+        return;
     }
+
+    self.hasExistingSession = NO;
+
+    // Turn the torch off
+    self.torchMode = MTBTorchModeOff;
+
+    // Remove the preview layer
+    [self.capturePreviewLayer removeFromSuperlayer];
+
+    // Stop recognizing taps for the 'Tap to Focus' feature
+    [self stopRecognizingTaps];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        // When we're finished scanning, reset the settings for the camera
+        // to their original states
+        [self removeDeviceInput];
+
+        for (AVCaptureOutput *output in self.session.outputs) {
+            [self.session removeOutput:output];
+        }
+
+        [self.session stopRunning];
+        self.session = nil;
+        self.resultBlock = nil;
+        self.capturePreviewLayer = nil;
+    });
 }
 
 - (BOOL)isScanning {
@@ -428,44 +430,46 @@ static const NSInteger kErrorCodeNotScanning = 1002;
     AVCaptureSession *newSession = nil;
     
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
-    
-    if (input) {
-        
-        newSession = [[AVCaptureSession alloc] init];
-        [self setDeviceInput:input session:newSession];
-        
-        // Set an optimized preset for barcode scanning
-        [newSession setSessionPreset:AVCaptureSessionPresetHigh];
-        
-        self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
-        [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-        
-        [newSession addOutput:self.captureOutput];
-        self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-        
-        // Still image capture configuration
-        self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
-        self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
-        
-        if ([self.stillImageOutput isStillImageStabilizationSupported]) {
-            self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
-        }
-        
-        if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
-            self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
-        }
-        [newSession addOutput:self.stillImageOutput];
-        
-        self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
-        
-        self.capturePreviewLayer = nil;
-        self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
-        self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-        self.capturePreviewLayer.frame = self.previewView.bounds;
-        
-        [newSession commitConfiguration];
+
+    if (!input) {
+        // we rely on deviceInputWithDevice:error: to populate the error
+        return nil;
     }
-    
+
+    newSession = [[AVCaptureSession alloc] init];
+    [self setDeviceInput:input session:newSession];
+
+    // Set an optimized preset for barcode scanning
+    [newSession setSessionPreset:AVCaptureSessionPresetHigh];
+
+    self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
+    [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+
+    [newSession addOutput:self.captureOutput];
+    self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+
+    // Still image capture configuration
+    self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+    self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+
+    if ([self.stillImageOutput isStillImageStabilizationSupported]) {
+        self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
+    }
+
+    if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
+        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+    }
+    [newSession addOutput:self.stillImageOutput];
+
+    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
+
+    self.capturePreviewLayer = nil;
+    self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
+    self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    self.capturePreviewLayer.frame = self.previewView.bounds;
+
+    [newSession commitConfiguration];
+
     return newSession;
 }
 
@@ -580,7 +584,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 }
 
 - (void)removeDeviceInput {
-    
     AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
     if (deviceInput == nil) {
         // No need to remove the device input if it was never set
@@ -622,7 +625,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 }
 
 - (void)updateTorchModeForCurrentSettings {
-    
     AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if ([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
         
@@ -678,7 +680,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 
 
 - (void)captureStillImage:(void (^)(UIImage *image, NSError *error))captureBlock {
-    
     if ([self isCapturingStillImage]) {
         if (captureBlock) {
             NSError *error = [NSError errorWithDomain:kErrorDomain
