@@ -363,6 +363,8 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
             device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         }
         [device unlockForConfiguration];
+    } else {
+        NSLog(@"Failed to acquire lock for focus change: %@", error);
     }
     
     if (self.didTapToFocusBlock) {
@@ -492,6 +494,8 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
             newCaptureDevice.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         }
         [newCaptureDevice unlockForConfiguration];
+    } else {
+        NSLog(@"Failed to acquire lock for initial focus mode: %@", error);
     }
     
     return newCaptureDevice;
@@ -561,21 +565,17 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     [self removeDeviceInput];
     
     self.currentCaptureDeviceInput = deviceInput;
-    
-    if ([deviceInput.device lockForConfiguration:nil] == YES) {
-        
+
+    NSError *lockError;
+    if ([deviceInput.device lockForConfiguration:&lockError]) {
         // Prioritize the focus on objects near to the device
-        if ([deviceInput.device respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-            deviceInput.device.isAutoFocusRangeRestrictionSupported) {
-            
+        if (deviceInput.device.isAutoFocusRangeRestrictionSupported) {
             self.initialAutoFocusRangeRestriction = deviceInput.device.autoFocusRangeRestriction;
             deviceInput.device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
         }
         
         // Focus on the center of the image
-        if ([deviceInput.device respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-            deviceInput.device.isFocusPointOfInterestSupported) {
-            
+        if (deviceInput.device.isFocusPointOfInterestSupported) {
             self.initialFocusPoint = deviceInput.device.focusPointOfInterest;
             deviceInput.device.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
         }
@@ -583,6 +583,8 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
         [self updateTorchModeForCurrentSettings];
         
         [deviceInput.device unlockForConfiguration];
+    } else {
+        NSLog(@"Failed to acquire lock to set focus options: %@", lockError);
     }
     
     [session addInput:deviceInput];
@@ -596,18 +598,19 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     }
     
     // Restore focus settings to the previously saved state
-    if ([deviceInput.device lockForConfiguration:nil] == YES) {
-        if ([deviceInput.device respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-            deviceInput.device.isAutoFocusRangeRestrictionSupported) {
+    NSError *lockError;
+    if ([deviceInput.device lockForConfiguration:&lockError]) {
+        if (deviceInput.device.isAutoFocusRangeRestrictionSupported) {
             deviceInput.device.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
         }
         
-        if ([deviceInput.device respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-            deviceInput.device.isFocusPointOfInterestSupported) {
+        if (deviceInput.device.isFocusPointOfInterestSupported) {
             deviceInput.device.focusPointOfInterest = self.initialFocusPoint;
         }
         
         [deviceInput.device unlockForConfiguration];
+    } else {
+        NSLog(@"Failed to acquire lock to restore focus options: %@", lockError);
     }
     
     [self.session removeInput:deviceInput];
@@ -632,15 +635,15 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 - (void)updateTorchModeForCurrentSettings {
     AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if ([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
-        
-        BOOL success = [backCamera lockForConfiguration:nil];
-        if (success) {
-            
+
+        NSError *lockError;
+        if ([backCamera lockForConfiguration:&lockError]) {
             AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
             
             [backCamera setTorchMode:mode];
             [backCamera unlockForConfiguration];
-            
+        } else {
+            NSLog(@"Failed to acquire lock to update torch mode: %@", lockError);
         }
     }
 }
