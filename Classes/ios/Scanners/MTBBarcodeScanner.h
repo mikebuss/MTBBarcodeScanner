@@ -86,6 +86,16 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  */
 @property (nonatomic, copy) void (^resultBlock)(NSArray<AVMetadataMachineReadableCodeObject *> *codes);
 
+/*!
+ @property preferredAutoFocusRangeRestriction
+ @abstract
+ Auto focus range restriction, if supported.
+
+ @discussion
+ Defaults to AVCaptureAutoFocusRangeRestrictionNear. Will be ignored on unsupported devices.
+ */
+@property (nonatomic, assign) AVCaptureAutoFocusRangeRestriction preferredAutoFocusRangeRestriction;
+
 /**
  *  Initialize a scanner that will feed the camera input
  *  into the given UIView.

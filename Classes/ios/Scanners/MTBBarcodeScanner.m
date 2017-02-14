@@ -159,6 +159,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
         _metaDataObjectTypes = metaDataObjectTypes;
         _previewView = previewView;
         _allowTapToFocus = YES;
+        _preferredAutoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
         [self setupSessionQueue];
         [self addRotationObserver];
     }
@@ -565,56 +566,64 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     [self removeDeviceInput];
     
     self.currentCaptureDeviceInput = deviceInput;
+    [self updateFocusPreferencesOfInput:deviceInput.device reset:NO];
 
-    NSError *lockError;
-    if ([deviceInput.device lockForConfiguration:&lockError]) {
-        // Prioritize the focus on objects near to the device
-        if (deviceInput.device.isAutoFocusRangeRestrictionSupported) {
-            self.initialAutoFocusRangeRestriction = deviceInput.device.autoFocusRangeRestriction;
-            deviceInput.device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-        }
-        
-        // Focus on the center of the image
-        if (deviceInput.device.isFocusPointOfInterestSupported) {
-            self.initialFocusPoint = deviceInput.device.focusPointOfInterest;
-            deviceInput.device.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
-        }
-        
-        [self updateTorchModeForCurrentSettings];
-        
-        [deviceInput.device unlockForConfiguration];
-    } else {
-        NSLog(@"Failed to acquire lock to set focus options: %@", lockError);
-    }
-    
     [session addInput:deviceInput];
 }
 
 - (void)removeDeviceInput {
     AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
+
     if (deviceInput == nil) {
         // No need to remove the device input if it was never set
         return;
     }
     
     // Restore focus settings to the previously saved state
-    NSError *lockError;
-    if ([deviceInput.device lockForConfiguration:&lockError]) {
-        if (deviceInput.device.isAutoFocusRangeRestrictionSupported) {
-            deviceInput.device.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
-        }
-        
-        if (deviceInput.device.isFocusPointOfInterestSupported) {
-            deviceInput.device.focusPointOfInterest = self.initialFocusPoint;
-        }
-        
-        [deviceInput.device unlockForConfiguration];
-    } else {
-        NSLog(@"Failed to acquire lock to restore focus options: %@", lockError);
-    }
+    [self updateFocusPreferencesOfInput:deviceInput.device reset:YES];
     
     [self.session removeInput:deviceInput];
     self.currentCaptureDeviceInput = nil;
+}
+
+- (void)updateFocusPreferencesOfInput:(AVCaptureDevice *)inputDevice reset:(BOOL)reset {
+    NSParameterAssert(inputDevice);
+
+    if (!inputDevice) {
+        return;
+    }
+
+    NSError *lockError;
+
+    if (![inputDevice lockForConfiguration:&lockError]) {
+        NSLog(@"Failed to acquire lock to (re)set focus options: %@", lockError);
+        return;
+    }
+
+    // Prioritize the focus on objects near to the device
+    if (inputDevice.isAutoFocusRangeRestrictionSupported) {
+        if (!reset) {
+            self.initialAutoFocusRangeRestriction = inputDevice.autoFocusRangeRestriction;
+            inputDevice.autoFocusRangeRestriction = self.preferredAutoFocusRangeRestriction;
+        } else {
+            inputDevice.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
+        }
+    }
+
+    // Focus on the center of the image
+    if (inputDevice.isFocusPointOfInterestSupported) {
+        if (!reset) {
+            self.initialFocusPoint = inputDevice.focusPointOfInterest;
+            inputDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
+        } else {
+            inputDevice.focusPointOfInterest = self.initialFocusPoint;
+        }
+    }
+
+    [inputDevice unlockForConfiguration];
+
+    // this method will acquire its own lock
+    [self updateTorchModeForCurrentSettings];
 }
 
 #pragma mark - Torch Control
@@ -780,6 +789,21 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     
     _scanRect = scanRect;
     self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+}
+
+- (void)setPreferredAutoFocusRangeRestriction:(AVCaptureAutoFocusRangeRestriction)preferredAutoFocusRangeRestriction {
+    if (preferredAutoFocusRangeRestriction == _preferredAutoFocusRangeRestriction) {
+        return;
+    }
+
+    _preferredAutoFocusRangeRestriction = preferredAutoFocusRangeRestriction;
+
+    if (!self.currentCaptureDeviceInput) {
+        // the setting will be picked up once a new session incl. device input is created
+        return;
+    }
+    
+    [self updateFocusPreferencesOfInput:self.currentCaptureDeviceInput reset:NO];
 }
 
 #pragma mark - Getters
