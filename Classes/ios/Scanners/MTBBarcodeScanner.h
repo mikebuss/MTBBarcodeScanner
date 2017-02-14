@@ -77,14 +77,14 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 /*!
  @property resultBlock
  @abstract
- Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
+ Block that's called every time one or more barcodes are recognized.
  
  @discussion
- The resultBlock is called once for every frame that at least one valid barcode is found.
- The returned array consists of AVMetadataMachineReadableCodeObject objects.
+ The resultBlock is called on the main queue once for every frame that at least one valid barcode is found.
+
  This block is automatically set when you call startScanningWithResultBlock:
  */
-@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
+@property (nonatomic, copy) void (^resultBlock)(NSArray<AVMetadataMachineReadableCodeObject *> *codes);
 
 /**
  *  Initialize a scanner that will feed the camera input
@@ -109,7 +109,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *
  *  @return An instance of MTBBarcodeScanner
  */
-- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes
+- (instancetype)initWithMetadataObjectTypes:(NSArray<NSString *> *)metaDataObjectTypes
                                 previewView:(UIView *)previewView;
 
 /**
@@ -163,7 +163,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *
  *  @return YES if scanning started successfully, NO if there was an error.
  */
-- (BOOL)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
+- (BOOL)startScanningWithResultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error;
 
 /**
  *  Stop scanning for barcodes. The live feed from the camera will be removed as a sublayer from the previewView given during initialization.

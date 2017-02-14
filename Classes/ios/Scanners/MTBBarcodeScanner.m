@@ -75,7 +75,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
  Only objects with a MetaDataObjectType found in this array will be
  reported to the result block.
  */
-@property (nonatomic, copy) NSArray *metaDataObjectTypes;
+@property (nonatomic, copy) NSArray<NSString *> *metaDataObjectTypes;
 
 /*!
  @property previewView
@@ -153,7 +153,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     return self;
 }
 
-- (instancetype)initWithMetadataObjectTypes:(NSArray *)metaDataObjectTypes previewView:(UIView *)previewView {
+- (instancetype)initWithMetadataObjectTypes:(NSArray<NSString *> *)metaDataObjectTypes previewView:(UIView *)previewView {
     NSParameterAssert(metaDataObjectTypes);
     NSAssert(metaDataObjectTypes.count > 0,
              @"Must initialize MTBBarcodeScanner with at least one metaDataObjectTypes value.");
@@ -229,7 +229,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     return [self startScanningWithResultBlock:self.resultBlock error:error];
 }
 
-- (BOOL)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error {
+- (BOOL)startScanningWithResultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error {
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
@@ -387,7 +387,6 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 #pragma mark - AVCaptureMetadataOutputObjects Delegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
-    
     if (!self.resultBlock) return;
     
     NSMutableArray *codes = [[NSMutableArray alloc] init];
@@ -520,7 +519,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 
 #pragma mark - Default Values
 
-- (NSArray *)defaultMetaDataObjectTypes {
+- (NSArray<NSString *> *)defaultMetaDataObjectTypes {
     NSMutableArray *types = [@[AVMetadataObjectTypeQRCode,
                                AVMetadataObjectTypeUPCECode,
                                AVMetadataObjectTypeCode39Code,
@@ -539,7 +538,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
                                      ]];
     }
     
-    return types;
+    return [types copy];
 }
 
 #pragma mark - Helper Methods
