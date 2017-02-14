@@ -142,15 +142,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 }
 
 - (instancetype)initWithPreviewView:(UIView *)previewView {
-    self = [super init];
-    if (self) {
-        _previewView = previewView;
-        _metaDataObjectTypes = [self defaultMetaDataObjectTypes];
-        _allowTapToFocus = YES;
-        [self setupSessionQueue];
-        [self addRotationObserver];
-    }
-    return self;
+    return [self initWithMetadataObjectTypes:[self defaultMetaDataObjectTypes] previewView:previewView];
 }
 
 - (instancetype)initWithMetadataObjectTypes:(NSArray<NSString *> *)metaDataObjectTypes previewView:(UIView *)previewView {
