@@ -18,8 +18,16 @@ static NSString *kErrorDomain = @"MTBBarcodeScannerError";
 static const NSInteger kErrorCodeStillImageCaptureInProgress = 1000;
 static const NSInteger kErrorCodeSessionIsClosed = 1001;
 static const NSInteger kErrorCodeNotScanning = 1002;
+static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
+
+/*!
+ @property privateSessionQueue
+ @abstract
+ Starting or stopping the capture session should only be done on this queue.
+ */
+@property (strong) dispatch_queue_t privateSessionQueue;
 
 /*!
  @property session
@@ -82,21 +90,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 @property (nonatomic, weak) UIView *previewView;
 
 /*!
- @property hasExistingSession
- @abstract
- BOOL that is set to YES when a new valid session is created and set to NO when stopScanning
- is called.
- 
- @discussion
- stopScanning now discards the session asynchronously and hasExistingSession is set to NO before
- that block is called. If startScanning is called while the discard block is still in progress
- hasExistingSession will be NO so we can create a new session instead of attempting to use
- the session that is being discarded.
- */
-
-@property (nonatomic, assign) BOOL hasExistingSession;
-
-/*!
  @property initialAutoFocusRangeRestriction
  @abstract
  The auto focus range restriction the AVCaptureDevice was initially configured for when scanning started.
@@ -154,6 +147,7 @@ static const NSInteger kErrorCodeNotScanning = 1002;
         _previewView = previewView;
         _metaDataObjectTypes = [self defaultMetaDataObjectTypes];
         _allowTapToFocus = YES;
+        [self setupSessionQueue];
         [self addRotationObserver];
     }
     return self;
@@ -173,6 +167,7 @@ static const NSInteger kErrorCodeNotScanning = 1002;
         _metaDataObjectTypes = metaDataObjectTypes;
         _previewView = previewView;
         _allowTapToFocus = YES;
+        [self setupSessionQueue];
         [self addRotationObserver];
     }
     return self;
@@ -239,14 +234,20 @@ static const NSInteger kErrorCodeNotScanning = 1002;
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(resultBlock, @"startScanningWithResultBlock: requires a non-nil resultBlock.");
-    
-    AVCaptureSession *session = nil;
-    
-    // Configure the session
-    if (!self.hasExistingSession) {
-        self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
-        session = [self newSessionWithCaptureDevice:self.captureDevice error:error];
+
+    if (self.session) {
+        if (error) {
+            *error = [NSError errorWithDomain:kErrorDomain
+                                         code:kErrorCodeSessionAlreadyActive
+                                     userInfo:@{NSLocalizedDescriptionKey : @"Do not start scanning while another session is in use."}];
+        }
+
+        return NO;
     }
+
+    // Configure the session
+    self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
+    AVCaptureSession *session = [self newSessionWithCaptureDevice:self.captureDevice error:error];
 
     if (!session) {
         // we rely on newSessionWithCaptureDevice:error: to populate the error
@@ -254,7 +255,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
     }
 
     self.session = session;
-    self.hasExistingSession = YES;
 
     // Configure the rect of interest
     self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
@@ -269,23 +269,27 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 
     self.resultBlock = resultBlock;
 
-    // Start the session after all configurations
-    [self.session startRunning];
+    dispatch_async(self.privateSessionQueue, ^{
+        // Start the session after all configurations:
+        // Must be dispatched as it is blocking
+        [self.session startRunning];
 
-    // Call that block now that we've started scanning
-    if (self.didStartScanningBlock) {
-        self.didStartScanningBlock();
-    }
+        if (self.didStartScanningBlock) {
+            // Call that block now that we've started scanning:
+            // Dispatch back to main
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.didStartScanningBlock();
+            });
+        }
+    });
 
     return YES;
 }
 
 - (void)stopScanning {
-    if (!self.hasExistingSession) {
+    if (!self.session) {
         return;
     }
-
-    self.hasExistingSession = NO;
 
     // Turn the torch off
     self.torchMode = MTBTorchModeOff;
@@ -296,20 +300,23 @@ static const NSInteger kErrorCodeNotScanning = 1002;
     // Stop recognizing taps for the 'Tap to Focus' feature
     [self stopRecognizingTaps];
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // When we're finished scanning, reset the settings for the camera
+    // to their original states
+    [self removeDeviceInput];
 
-        // When we're finished scanning, reset the settings for the camera
-        // to their original states
-        [self removeDeviceInput];
+    for (AVCaptureOutput *output in self.session.outputs) {
+        [self.session removeOutput:output];
+    }
 
-        for (AVCaptureOutput *output in self.session.outputs) {
-            [self.session removeOutput:output];
-        }
+    self.resultBlock = nil;
+    self.capturePreviewLayer = nil;
 
-        [self.session stopRunning];
-        self.session = nil;
-        self.resultBlock = nil;
-        self.capturePreviewLayer = nil;
+    AVCaptureSession *session = self.session;
+    self.session = nil;
+
+    dispatch_async(self.privateSessionQueue, ^{
+        // Must be dispatched as it is blocking
+        [session stopRunning];
     });
 }
 
@@ -427,8 +434,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 #pragma mark - Session Configuration
 
 - (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice error:(NSError **)error {
-    AVCaptureSession *newSession = nil;
-    
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
 
     if (!input) {
@@ -436,7 +441,7 @@ static const NSInteger kErrorCodeNotScanning = 1002;
         return nil;
     }
 
-    newSession = [[AVCaptureSession alloc] init];
+    AVCaptureSession *newSession = [[AVCaptureSession alloc] init];
     [self setDeviceInput:input session:newSession];
 
     // Set an optimized preset for barcode scanning
@@ -463,7 +468,6 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 
     self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
 
-    self.capturePreviewLayer = nil;
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
     self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     self.capturePreviewLayer.frame = self.previewView.bounds;
@@ -545,6 +549,16 @@ static const NSInteger kErrorCodeNotScanning = 1002;
                                              selector:@selector(handleDeviceOrientationDidChangeNotification:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+}
+
+- (void)setupSessionQueue {
+    NSAssert(self.privateSessionQueue == NULL, @"Queue should only be set up once");
+
+    if (self.privateSessionQueue) {
+        return;
+    }
+
+    self.privateSessionQueue = dispatch_queue_create("com.mikebuss.MTBBarcodeScanner.captureSession", DISPATCH_QUEUE_SERIAL);
 }
 
 - (void)setDeviceInput:(AVCaptureDeviceInput *)deviceInput session:(AVCaptureSession *)session {
@@ -663,18 +677,25 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 
 - (void)freezeCapture {
     self.capturePreviewLayer.connection.enabled = NO;
-    
-    if (self.hasExistingSession) {
+
+    dispatch_async(self.privateSessionQueue, ^{
         [self.session stopRunning];
-    }
+    });
 }
 
 - (void)unfreezeCapture {
+    if (!self.session) {
+        return;
+    }
+
     self.capturePreviewLayer.connection.enabled = YES;
     
-    if (self.hasExistingSession && !self.session.isRunning) {
+    if (!self.session.isRunning) {
         [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
-        [self.session startRunning];
+
+        dispatch_async(self.privateSessionQueue, ^{
+            [self.session startRunning];
+        });
     }
 }
 
