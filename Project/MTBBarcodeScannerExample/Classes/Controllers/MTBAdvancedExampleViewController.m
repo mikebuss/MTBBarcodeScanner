@@ -84,7 +84,10 @@
         NSLog(@"The user tapped the screen to focus. \
               Here we could present a view at %@", NSStringFromCGPoint(point));
     };
-    
+
+    // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
+    self.scanner.scanRect = self.viewOfInterest.frame;
+
     NSError *error;
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
@@ -93,9 +96,6 @@
     if (error) {
         NSLog(@"An error occurred: %@", error.localizedDescription);
     }
-    
-    // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
-    self.scanner.scanRect = self.viewOfInterest.frame;
     
     [self.toggleScanningButton setTitle:@"Stop Scanning" forState:UIControlStateNormal];
     self.toggleScanningButton.backgroundColor = [UIColor redColor];
