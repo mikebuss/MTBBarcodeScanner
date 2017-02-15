@@ -606,7 +606,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     [self removeDeviceInput];
     
     self.currentCaptureDeviceInput = deviceInput;
-    [self updateFocusPreferencesOfInput:deviceInput.device reset:NO];
+    [self updateFocusPreferencesOfDevice:deviceInput.device reset:NO];
 
     [session addInput:deviceInput];
 }
@@ -620,13 +620,13 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     }
     
     // Restore focus settings to the previously saved state
-    [self updateFocusPreferencesOfInput:deviceInput.device reset:YES];
+    [self updateFocusPreferencesOfDevice:deviceInput.device reset:YES];
     
     [self.session removeInput:deviceInput];
     self.currentCaptureDeviceInput = nil;
 }
 
-- (void)updateFocusPreferencesOfInput:(AVCaptureDevice *)inputDevice reset:(BOOL)reset {
+- (void)updateFocusPreferencesOfDevice:(AVCaptureDevice *)inputDevice reset:(BOOL)reset {
     NSParameterAssert(inputDevice);
 
     if (!inputDevice) {
@@ -843,7 +843,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
         return;
     }
     
-    [self updateFocusPreferencesOfInput:self.currentCaptureDeviceInput reset:NO];
+    [self updateFocusPreferencesOfDevice:self.currentCaptureDeviceInput.device reset:NO];
 }
 
 #pragma mark - Getters
