@@ -32,6 +32,12 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  Control the torch on the device, if present.
+ *
+ *  Attempting to set the torch mode to an unsupported state
+ *  will fail silently, and the value passed into the setter
+ *  will be discarded.
+ *
+ *  @sa setTorchMode:error:
  */
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
@@ -250,9 +256,21 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  Toggle the torch from on to off, or off to on.
  *  If the torch was previously set to Auto, the torch will turn on.
  *  If the device does not support a torch, calling this method will have no effect.
- *  To set the torch to on/off/auto directly, set the `torchMode` property.
+ *  To set the torch to on/off/auto directly, set the `torchMode` property, or
+ *  use setTorchMode:error: if you care about errors.
  */
 - (void)toggleTorch;
+
+/**
+ *  Attempts to set a new torch mode.
+ *
+ *  @return YES, if setting the new mode was successful, and the torchMode
+ *  property reflects the new state. NO if there was an error - use the 
+ *  error parameter to learn about the reason.
+ *
+ *  @sa torchMode
+ */
+- (BOOL)setTorchMode:(MTBTorchMode)torchMode error:(NSError **)error;
 
 /**
  *  Freeze capture keeping the last frame on previewView.
