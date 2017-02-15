@@ -176,6 +176,31 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     return [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] != nil;
 }
 
++ (BOOL)hasCamera:(MTBCamera)camera {
+    AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
+
+    for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+        if (device.position == position) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
++ (MTBCamera)oppositeCameraOf:(MTBCamera)camera {
+    switch (camera) {
+        case MTBCameraBack:
+            return MTBCameraFront;
+
+        case MTBCameraFront:
+            return MTBCameraBack;
+    }
+
+    NSAssert(NO, @"Invalid camera type: %lu", (unsigned long)camera);
+    return MTBCameraBack;
+}
+
 + (BOOL)scanningIsProhibited {
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
         case AVAuthorizationStatusDenied:
@@ -317,6 +342,11 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     return [self.session isRunning];
 }
 
+- (BOOL)hasOppositeCamera {
+    MTBCamera otherCamera = [[self class] oppositeCameraOf:self.camera];
+    return [[self class] hasCamera:otherCamera];
+}
+
 - (void)flipCamera {
     [self flipCameraWithError:nil];
 }
@@ -332,11 +362,8 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
         return NO;
     }
 
-    if (self.camera == MTBCameraFront) {
-        return [self setCamera:MTBCameraBack error:error];
-    } else {
-        return [self setCamera:MTBCameraFront error:error];
-    }
+    MTBCamera otherCamera = [[self class] oppositeCameraOf:self.camera];
+    return [self setCamera:otherCamera error:error];
 }
 
 #pragma mark - Tap to Focus
@@ -483,7 +510,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     AVCaptureDevice *newCaptureDevice = nil;
     
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
+    AVCaptureDevicePosition position = [[self class] devicePositionForCamera:camera];
     for (AVCaptureDevice *device in videoDevices) {
         if (device.position == position) {
             newCaptureDevice = device;
@@ -510,16 +537,16 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     return newCaptureDevice;
 }
 
-- (AVCaptureDevicePosition)devicePositionForCamera:(MTBCamera)camera {
++ (AVCaptureDevicePosition)devicePositionForCamera:(MTBCamera)camera {
     switch (camera) {
         case MTBCameraFront:
             return AVCaptureDevicePositionFront;
         case MTBCameraBack:
             return AVCaptureDevicePositionBack;
-        default:
-            return AVCaptureDevicePositionUnspecified;
-            break;
     }
+
+    NSAssert(NO, @"Invalid camera type: %lu", (unsigned long)camera);
+    return AVCaptureDevicePositionUnspecified;
 }
 
 #pragma mark - Default Values
