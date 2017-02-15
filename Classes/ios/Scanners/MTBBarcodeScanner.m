@@ -19,6 +19,7 @@ static const NSInteger kErrorCodeStillImageCaptureInProgress = 1000;
 static const NSInteger kErrorCodeSessionIsClosed = 1001;
 static const NSInteger kErrorCodeNotScanning = 1002;
 static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
+static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
 
@@ -457,7 +458,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification {
     // the torch is switched off when the app is backgrounded so we restore the
     // previous state once the app is foregrounded again
-    [self updateTorchModeForCurrentSettings];
+    [self updateForTorchMode:self.torchMode error:nil];
 }
 
 #pragma mark - Session Configuration
@@ -663,38 +664,61 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     [inputDevice unlockForConfiguration];
 
     // this method will acquire its own lock
-    [self updateTorchModeForCurrentSettings];
+    [self updateForTorchMode:self.torchMode error:nil];
 }
 
 #pragma mark - Torch Control
 
 - (void)setTorchMode:(MTBTorchMode)torchMode {
-    _torchMode = torchMode;
-    [self updateTorchModeForCurrentSettings];
+    [self setTorchMode:torchMode error:nil];
+}
+
+- (BOOL)setTorchMode:(MTBTorchMode)torchMode error:(NSError **)error {
+    if ([self updateForTorchMode:torchMode error:error]) {
+        // we only update our internal state if setting the torch mode was successful
+        _torchMode = torchMode;
+        return YES;
+    }
+
+    return NO;
 }
 
 - (void)toggleTorch {
-    if (self.torchMode == MTBTorchModeAuto || self.torchMode == MTBTorchModeOff) {
-        self.torchMode = MTBTorchModeOn;
-    } else {
-        self.torchMode = MTBTorchModeOff;
+    switch (self.torchMode) {
+        case MTBTorchModeOn:
+            self.torchMode = MTBTorchModeOff;
+            break;
+
+        case MTBTorchModeOff:
+        case MTBTorchModeAuto:
+            self.torchMode = MTBTorchModeOn;
+            break;
     }
 }
 
-- (void)updateTorchModeForCurrentSettings {
+- (BOOL)updateForTorchMode:(MTBTorchMode)preferredTorchMode error:(NSError **)error {
     AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if ([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
+    AVCaptureTorchMode avTorchMode = [self avTorchModeForMTBTorchMode:preferredTorchMode];
 
-        NSError *lockError;
-        if ([backCamera lockForConfiguration:&lockError]) {
-            AVCaptureTorchMode mode = [self avTorchModeForMTBTorchMode:self.torchMode];
-            
-            [backCamera setTorchMode:mode];
-            [backCamera unlockForConfiguration];
-        } else {
-            NSLog(@"Failed to acquire lock to update torch mode: %@", lockError);
+    if (!([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:avTorchMode])) {
+        if (error) {
+            *error = [NSError errorWithDomain:kErrorDomain
+                                         code:kErrorCodeTorchModeUnavailable
+                                     userInfo:@{NSLocalizedDescriptionKey : @"Torch unavailable or mode not supported."}];
         }
+
+        return NO;
     }
+
+    if (![backCamera lockForConfiguration:error]) {
+        NSLog(@"Failed to acquire lock to update torch mode.");
+        return NO;
+    }
+
+    [backCamera setTorchMode:avTorchMode];
+    [backCamera unlockForConfiguration];
+
+    return YES;
 }
 
 - (BOOL)hasTorch {
