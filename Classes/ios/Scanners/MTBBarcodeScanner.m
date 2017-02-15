@@ -160,7 +160,7 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
         _previewView = previewView;
         _allowTapToFocus = YES;
         [self setupSessionQueue];
-        [self addRotationObserver];
+        [self addObservers];
     }
     return self;
 }
@@ -422,6 +422,14 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
     }
 }
 
+#pragma mark - Background Handling
+
+- (void)applicationWillEnterForegroundNotification:(NSNotification *)notification {
+    // the torch is switched off when the app is backgrounded so we restore the
+    // previous state once the app is foregrounded again
+    [self updateTorchModeForCurrentSettings];
+}
+
 #pragma mark - Session Configuration
 
 - (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice error:(NSError **)error {
@@ -535,10 +543,15 @@ static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 
 #pragma mark - Helper Methods
 
-- (void)addRotationObserver {
+- (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleDeviceOrientationDidChangeNotification:)
                                                  name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForegroundNotification:)
+                                                 name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
 }
 
