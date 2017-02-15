@@ -113,11 +113,21 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
                                 previewView:(UIView *)previewView;
 
 /**
- *  Returns whether the camera exists in this device.
+ *  Returns whether any camera exists in this device.
  *
  *  @return YES if the device has a camera.
  */
 + (BOOL)cameraIsPresent;
+
+/**
+ *  You can use this flag to check whether flipCamera can potentially
+ *  be successful. You may want to hide your button to flip the camera
+ *  if the device only has one camera.
+ *
+ *  @return YES if a second camera is present.
+ *  @sa flipCamera
+ */
+- (BOOL)hasOppositeCamera;
 
 /**
  *  Returns whether scanning is prohibited by the user of the device.
@@ -182,6 +192,8 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  If this method is called when isScanning=NO, it has no effect
  *
  *  If the opposite camera is not available, this method will do nothing.
+ *
+ *  @sa hasOppositeCamera
  */
 - (void)flipCamera;
 
