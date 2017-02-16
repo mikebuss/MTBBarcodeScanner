@@ -293,7 +293,14 @@ Under some circumstances you may want to freeze the video feed when capturing ba
 
 ## Limiting the Scan Zone
 
-To limit the section of the screen that barcodes can be scanned in, set the `scanRect` property on MTBBarcodeScanner. See `MTBAdvancedExampleViewController` for an example of this.
+To limit the section of the screen that barcodes can be scanned in, set the `scanRect` property on MTBBarcodeScanner inside the `didStartScanning` callback block. See `MTBAdvancedExampleViewController` for a working example of this.
+
+```
+__weak MTBAdvancedExampleViewController *weakSelf = self;
+self.scanner.didStartScanningBlock = ^{
+    weakSelf.scanner.scanRect = weakSelf.viewOfInterest.frame;
+};
+```
 
 ---
 
