@@ -1,5 +1,9 @@
 # MTBBarcodeScanner CHANGELOG
 
+## [Unreleased]
+
+- Setting the `scanRect` must now be set in the `didStartScanning` block.
+
 ## 4.0.0
 
 - Setting the `camera` property directly is now deprecated in favor of the more-helpful `setCamera:error:` method.
