@@ -848,6 +848,11 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)setScanRect:(CGRect)scanRect {
     NSAssert(!CGRectIsEmpty(scanRect), @"Unable to set an empty rectangle as the scanRect of MTBBarcodeScanner");
+    NSAssert(self.isScanning, @"Scan rect cannot be set when not (yet) scanning. You may want to set it within didStartScanningBlock.");
+
+    if (!self.isScanning) {
+        return;
+    }
     
     [self refreshVideoOrientation];
     

@@ -49,6 +49,10 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  If set, only barcodes inside this area will be scanned.
+ *
+ *  Setting this property is only supported while the scanner is active.
+ *  Use the didStartScanningBlock if you want to set it as early as
+ *  possible.
  */
 @property (nonatomic, assign) CGRect scanRect;
 
