@@ -15,10 +15,16 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
     MTBCameraFront
 };
 
+/**
+ *  Available torch modes when scanning barcodes.
+ *
+ *  While AVFoundation provides an additional automatic
+ *  mode, it is not supported here because it only works
+ *  with video recordings, not barcode scanning.
+ */
 typedef NS_ENUM(NSUInteger, MTBTorchMode) {
     MTBTorchModeOff,
     MTBTorchModeOn,
-    MTBTorchModeAuto
 };
 
 @interface MTBBarcodeScanner : NSObject
@@ -258,9 +264,9 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  Toggle the torch from on to off, or off to on.
- *  If the torch was previously set to Auto, the torch will turn on.
- *  If the device does not support a torch, calling this method will have no effect.
- *  To set the torch to on/off/auto directly, set the `torchMode` property, or
+ *  If the device does not support a torch or the opposite mode, calling
+ *  this method will have no effect.
+ *  To set the torch to on/off directly, set the `torchMode` property, or
  *  use setTorchMode:error: if you care about errors.
  */
 - (void)toggleTorch;

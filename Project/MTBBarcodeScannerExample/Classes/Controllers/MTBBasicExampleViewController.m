@@ -108,7 +108,7 @@
 }
 
 - (IBAction)toggleTorchTapped:(id)sender {
-    if (self.scanner.torchMode == MTBTorchModeOff || self.scanner.torchMode == MTBTorchModeAuto) {
+    if (self.scanner.torchMode == MTBTorchModeOff) {
         self.scanner.torchMode = MTBTorchModeOn;
         self.toggleTorchButton.title = @"Disable Torch";
     } else {

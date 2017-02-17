@@ -690,7 +690,6 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
             break;
 
         case MTBTorchModeOff:
-        case MTBTorchModeAuto:
             self.torchMode = MTBTorchModeOn;
             break;
     }
@@ -729,15 +728,16 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 }
 
 - (AVCaptureTorchMode)avTorchModeForMTBTorchMode:(MTBTorchMode)torchMode {
-    AVCaptureTorchMode mode = AVCaptureTorchModeOff;
-    
-    if (torchMode == MTBTorchModeOn) {
-        mode = AVCaptureTorchModeOn;
-    } else if (torchMode == MTBTorchModeAuto) {
-        mode = AVCaptureTorchModeAuto;
+    switch (torchMode) {
+        case MTBTorchModeOn:
+            return AVCaptureTorchModeOn;
+
+        case MTBTorchModeOff:
+            return AVCaptureTorchModeOff;
     }
-    
-    return mode;
+
+    NSAssert(NO, @"Invalid torch mode: %lu", (unsigned long)torchMode);
+    return AVCaptureTorchModeOff;
 }
 
 #pragma mark - Capture
