@@ -1,5 +1,15 @@
 # MTBBarcodeScanner CHANGELOG
 
+## [Unreleased]
+
+## 5.0.0
+
+- Setting the `scanRect` must now be set in the `didStartScanning` block.
+- Removed MTBTorchModeAuto
+- Added error handling when setting torch mode.
+
+Special thanks to [@shagedorn](https://github.com/shagedorn) for all of the work on this release!
+
 ## 4.0.0
 
 - Setting the `camera` property directly is now deprecated in favor of the more-helpful `setCamera:error:` method.
