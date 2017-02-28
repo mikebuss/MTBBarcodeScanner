@@ -185,6 +185,8 @@ self.scanner.resultBlock = ^(NSArray *codes){
 
 ## Usage in Swift 3 Projects
 
+See the `SwiftExampleViewController.swift` file in the repository for a working example of this.
+
 ```swift
 class ExampleViewController: UIViewController {
     
@@ -200,14 +202,18 @@ class ExampleViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.scanner?.startScanning(resultBlock: { codes in
-            let codeObjects = codes as! [AVMetadataMachineReadableCodeObject]?
-            for code in codeObjects! {
-                let stringValue = code.stringValue!
-                print("Found code: \(stringValue)")
-            }
-            
-        }, error: nil)
+        do {
+            try self.scanner?.startScanning(resultBlock: { codes in
+                if let codes = codes {
+                    for code in codes {
+                        let stringValue = code.stringValue!
+                        print("Found code: \(stringValue)")
+                    }
+                }
+            })
+        } catch {
+            NSLog("Unable to start scanning")
+        }
     }
 }
 
