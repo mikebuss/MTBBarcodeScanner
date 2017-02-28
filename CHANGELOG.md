@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+There are no unreleased changes.
+
 ## 5.0.0
 
 - Setting the `scanRect` must now be set in the `didStartScanning` block.
