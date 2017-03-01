@@ -140,8 +140,9 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 
 /**
  *  Returns whether any camera exists in this device.
+ *  Be aware that this returns NO if camera access is restricted.
  *
- *  @return YES if the device has a camera.
+ *  @return YES if the device has a camera and authorization state is not AVAuthorizationStatusRestricted
  */
 + (BOOL)cameraIsPresent;
 
@@ -150,7 +151,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  be successful. You may want to hide your button to flip the camera
  *  if the device only has one camera.
  *
- *  @return YES if a second camera is present.
+ *  @return YES if a second camera is present and authorization state is not AVAuthorizationStatusRestricted.
  *  @sa flipCamera
  */
 - (BOOL)hasOppositeCamera;
