@@ -23,18 +23,25 @@ class SwiftExampleViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        do {
-            try self.scanner?.startScanning(resultBlock: { codes in
-                if let codes = codes {
-                    for code in codes {
-                        let stringValue = code.stringValue!
-                        print("Found code: \(stringValue)")
-                    }
+        MTBBarcodeScanner.requestCameraPermission(success: { success in
+            if success {
+                do {
+                    try self.scanner?.startScanning(resultBlock: { codes in
+                        if let codes = codes {
+                            for code in codes {
+                                let stringValue = code.stringValue!
+                                print("Found code: \(stringValue)")
+                            }
+                        }
+                    })
+                } catch {
+                    NSLog("Unable to start scanning")
                 }
-            })
-        } catch {
-            NSLog("Unable to start scanning")
-        }
+            } else {
+                UIAlertView(title: "Scanning Unavailable", message: "This app does not have permission to access the camera", delegate: nil, cancelButtonTitle: nil, otherButtonTitles: "Ok").show()
+            }
+        })
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
