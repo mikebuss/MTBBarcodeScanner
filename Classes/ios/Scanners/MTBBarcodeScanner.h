@@ -80,7 +80,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  
  The block is always called on the main queue.
  */
-@property (nonatomic, copy) void (^didStartScanningBlock)();
+@property (nonatomic, copy) void (^didStartScanningBlock)(void);
 
 /*!
  @property didTapToFocusBlock
