@@ -428,7 +428,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 #pragma mark - Rotation
 
-- (void)handleDeviceOrientationDidChangeNotification:(NSNotification *)notification {
+- (void)handleApplicationDidChangeStatusBarNotification:(NSNotification *)notification {
     [self refreshVideoOrientation];
 }
 
@@ -580,8 +580,8 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleDeviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
+                                             selector:@selector(handleApplicationDidChangeStatusBarNotification:)
+                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
