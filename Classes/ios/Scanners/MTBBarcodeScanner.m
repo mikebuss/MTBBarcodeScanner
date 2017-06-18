@@ -174,12 +174,14 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 #pragma mark - Scanning
 
 + (BOOL)cameraIsPresent {
+    // capture device is nil if status is AVAuthorizationStatusRestricted
     return [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] != nil;
 }
 
 + (BOOL)hasCamera:(MTBCamera)camera {
     AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
 
+    // array is empty if status is AVAuthorizationStatusRestricted
     for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
         if (device.position == position) {
             return YES;
@@ -426,7 +428,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 #pragma mark - Rotation
 
-- (void)handleDeviceOrientationDidChangeNotification:(NSNotification *)notification {
+- (void)handleApplicationDidChangeStatusBarNotification:(NSNotification *)notification {
     [self refreshVideoOrientation];
 }
 
@@ -578,8 +580,8 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleDeviceOrientationDidChangeNotification:)
-                                                 name:UIDeviceOrientationDidChangeNotification
+                                             selector:@selector(handleApplicationDidChangeStatusBarNotification:)
+                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self

@@ -23,6 +23,7 @@
 		27C3BF5D18A7140F00C44713 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27C3BF5C18A7140F00C44713 /* Images.xcassets */; };
 		27C3BF8318A73FE700C44713 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C3BF8218A73FE700C44713 /* MTBBarcodeScanner.m */; };
 		27C3BF8818A7475100C44713 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3BF8718A7475100C44713 /* AVFoundation.framework */; };
+		27F0CD271DD3853600640B69 /* SwiftExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F0CD261DD3853600640B69 /* SwiftExampleViewController.swift */; };
 		563B26531CD9F96100DE7D8D /* MTBBarcodeScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */; };
 		563B26541CD9F96100DE7D8D /* MTBBarcodeScanner.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		563B26591CD9F98400DE7D8D /* MTBBarcodeScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 27C3BF8118A73FE700C44713 /* MTBBarcodeScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -81,6 +82,8 @@
 		27C3BF8118A73FE700C44713 /* MTBBarcodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTBBarcodeScanner.h; path = ../../Classes/ios/Scanners/MTBBarcodeScanner.h; sourceTree = "<group>"; };
 		27C3BF8218A73FE700C44713 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTBBarcodeScanner.m; path = ../../Classes/ios/Scanners/MTBBarcodeScanner.m; sourceTree = "<group>"; };
 		27C3BF8718A7475100C44713 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		27F0CD251DD3853500640B69 /* MTBBarcodeScannerExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MTBBarcodeScannerExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		27F0CD261DD3853600640B69 /* SwiftExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftExampleViewController.swift; path = Classes/Controllers/SwiftExampleViewController.swift; sourceTree = "<group>"; };
 		563B264C1CD9F95F00DE7D8D /* MTBBarcodeScanner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MTBBarcodeScanner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		563B26501CD9F96100DE7D8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -226,6 +229,8 @@
 				27C265EA18A9CDEF008E2A33 /* MTBBasicExampleViewController.m */,
 				27C265E718A9CDEF008E2A33 /* MTBAdvancedExampleViewController.h */,
 				27C265E818A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m */,
+				27F0CD261DD3853600640B69 /* SwiftExampleViewController.swift */,
+				27F0CD251DD3853500640B69 /* MTBBarcodeScannerExample-Bridging-Header.h */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -328,6 +333,7 @@
 				TargetAttributes = {
 					27C3BF3D18A7140F00C44713 = {
 						DevelopmentTeam = K83F2KZFM9;
+						LastSwiftMigration = 0810;
 					};
 					563B264B1CD9F95F00DE7D8D = {
 						CreatedOnToolsVersion = 7.3;
@@ -383,6 +389,7 @@
 				27C265EC18A9CDEF008E2A33 /* MTBBasicExampleViewController.m in Sources */,
 				27C265EF18A9CDF9008E2A33 /* MTBAppDelegate.m in Sources */,
 				27C265EB18A9CDEF008E2A33 /* MTBAdvancedExampleViewController.m in Sources */,
+				27F0CD271DD3853600640B69 /* SwiftExampleViewController.swift in Sources */,
 				27C3BF4E18A7140F00C44713 /* main.m in Sources */,
 				27C3BF8318A73FE700C44713 /* MTBBarcodeScanner.m in Sources */,
 			);
@@ -538,6 +545,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = K83F2KZFM9;
@@ -549,6 +557,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mikebuss.MTBBarcodeScannerExample2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -558,6 +569,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = K83F2KZFM9;
@@ -569,6 +581,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mikebuss.MTBBarcodeScannerExample2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MTBBarcodeScannerExample/MTBBarcodeScannerExample-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
