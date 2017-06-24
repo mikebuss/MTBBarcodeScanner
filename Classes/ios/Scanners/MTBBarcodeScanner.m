@@ -180,14 +180,25 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 + (BOOL)hasCamera:(MTBCamera)camera {
     AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
-
-    // array is empty if status is AVAuthorizationStatusRestricted
-    for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
-        if (device.position == position) {
-            return YES;
+    
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                                                                     mediaType:AVMediaTypeVideo
+                                                                      position:position];
+        return (device != nil);
+    } else {
+        // We can ignore the deprecation warning here because
+        // we are using the new AVCaptureDeviceDiscoverySession when it is available
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        // Array is empty if status is AVAuthorizationStatusRestricted
+        for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+            if (device.position == position) {
+                return YES;
+            }
         }
+#pragma GCC diagnostic pop
     }
-
     return NO;
 }
 
@@ -511,14 +522,26 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
     AVCaptureDevice *newCaptureDevice = nil;
-    
-    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevicePosition position = [[self class] devicePositionForCamera:camera];
-    for (AVCaptureDevice *device in videoDevices) {
-        if (device.position == position) {
-            newCaptureDevice = device;
-            break;
+    
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                                                                     mediaType:AVMediaTypeVideo
+                                                                      position:position];
+        newCaptureDevice = device;
+    } else {
+        // We can ignore the deprecation here because we are using
+        // AVCaptureDeviceDiscoverySession if it is available
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        for (AVCaptureDevice *device in videoDevices) {
+            if (device.position == position) {
+                newCaptureDevice = device;
+                break;
+            }
         }
+#pragma GCC diagnostic pop
     }
     
     // If the front camera is not available, use the back camera
