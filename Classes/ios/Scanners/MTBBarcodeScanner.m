@@ -6,6 +6,8 @@
 //
 //
 
+@import AVFoundation;
+
 #import <QuartzCore/QuartzCore.h>
 #import "MTBBarcodeScanner.h"
 
@@ -344,12 +346,14 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
     // When we're finished scanning, reset the settings for the camera
     // to their original states
-    [self removeDeviceInput];
-
-    for (AVCaptureOutput *output in self.session.outputs) {
-        [self.session removeOutput:output];
-    }
-
+    dispatch_async(self.privateSessionQueue, ^{
+        // Must be dispatched as it is blocking
+        [self removeDeviceInput];
+        for (AVCaptureOutput *output in self.session.outputs) {
+            [self.session removeOutput:output];
+        }
+    });
+    
     self.resultBlock = nil;
     self.capturePreviewLayer = nil;
 
@@ -859,7 +863,6 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
     NSData *data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
-    
     UIImage *image = nil;
     if (data) {
         image = [UIImage imageWithData:data];
