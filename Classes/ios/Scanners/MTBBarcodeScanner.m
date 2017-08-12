@@ -6,8 +6,6 @@
 //
 //
 
-@import AVFoundation;
-
 #import <QuartzCore/QuartzCore.h>
 #import "MTBBarcodeScanner.h"
 
