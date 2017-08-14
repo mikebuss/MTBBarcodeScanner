@@ -21,7 +21,7 @@ static const NSInteger kErrorCodeNotScanning = 1002;
 static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
-@interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate>
+@interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate, AVCapturePhotoCaptureDelegate>
 
 /*!
  @property privateSessionQueue
@@ -117,9 +117,12 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 /*!
  @property stillImageOutput
  @abstract
- Used for still image capture
+ Used for still image capture prior to iOS 10
  */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
+#pragma GCC diagnostic pop
 
 /*!
  @property gestureRecognizer
@@ -129,6 +132,13 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
  to the location the user tapped.
  */
 @property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
+
+/*!
+ @property stillImageCaptureBlock
+ @abstract
+ Reference to the block passed in when capturing a still image.
+ */
+@property (nonatomic, copy) void (^stillImageCaptureBlock)(UIImage *image, NSError *error);
 
 @end
 
@@ -180,14 +190,25 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 + (BOOL)hasCamera:(MTBCamera)camera {
     AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
-
-    // array is empty if status is AVAuthorizationStatusRestricted
-    for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
-        if (device.position == position) {
-            return YES;
+    
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                                                                     mediaType:AVMediaTypeVideo
+                                                                      position:position];
+        return (device != nil);
+    } else {
+        // We can ignore the deprecation warning here because
+        // we are using the new AVCaptureDeviceDiscoverySession when it is available
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        // Array is empty if status is AVAuthorizationStatusRestricted
+        for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+            if (device.position == position) {
+                return YES;
+            }
         }
+#pragma GCC diagnostic pop
     }
-
     return NO;
 }
 
@@ -320,22 +341,23 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
     // Stop recognizing taps for the 'Tap to Focus' feature
     [self stopRecognizingTaps];
-
-    // When we're finished scanning, reset the settings for the camera
-    // to their original states
-    [self removeDeviceInput];
-
-    for (AVCaptureOutput *output in self.session.outputs) {
-        [self.session removeOutput:output];
-    }
-
+    
     self.resultBlock = nil;
     self.capturePreviewLayer = nil;
 
     AVCaptureSession *session = self.session;
+    AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
     self.session = nil;
-
+    
     dispatch_async(self.privateSessionQueue, ^{
+        // When we're finished scanning, reset the settings for the camera
+        // to their original states
+        // Must be dispatched as it is blocking
+        [self removeDeviceInput:deviceInput session:session];
+        for (AVCaptureOutput *output in session.outputs) {
+            [session removeOutput:output];
+        }
+        
         // Must be dispatched as it is blocking
         [session stopRunning];
     });
@@ -485,18 +507,23 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
 
-    // Still image capture configuration
-    self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
-    self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
-
-    if ([self.stillImageOutput isStillImageStabilizationSupported]) {
-        self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
+    if (!NSClassFromString(@"AVCapturePhotoOutput")) {
+        // Still image capture configuration
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+        self.stillImageOutput.outputSettings = @{AVVideoCodecKey: AVVideoCodecJPEG};
+        
+        if ([self.stillImageOutput isStillImageStabilizationSupported]) {
+            self.stillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable = YES;
+        }
+        
+        if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
+            self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
+        }
+        [newSession addOutput:self.stillImageOutput];
+#pragma GCC diagnostic pop
     }
-
-    if ([self.stillImageOutput respondsToSelector:@selector(isHighResolutionStillImageOutputEnabled)]) {
-        self.stillImageOutput.highResolutionStillImageOutputEnabled = YES;
-    }
-    [newSession addOutput:self.stillImageOutput];
 
     self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
 
@@ -511,14 +538,26 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
     AVCaptureDevice *newCaptureDevice = nil;
-    
-    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevicePosition position = [[self class] devicePositionForCamera:camera];
-    for (AVCaptureDevice *device in videoDevices) {
-        if (device.position == position) {
-            newCaptureDevice = device;
-            break;
+    
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
+                                                                     mediaType:AVMediaTypeVideo
+                                                                      position:position];
+        newCaptureDevice = device;
+    } else {
+        // We can ignore the deprecation here because we are using
+        // AVCaptureDeviceDiscoverySession if it is available
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        for (AVCaptureDevice *device in videoDevices) {
+            if (device.position == position) {
+                newCaptureDevice = device;
+                break;
+            }
         }
+#pragma GCC diagnostic pop
     }
     
     // If the front camera is not available, use the back camera
@@ -606,7 +645,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         return;
     }
     
-    [self removeDeviceInput];
+    [self removeDeviceInput:self.currentCaptureDeviceInput session:session];
     
     self.currentCaptureDeviceInput = deviceInput;
     [self updateFocusPreferencesOfDevice:deviceInput.device reset:NO];
@@ -614,9 +653,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     [session addInput:deviceInput];
 }
 
-- (void)removeDeviceInput {
-    AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
-
+- (void)removeDeviceInput:(AVCaptureDeviceInput *)deviceInput session:(AVCaptureSession *)session {
     if (deviceInput == nil) {
         // No need to remove the device input if it was never set
         return;
@@ -625,7 +662,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     // Restore focus settings to the previously saved state
     [self updateFocusPreferencesOfDevice:deviceInput.device reset:YES];
     
-    [self.session removeInput:deviceInput];
+    [session removeInput:deviceInput];
     self.currentCaptureDeviceInput = nil;
 }
 
@@ -780,33 +817,57 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         return;
     }
     
-    AVCaptureConnection *stillConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
-    
-    if (stillConnection == nil) {
-        if (captureBlock) {
-            NSError *error = [NSError errorWithDomain:kErrorDomain
-                                                 code:kErrorCodeSessionIsClosed
-                                             userInfo:@{NSLocalizedDescriptionKey : @"AVCaptureConnection is closed"}];
-            captureBlock(nil, error);
+    if (NSClassFromString(@"AVCapturePhotoOutput")) {
+        AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
+        AVCapturePhotoOutput *output = [[AVCapturePhotoOutput alloc] init];
+        [self.session addOutput:output];
+        self.stillImageCaptureBlock = captureBlock;
+        [output capturePhotoWithSettings:settings delegate:self];
+    } else {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        AVCaptureConnection *stillConnection = [self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
+        if (stillConnection == nil) {
+            if (captureBlock) {
+                NSError *error = [NSError errorWithDomain:kErrorDomain
+                                                     code:kErrorCodeSessionIsClosed
+                                                 userInfo:@{NSLocalizedDescriptionKey : @"AVCaptureConnection is closed"}];
+                captureBlock(nil, error);
+            }
+            return;
         }
-        return;
+        
+        [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection
+                                                           completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+                                                               if (error) {
+                                                                   captureBlock(nil, error);
+                                                                   return;
+                                                               }
+                                                               
+                                                               NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+                                                               UIImage *image = [UIImage imageWithData:jpegData];
+                                                               if (captureBlock) {
+                                                                   captureBlock(image, nil);
+                                                               }
+                                                           }];
+#pragma GCC diagnostic pop
+    }
+}
+
+#pragma mark - AVCapturePhotoCaptureDelegate
+
+- (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
+    NSData *data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
+    UIImage *image = nil;
+    if (data) {
+        image = [UIImage imageWithData:data];
     }
     
-    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:stillConnection
-                                                       completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-                                                           if (error) {
-                                                               captureBlock(nil, error);
-                                                               return;
-                                                           }
-                                                           
-                                                           NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-                                                           UIImage *image = [UIImage imageWithData:jpegData];
-                                                           if (captureBlock) {
-                                                               captureBlock(image, nil);
-                                                           }
-                                                           
-                                                       }];
+    if (self.stillImageCaptureBlock) {
+        self.stillImageCaptureBlock(image, error);
+    }
     
+    [self.session removeOutput:captureOutput];
 }
 
 - (BOOL)isCapturingStillImage {

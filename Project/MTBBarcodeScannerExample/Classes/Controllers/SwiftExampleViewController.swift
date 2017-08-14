@@ -38,7 +38,9 @@ class SwiftExampleViewController: UIViewController {
                     NSLog("Unable to start scanning")
                 }
             } else {
-                UIAlertView(title: "Scanning Unavailable", message: "This app does not have permission to access the camera", delegate: nil, cancelButtonTitle: nil, otherButtonTitles: "Ok").show()
+                let alertController = UIAlertController(title: "Scanning Unavailable", message: "This app does not have permission to access the camera", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
             }
         })
         

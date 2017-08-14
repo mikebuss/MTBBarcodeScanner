@@ -41,11 +41,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (!self.didShowAlert && !self.instructions) {
-        [[[UIAlertView alloc] initWithTitle:@"Example"
-                                    message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README."
-                                   delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavaialble" message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:action];
+        [self presentViewController:alertController animated:YES completion:nil];
     }
 }
 
@@ -236,11 +235,10 @@
         message = @"An unknown error occurred.";
     }
     
-    [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
-                                message:message
-                               delegate:nil
-                      cancelButtonTitle:@"Ok"
-                      otherButtonTitles:nil] show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavaialble" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alertController addAction:action];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end
