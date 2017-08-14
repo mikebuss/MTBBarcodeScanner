@@ -341,24 +341,23 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
     // Stop recognizing taps for the 'Tap to Focus' feature
     [self stopRecognizingTaps];
-
-    // When we're finished scanning, reset the settings for the camera
-    // to their original states
-    dispatch_async(self.privateSessionQueue, ^{
-        // Must be dispatched as it is blocking
-        [self removeDeviceInput];
-        for (AVCaptureOutput *output in self.session.outputs) {
-            [self.session removeOutput:output];
-        }
-    });
     
     self.resultBlock = nil;
     self.capturePreviewLayer = nil;
 
     AVCaptureSession *session = self.session;
+    AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
     self.session = nil;
-
+    
     dispatch_async(self.privateSessionQueue, ^{
+        // When we're finished scanning, reset the settings for the camera
+        // to their original states
+        // Must be dispatched as it is blocking
+        [self removeDeviceInput:deviceInput session:session];
+        for (AVCaptureOutput *output in session.outputs) {
+            [session removeOutput:output];
+        }
+        
         // Must be dispatched as it is blocking
         [session stopRunning];
     });
@@ -646,7 +645,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         return;
     }
     
-    [self removeDeviceInput];
+    [self removeDeviceInput:self.currentCaptureDeviceInput session:session];
     
     self.currentCaptureDeviceInput = deviceInput;
     [self updateFocusPreferencesOfDevice:deviceInput.device reset:NO];
@@ -654,9 +653,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     [session addInput:deviceInput];
 }
 
-- (void)removeDeviceInput {
-    AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
-
+- (void)removeDeviceInput:(AVCaptureDeviceInput *)deviceInput session:(AVCaptureSession *)session {
     if (deviceInput == nil) {
         // No need to remove the device input if it was never set
         return;
@@ -665,7 +662,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     // Restore focus settings to the previously saved state
     [self updateFocusPreferencesOfDevice:deviceInput.device reset:YES];
     
-    [self.session removeInput:deviceInput];
+    [session removeInput:deviceInput];
     self.currentCaptureDeviceInput = nil;
 }
 
