@@ -298,9 +298,6 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
     self.session = session;
 
-    // Configure the rect of interest
-    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
-
     // Configure the preview layer
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
@@ -312,6 +309,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     self.resultBlock = resultBlock;
 
     dispatch_async(self.privateSessionQueue, ^{
+        // Configure the rect of interest
+        self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
+        
         // Start the session after all configurations:
         // Must be dispatched as it is blocking
         [self.session startRunning];
@@ -525,7 +525,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 #pragma GCC diagnostic pop
     }
 
-    self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
+    dispatch_async(self.privateSessionQueue, ^{
+        self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
+    });
 
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
     self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
@@ -920,7 +922,10 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     [self refreshVideoOrientation];
     
     _scanRect = scanRect;
-    self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+    
+    dispatch_async(self.privateSessionQueue, ^{
+        self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+    });
 }
 
 - (void)setPreferredAutoFocusRangeRestriction:(AVCaptureAutoFocusRangeRestriction)preferredAutoFocusRangeRestriction {
