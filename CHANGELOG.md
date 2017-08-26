@@ -4,6 +4,10 @@
 
 There are no unreleased changes.
 
+## 5.0.3
+
+- Fixed blocking issue with scanRect call
+
 ## 5.0.2
 
 - Handle deprecation of devicesWithMediaType in iOS 10
