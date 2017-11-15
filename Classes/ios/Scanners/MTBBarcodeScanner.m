@@ -140,6 +140,13 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
  */
 @property (nonatomic, copy) void (^stillImageCaptureBlock)(UIImage *image, NSError *error);
 
+/*!
+ @property output
+ @abstract
+ Property used for capturing still photos during barcode capture.
+ */
+@property (nonatomic, strong) AVCapturePhotoOutput *output;
+
 @end
 
 @implementation MTBBarcodeScanner
@@ -507,6 +514,8 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
     
+    [newSession beginConfiguration];
+    
     if (!NSClassFromString(@"AVCapturePhotoOutput")) {
         // Still image capture configuration
 #pragma GCC diagnostic push
@@ -523,6 +532,13 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         }
         [newSession addOutput:self.stillImageOutput];
 #pragma GCC diagnostic pop
+    } else {
+        self.output = [[AVCapturePhotoOutput alloc] init];
+        self.output.highResolutionCaptureEnabled = YES;
+        
+        if ([newSession canAddOutput:self.output]) {
+            [newSession addOutput:self.output];
+        }
     }
     
     dispatch_async(self.privateSessionQueue, ^{
@@ -821,10 +837,15 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     
     if (NSClassFromString(@"AVCapturePhotoOutput")) {
         AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
-        AVCapturePhotoOutput *output = [[AVCapturePhotoOutput alloc] init];
-        [self.session addOutput:output];
-        self.stillImageCaptureBlock = captureBlock;
-        [output capturePhotoWithSettings:settings delegate:self];
+        settings.autoStillImageStabilizationEnabled = NO;
+        settings.flashMode = AVCaptureFlashModeOff;
+        settings.highResolutionPhotoEnabled = YES;
+        
+        dispatch_async(self.privateSessionQueue, ^{
+            [self.output capturePhotoWithSettings:settings delegate:self];
+            self.stillImageCaptureBlock = captureBlock;
+            
+        });
     } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -859,6 +880,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 #pragma mark - AVCapturePhotoCaptureDelegate
 
 - (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
+    if (photoSampleBuffer == nil) {
+        return;
+    }
     NSData *data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
     UIImage *image = nil;
     if (data) {
@@ -868,8 +892,6 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (self.stillImageCaptureBlock) {
         self.stillImageCaptureBlock(image, error);
     }
-    
-    [self.session removeOutput:captureOutput];
 }
 
 - (BOOL)isCapturingStillImage {
