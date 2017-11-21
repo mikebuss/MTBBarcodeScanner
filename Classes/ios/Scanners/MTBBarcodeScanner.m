@@ -140,6 +140,13 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
  */
 @property (nonatomic, copy) void (^stillImageCaptureBlock)(UIImage *image, NSError *error);
 
+/*!
+ @property output
+ @abstract
+ Property used for capturing still photos during barcode capture.
+ */
+@property (nonatomic, strong) AVCapturePhotoOutput *output;
+
 @end
 
 @implementation MTBBarcodeScanner
@@ -216,11 +223,11 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     switch (camera) {
         case MTBCameraBack:
             return MTBCameraFront;
-
+            
         case MTBCameraFront:
             return MTBCameraBack;
     }
-
+    
     NSAssert(NO, @"Invalid camera type: %lu", (unsigned long)camera);
     return MTBCameraBack;
 }
@@ -276,38 +283,38 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(resultBlock, @"startScanningWithResultBlock: requires a non-nil resultBlock.");
-
+    
     if (self.session) {
         if (error) {
             *error = [NSError errorWithDomain:kErrorDomain
                                          code:kErrorCodeSessionAlreadyActive
                                      userInfo:@{NSLocalizedDescriptionKey : @"Do not start scanning while another session is in use."}];
         }
-
+        
         return NO;
     }
-
+    
     // Configure the session
     self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
     AVCaptureSession *session = [self newSessionWithCaptureDevice:self.captureDevice error:error];
-
+    
     if (!session) {
         // we rely on newSessionWithCaptureDevice:error: to populate the error
         return NO;
     }
-
+    
     self.session = session;
-
+    
     // Configure the preview layer
     self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
     [self.previewView.layer insertSublayer:self.capturePreviewLayer atIndex:0]; // Insert below all other views
     [self refreshVideoOrientation];
-
+    
     // Configure 'tap to focus' functionality
     [self configureTapToFocus];
-
+    
     self.resultBlock = resultBlock;
-
+    
     dispatch_async(self.privateSessionQueue, ^{
         // Configure the rect of interest
         self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
@@ -315,7 +322,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         // Start the session after all configurations:
         // Must be dispatched as it is blocking
         [self.session startRunning];
-
+        
         if (self.didStartScanningBlock) {
             // Call that block now that we've started scanning:
             // Dispatch back to main
@@ -324,7 +331,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
             });
         }
     });
-
+    
     return YES;
 }
 
@@ -332,19 +339,19 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (!self.session) {
         return;
     }
-
+    
     // Turn the torch off
     self.torchMode = MTBTorchModeOff;
-
+    
     // Remove the preview layer
     [self.capturePreviewLayer removeFromSuperlayer];
-
+    
     // Stop recognizing taps for the 'Tap to Focus' feature
     [self stopRecognizingTaps];
     
     self.resultBlock = nil;
     self.capturePreviewLayer = nil;
-
+    
     AVCaptureSession *session = self.session;
     AVCaptureDeviceInput *deviceInput = self.currentCaptureDeviceInput;
     self.session = nil;
@@ -383,10 +390,10 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
                                          code:kErrorCodeNotScanning
                                      userInfo:@{NSLocalizedDescriptionKey : @"Camera cannot be flipped when isScanning is NO"}];
         }
-
+        
         return NO;
     }
-
+    
     MTBCamera otherCamera = [[self class] oppositeCameraOf:self.camera];
     return [self setCamera:otherCamera error:error];
 }
@@ -489,24 +496,26 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice error:(NSError **)error {
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
-
+    
     if (!input) {
         // we rely on deviceInputWithDevice:error: to populate the error
         return nil;
     }
-
+    
     AVCaptureSession *newSession = [[AVCaptureSession alloc] init];
     [self setDeviceInput:input session:newSession];
-
+    
     // Set an optimized preset for barcode scanning
     [newSession setSessionPreset:AVCaptureSessionPresetHigh];
-
+    
     self.captureOutput = [[AVCaptureMetadataOutput alloc] init];
     [self.captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-
+    
     [newSession addOutput:self.captureOutput];
     self.captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-
+    
+    [newSession beginConfiguration];
+    
     if (!NSClassFromString(@"AVCapturePhotoOutput")) {
         // Still image capture configuration
 #pragma GCC diagnostic push
@@ -523,18 +532,25 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         }
         [newSession addOutput:self.stillImageOutput];
 #pragma GCC diagnostic pop
+    } else {
+        self.output = [[AVCapturePhotoOutput alloc] init];
+        self.output.highResolutionCaptureEnabled = YES;
+        
+        if ([newSession canAddOutput:self.output]) {
+            [newSession addOutput:self.output];
+        }
     }
-
+    
     dispatch_async(self.privateSessionQueue, ^{
         self.captureOutput.rectOfInterest = [self rectOfInterestFromScanRect:self.scanRect];
     });
-
+    
     self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
     self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     self.capturePreviewLayer.frame = self.previewView.bounds;
-
+    
     [newSession commitConfiguration];
-
+    
     return newSession;
 }
 
@@ -588,7 +604,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         case MTBCameraBack:
             return AVCaptureDevicePositionBack;
     }
-
+    
     NSAssert(NO, @"Invalid camera type: %lu", (unsigned long)camera);
     return AVCaptureDevicePositionUnspecified;
 }
@@ -624,7 +640,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
                                              selector:@selector(handleApplicationDidChangeStatusBarNotification:)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForegroundNotification:)
                                                  name:UIApplicationWillEnterForegroundNotification
@@ -633,11 +649,11 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)setupSessionQueue {
     NSAssert(self.privateSessionQueue == NULL, @"Queue should only be set up once");
-
+    
     if (self.privateSessionQueue) {
         return;
     }
-
+    
     self.privateSessionQueue = dispatch_queue_create("com.mikebuss.MTBBarcodeScanner.captureSession", DISPATCH_QUEUE_SERIAL);
 }
 
@@ -651,7 +667,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     
     self.currentCaptureDeviceInput = deviceInput;
     [self updateFocusPreferencesOfDevice:deviceInput.device reset:NO];
-
+    
     [session addInput:deviceInput];
 }
 
@@ -670,18 +686,18 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)updateFocusPreferencesOfDevice:(AVCaptureDevice *)inputDevice reset:(BOOL)reset {
     NSParameterAssert(inputDevice);
-
+    
     if (!inputDevice) {
         return;
     }
-
+    
     NSError *lockError;
-
+    
     if (![inputDevice lockForConfiguration:&lockError]) {
         NSLog(@"Failed to acquire lock to (re)set focus options: %@", lockError);
         return;
     }
-
+    
     // Prioritize the focus on objects near to the device
     if (inputDevice.isAutoFocusRangeRestrictionSupported) {
         if (!reset) {
@@ -691,7 +707,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
             inputDevice.autoFocusRangeRestriction = self.initialAutoFocusRangeRestriction;
         }
     }
-
+    
     // Focus on the center of the image
     if (inputDevice.isFocusPointOfInterestSupported) {
         if (!reset) {
@@ -701,9 +717,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
             inputDevice.focusPointOfInterest = self.initialFocusPoint;
         }
     }
-
+    
     [inputDevice unlockForConfiguration];
-
+    
     // this method will acquire its own lock
     [self updateForTorchMode:self.torchMode error:nil];
 }
@@ -720,7 +736,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         _torchMode = torchMode;
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -729,7 +745,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         case MTBTorchModeOn:
             self.torchMode = MTBTorchModeOff;
             break;
-
+            
         case MTBTorchModeOff:
             self.torchMode = MTBTorchModeOn;
             break;
@@ -739,25 +755,25 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 - (BOOL)updateForTorchMode:(MTBTorchMode)preferredTorchMode error:(NSError **)error {
     AVCaptureDevice *backCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureTorchMode avTorchMode = [self avTorchModeForMTBTorchMode:preferredTorchMode];
-
+    
     if (!([backCamera isTorchAvailable] && [backCamera isTorchModeSupported:avTorchMode])) {
         if (error) {
             *error = [NSError errorWithDomain:kErrorDomain
                                          code:kErrorCodeTorchModeUnavailable
                                      userInfo:@{NSLocalizedDescriptionKey : @"Torch unavailable or mode not supported."}];
         }
-
+        
         return NO;
     }
-
+    
     if (![backCamera lockForConfiguration:error]) {
         NSLog(@"Failed to acquire lock to update torch mode.");
         return NO;
     }
-
+    
     [backCamera setTorchMode:avTorchMode];
     [backCamera unlockForConfiguration];
-
+    
     return YES;
 }
 
@@ -772,11 +788,11 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     switch (torchMode) {
         case MTBTorchModeOn:
             return AVCaptureTorchModeOn;
-
+            
         case MTBTorchModeOff:
             return AVCaptureTorchModeOff;
     }
-
+    
     NSAssert(NO, @"Invalid torch mode: %lu", (unsigned long)torchMode);
     return AVCaptureTorchModeOff;
 }
@@ -785,7 +801,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 - (void)freezeCapture {
     self.capturePreviewLayer.connection.enabled = NO;
-
+    
     dispatch_async(self.privateSessionQueue, ^{
         [self.session stopRunning];
     });
@@ -795,12 +811,12 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (!self.session) {
         return;
     }
-
+    
     self.capturePreviewLayer.connection.enabled = YES;
     
     if (!self.session.isRunning) {
         [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
-
+        
         dispatch_async(self.privateSessionQueue, ^{
             [self.session startRunning];
         });
@@ -821,10 +837,15 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     
     if (NSClassFromString(@"AVCapturePhotoOutput")) {
         AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
-        AVCapturePhotoOutput *output = [[AVCapturePhotoOutput alloc] init];
-        [self.session addOutput:output];
-        self.stillImageCaptureBlock = captureBlock;
-        [output capturePhotoWithSettings:settings delegate:self];
+        settings.autoStillImageStabilizationEnabled = NO;
+        settings.flashMode = AVCaptureFlashModeOff;
+        settings.highResolutionPhotoEnabled = YES;
+        
+        dispatch_async(self.privateSessionQueue, ^{
+            [self.output capturePhotoWithSettings:settings delegate:self];
+            self.stillImageCaptureBlock = captureBlock;
+            
+        });
     } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -859,6 +880,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 #pragma mark - AVCapturePhotoCaptureDelegate
 
 - (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
+    if (photoSampleBuffer == nil) {
+        return;
+    }
     NSData *data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
     UIImage *image = nil;
     if (data) {
@@ -868,8 +892,6 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (self.stillImageCaptureBlock) {
         self.stillImageCaptureBlock(image, error);
     }
-    
-    [self.session removeOutput:captureOutput];
 }
 
 - (BOOL)isCapturingStillImage {
@@ -886,35 +908,35 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (camera == _camera) {
         return YES;
     }
-
+    
     if (!self.isScanning) {
         if (error) {
             *error = [NSError errorWithDomain:kErrorDomain
                                          code:kErrorCodeNotScanning
                                      userInfo:@{NSLocalizedDescriptionKey : @"Camera cannot be set when isScanning is NO"}];
         }
-
+        
         return NO;
     }
-
+    
     AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:error];
-
+    
     if (!input) {
         // we rely on deviceInputWithDevice:error to populate the error in this case
         return NO;
     }
-
+    
     [self setDeviceInput:input session:self.session];
     _camera = camera;
-
+    
     return YES;
 }
 
 - (void)setScanRect:(CGRect)scanRect {
     NSAssert(!CGRectIsEmpty(scanRect), @"Unable to set an empty rectangle as the scanRect of MTBBarcodeScanner");
     NSAssert(self.isScanning, @"Scan rect cannot be set when not (yet) scanning. You may want to set it within didStartScanningBlock.");
-
+    
     if (!self.isScanning) {
         return;
     }
@@ -932,9 +954,9 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
     if (preferredAutoFocusRangeRestriction == _preferredAutoFocusRangeRestriction) {
         return;
     }
-
+    
     _preferredAutoFocusRangeRestriction = preferredAutoFocusRangeRestriction;
-
+    
     if (!self.currentCaptureDeviceInput) {
         // the setting will be picked up once a new session incl. device input is created
         return;

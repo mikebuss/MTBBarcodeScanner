@@ -147,7 +147,7 @@
         message = @"An unknown error occurred.";
     }
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavaialble" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavailable" message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
     [alertController addAction:action];
     [self presentViewController:alertController animated:YES completion:nil];

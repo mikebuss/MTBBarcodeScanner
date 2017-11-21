@@ -41,7 +41,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (!self.didShowAlert && !self.instructions) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavaialble" message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Advanced Example" message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README." preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
         [alertController addAction:action];
         [self presentViewController:alertController animated:YES completion:nil];

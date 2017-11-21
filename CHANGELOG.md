@@ -4,6 +4,10 @@
 
 There are no unreleased changes.
 
+## 5.0.4
+
+- Improvements to performance of still capture
+
 ## 5.0.3
 
 - Fixed blocking issue with scanRect call
