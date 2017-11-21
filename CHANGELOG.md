@@ -1,5 +1,46 @@
 # MTBBarcodeScanner CHANGELOG
 
+## [Unreleased]
+
+There are no unreleased changes.
+
+## 5.0.4
+
+- Improvements to performance of still capture
+
+## 5.0.3
+
+- Fixed blocking issue with scanRect call
+
+## 5.0.2
+
+- Handle deprecation of devicesWithMediaType in iOS 10
+- Fixed an issue where stopScanning() could potentially hang
+- Updated sample project for iOS 10 deprecation warnings
+
+Thanks to @alistra and @shagedorn with their help in this release!
+
+## 5.0.1
+
+- Fixed issue with orientation changes not registering under some circumstances.
+
+Special thanks to [@juliangoacher](https://github.com/juliangoacher) for all of the work on this release!
+
+## 5.0.0
+
+- Setting the `scanRect` must now be set in the `didStartScanning` block.
+- Removed MTBTorchModeAuto
+- Added error handling when setting torch mode.
+
+Special thanks to [@shagedorn](https://github.com/shagedorn) for all of the work on this release!
+
+## 4.0.0
+
+- Setting the `camera` property directly is now deprecated in favor of the more-helpful `setCamera:error:` method.
+- Methods that accept an error argument now have a return value to satisfy Xcode analyzer.
+
+Special thanks to [@shagedorn](https://github.com/shagedorn) for all of the work on this release!
+
 ## 3.1.0
 
 - Fixed issue where calling a method on UIImagePickerController could prompt a rejection from the App Store if a `NSPhotoLibraryUsageDescription` is not provided in the Info.plist file. Details are [here](https://github.com/mikebuss/MTBBarcodeScanner/issues/86). Thanks @brblakley!

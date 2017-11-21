@@ -41,11 +41,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (!self.didShowAlert && !self.instructions) {
-        [[[UIAlertView alloc] initWithTitle:@"Example"
-                                    message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README."
-                                   delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Advanced Example" message:@"To view this example, point the camera at the sample barcodes on the official MTBBarcodeScanner README." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:action];
+        [self presentViewController:alertController animated:YES completion:nil];
     }
 }
 
@@ -76,15 +75,21 @@
 
 - (void)startScanning {
     
+    
+    __weak MTBAdvancedExampleViewController *weakSelf = self;
     self.scanner.didStartScanningBlock = ^{
         NSLog(@"The scanner started scanning!");
+        
+        // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
+        weakSelf.scanner.scanRect = weakSelf.viewOfInterest.frame;
     };
     
     self.scanner.didTapToFocusBlock = ^(CGPoint point){
         NSLog(@"The user tapped the screen to focus. \
               Here we could present a view at %@", NSStringFromCGPoint(point));
     };
-    
+
+
     NSError *error;
     [self.scanner startScanningWithResultBlock:^(NSArray *codes) {
         [self drawOverlaysOnCodes:codes];
@@ -93,9 +98,6 @@
     if (error) {
         NSLog(@"An error occurred: %@", error.localizedDescription);
     }
-    
-    // Optionally set a rectangle of interest to scan codes. Only codes within this rect will be scanned.
-    self.scanner.scanRect = self.viewOfInterest.frame;
     
     [self.toggleScanningButton setTitle:@"Stop Scanning" forState:UIControlStateNormal];
     self.toggleScanningButton.backgroundColor = [UIColor redColor];
@@ -233,11 +235,10 @@
         message = @"An unknown error occurred.";
     }
     
-    [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
-                                message:message
-                               delegate:nil
-                      cancelButtonTitle:@"Ok"
-                      otherButtonTitles:nil] show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavaialble" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alertController addAction:action];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

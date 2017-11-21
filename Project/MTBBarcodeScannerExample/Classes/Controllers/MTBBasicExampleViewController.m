@@ -108,7 +108,7 @@
 }
 
 - (IBAction)toggleTorchTapped:(id)sender {
-    if (self.scanner.torchMode == MTBTorchModeOff || self.scanner.torchMode == MTBTorchModeAuto) {
+    if (self.scanner.torchMode == MTBTorchModeOff) {
         self.scanner.torchMode = MTBTorchModeOn;
         self.toggleTorchButton.title = @"Disable Torch";
     } else {
@@ -147,11 +147,10 @@
         message = @"An unknown error occurred.";
     }
     
-    [[[UIAlertView alloc] initWithTitle:@"Scanning Unavailable"
-                                message:message
-                               delegate:nil
-                      cancelButtonTitle:@"Ok"
-                      otherButtonTitles:nil] show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Scanning Unavailable" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alertController addAction:action];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)scrollToLastTableViewCell {
@@ -170,11 +169,10 @@
     }
     
     if (!self.didShowCaptureWarning) {
-        [[[UIAlertView alloc] initWithTitle:@"Capture Frozen"
-                                    message:@"The capture is now frozen. Tap the preview again to unfreeze."
-                                   delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Capture Frozen" message:@"The capture is now frozen. Tap the preview again to unfreeze." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:action];
+        [self presentViewController:alertController animated:YES completion:nil];
         
         self.didShowCaptureWarning = YES;
     }
