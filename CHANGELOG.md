@@ -4,6 +4,10 @@
 
 There are no unreleased changes.
 
+## 5.0.5
+
+- Updated app for deprecation warnings in iOS 11
+
 ## 5.0.4
 
 - Improvements to performance of still capture
