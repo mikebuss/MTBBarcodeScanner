@@ -87,6 +87,10 @@
     self.scanner.didTapToFocusBlock = ^(CGPoint point){
         NSLog(@"The user tapped the screen to focus. \
               Here we could present a view at %@", NSStringFromCGPoint(point));
+        
+        [weakSelf.scanner captureStillImage:^(UIImage *image, NSError *error) {
+            NSLog(@"Image captured. Add a breakpoint here to preview it!");
+        }];
     };
 
 

@@ -20,6 +20,7 @@ static const NSInteger kErrorCodeSessionIsClosed = 1001;
 static const NSInteger kErrorCodeNotScanning = 1002;
 static const NSInteger kErrorCodeSessionAlreadyActive = 1003;
 static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
+static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 
 @interface MTBBarcodeScanner () <AVCaptureMetadataOutputObjectsDelegate, AVCapturePhotoCaptureDelegate>
 
@@ -879,10 +880,32 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
 
 #pragma mark - AVCapturePhotoCaptureDelegate
 
+- (void)captureOutput:(AVCapturePhotoOutput *)output didFinishProcessingPhoto:(AVCapturePhoto *)photo error:(NSError *)error NS_AVAILABLE_IOS(11.0) {
+    NSAssert(_stillImageCaptureBlock, @"Unable to capture photos with a nil stillImageCaptureBlock");
+    if (@available(iOS 11.0, *)) {
+        NSData *data = photo.fileDataRepresentation;
+        UIImage *image = nil;
+        if (data) {
+            image = [UIImage imageWithData:data];
+        }
+        
+        self.stillImageCaptureBlock(image, error);
+    } else {
+        NSError *error = [NSError errorWithDomain:kErrorDomain
+                                             code:kErrorMethodNotAvailableOnIOSVersion
+                                         userInfo:@{NSLocalizedDescriptionKey : @"Unable to capture still image: the method is not available on this device."}];
+        self.stillImageCaptureBlock(nil, error);
+    }
+}
+
+// This method uses methods that are deprecated in iOS 10. We also implement the updated method (captureOutput:didFinishProcessingPhoto:error:), so we can ignore the warning here.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
     if (photoSampleBuffer == nil) {
         return;
     }
+    
     NSData *data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
     UIImage *image = nil;
     if (data) {
@@ -893,6 +916,7 @@ static const NSInteger kErrorCodeTorchModeUnavailable = 1004;
         self.stillImageCaptureBlock(image, error);
     }
 }
+#pragma GCC diagnostic pop
 
 - (BOOL)isCapturingStillImage {
     return self.stillImageOutput.isCapturingStillImage;
