@@ -4,6 +4,12 @@
 
 There are no unreleased changes.
 
+## 5.0.6
+
+- Fixed build warnings in Xcode 9.4. 
+
+Special thanks to [@badchoice](https://github.com/badchoice) for all of the work on this release!
+
 ## 5.0.5
 
 - Updated app for deprecation warnings in iOS 11

@@ -970,7 +970,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     _scanRect = scanRect;
     
     dispatch_async(self.privateSessionQueue, ^{
-        self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:_scanRect];
+        self.captureOutput.rectOfInterest = [self.capturePreviewLayer metadataOutputRectOfInterestForRect:self->_scanRect];
     });
 }
 
