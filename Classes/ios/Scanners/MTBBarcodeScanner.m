@@ -280,7 +280,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 }
 
 - (BOOL)startScanningWithResultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error {
-    return [self startScanningWithResultBlock:resultBlock error:error];
+    return [self startScanningWithCamera:MTBCameraBack resultBlock:resultBlock error:error];
 }
 
 - (BOOL)startScanningWithCamera:(MTBCamera)camera resultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error {
