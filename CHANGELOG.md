@@ -4,6 +4,10 @@
 
 There are no unreleased changes.
 
+## 5.0.7
+
+- Added the ability to scan from a particular camera on startup with startScanningWithCamera:resultBlock:error.
+
 ## 5.0.6
 
 - Fixed build warnings in Xcode 9.4. 
