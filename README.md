@@ -183,7 +183,7 @@ self.scanner.resultBlock = ^(NSArray *codes){
 ```
 ---
 
-## Usage in Swift 3 Projects
+## Usage in Swift 3+ Projects
 
 See the `SwiftExampleViewController.swift` file in the repository for a working example of this.
 
@@ -232,6 +232,19 @@ class SwiftExampleViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
 }
+```
+
+To start scanning with a particular camera (front or back):
+
+```swift
+try self.scanner?.startScanning(with: .front,
+    resultBlock: { codes in
+        if let codes = codes {
+            for code in codes {
+                let stringValue = code.stringValue!
+                print("Found code: \(stringValue)")
+            }
+        }
 ```
 
 ---

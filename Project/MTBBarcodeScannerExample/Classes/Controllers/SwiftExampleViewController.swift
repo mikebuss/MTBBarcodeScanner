@@ -26,13 +26,15 @@ class SwiftExampleViewController: UIViewController {
         MTBBarcodeScanner.requestCameraPermission(success: { success in
             if success {
                 do {
-                    try self.scanner?.startScanning(resultBlock: { codes in
-                        if let codes = codes {
-                            for code in codes {
-                                let stringValue = code.stringValue!
-                                print("Found code: \(stringValue)")
-                            }
-                        }
+                    // Start scanning with the front camera
+                    try self.scanner?.startScanning(with: .front,
+                                                    resultBlock: { codes in
+                                                        if let codes = codes {
+                                                            for code in codes {
+                                                                let stringValue = code.stringValue!
+                                                                print("Found code: \(stringValue)")
+                                                            }
+                                                        }
                     })
                 } catch {
                     NSLog("Unable to start scanning")

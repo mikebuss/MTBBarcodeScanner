@@ -280,6 +280,10 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 }
 
 - (BOOL)startScanningWithResultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error {
+    return [self startScanningWithResultBlock:resultBlock error:error];
+}
+
+- (BOOL)startScanningWithCamera:(MTBCamera)camera resultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error {
     NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
     NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
              Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
@@ -296,6 +300,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     }
     
     // Configure the session
+    _camera = camera;
     self.captureDevice = [self newCaptureDeviceWithCamera:self.camera];
     AVCaptureSession *session = [self newSessionWithCaptureDevice:self.captureDevice error:error];
     

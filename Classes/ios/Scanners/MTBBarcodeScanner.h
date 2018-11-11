@@ -203,6 +203,23 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 - (BOOL)startScanningWithResultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error;
 
 /**
+ *  Start scanning for barcodes using a specific camera. The camera input will be added as a sublayer
+ *  to the UIView given for previewView during initialization.
+ *
+ *  This method returns quickly and does not wait for the internal session to
+ *  start. Set the didStartScanningBlock to get a callback when the session
+ *  is ready, i.e., a camera picture is visible.
+ *
+ *  @param camera The camera to use when scanning starts.
+ *  @param resultBlock Callback block for captured codes. If the scanner was instantiated with initWithMetadataObjectTypes:previewView, only codes with a type given in metaDataObjectTypes will be reported.
+ *  @param error Error supplied if the scanning could not start.
+ *  
+ *
+ *  @return YES if scanning started successfully, NO if there was an error.
+ */
+- (BOOL)startScanningWithCamera:(MTBCamera)camera resultBlock:(void (^)(NSArray<AVMetadataMachineReadableCodeObject *> *codes))resultBlock error:(NSError **)error;
+
+/**
  *  Stop scanning for barcodes. The live feed from the camera will be removed as a sublayer from the previewView given during initialization.
  */
 - (void)stopScanning;
