@@ -53,4 +53,8 @@ class SwiftExampleViewController: UIViewController {
         
         super.viewWillDisappear(animated)
     }
+    
+    @IBAction func switchCameraTapped(sender: UIButton) {
+        self.scanner?.flipCamera()
+    }
 }
