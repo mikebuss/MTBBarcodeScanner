@@ -906,6 +906,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 // This method uses methods that are deprecated in iOS 10. We also implement the updated method (captureOutput:didFinishProcessingPhoto:error:), so we can ignore the warning here.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wdeprecated-implementations"
 - (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
     if (photoSampleBuffer == nil) {
         return;

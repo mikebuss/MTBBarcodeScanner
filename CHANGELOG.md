@@ -4,6 +4,12 @@
 
 There are no unreleased changes.
 
+## 5.0.8
+
+- Fixed warnings being generated with latest Xcode version.
+
+Special thanks to [@anuraagshakya](https://github.com/anuraagshakya) for the work on this release!
+
 ## 5.0.7
 
 - Added the ability to scan from a particular camera on startup with startScanningWithCamera:resultBlock:error.
