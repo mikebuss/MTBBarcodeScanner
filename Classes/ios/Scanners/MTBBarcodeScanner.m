@@ -146,7 +146,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
  @abstract
  Property used for capturing still photos during barcode capture.
  */
-@property (nonatomic, strong) AVCapturePhotoOutput *output;
+@property (nonatomic, strong) AVCapturePhotoOutput *output NS_AVAILABLE_IOS(10.0);
 
 @end
 
@@ -199,7 +199,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 + (BOOL)hasCamera:(MTBCamera)camera {
     AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
     
-    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+    if (@available(iOS 10.0, *)) {
         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                                                                      mediaType:AVMediaTypeVideo
                                                                       position:position];
@@ -522,7 +522,14 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     
     [newSession beginConfiguration];
     
-    if (!NSClassFromString(@"AVCapturePhotoOutput")) {
+    if (@available(iOS 10.0, *)) {
+        self.output = [[AVCapturePhotoOutput alloc] init];
+        self.output.highResolutionCaptureEnabled = YES;
+        
+        if ([newSession canAddOutput:self.output]) {
+            [newSession addOutput:self.output];
+        }
+    } else {
         // Still image capture configuration
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -538,13 +545,6 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
         }
         [newSession addOutput:self.stillImageOutput];
 #pragma GCC diagnostic pop
-    } else {
-        self.output = [[AVCapturePhotoOutput alloc] init];
-        self.output.highResolutionCaptureEnabled = YES;
-        
-        if ([newSession canAddOutput:self.output]) {
-            [newSession addOutput:self.output];
-        }
     }
     
     dispatch_async(self.privateSessionQueue, ^{
@@ -564,7 +564,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     AVCaptureDevice *newCaptureDevice = nil;
     AVCaptureDevicePosition position = [[self class] devicePositionForCamera:camera];
     
-    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession")) {
+    if (@available(iOS 10.0, *)) {
         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                                                                      mediaType:AVMediaTypeVideo
                                                                       position:position];
@@ -841,7 +841,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
         return;
     }
     
-    if (NSClassFromString(@"AVCapturePhotoOutput")) {
+    if (@available(iOS 10.0, *)) {
         AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
         settings.autoStillImageStabilizationEnabled = NO;
         settings.flashMode = AVCaptureFlashModeOff;
@@ -907,7 +907,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma GCC diagnostic ignored "-Wdeprecated-implementations"
-- (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error {
+- (void)captureOutput:(AVCapturePhotoOutput *)captureOutput didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error NS_AVAILABLE_IOS(10.0) {
     if (photoSampleBuffer == nil) {
         return;
     }
