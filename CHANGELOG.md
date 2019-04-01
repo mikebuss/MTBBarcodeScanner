@@ -4,6 +4,12 @@
 
 There are no unreleased changes.
 
+## 5.0.9
+
+- Made call to freezeCapture non-blocking.
+
+Special thanks to [@shagedorn](https://github.com/shagedorn) for the work on this release!
+
 ## 5.0.8
 
 - Fixed warnings being generated with latest Xcode version.
