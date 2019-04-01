@@ -806,9 +806,12 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
 #pragma mark - Capture
 
 - (void)freezeCapture {
-    self.capturePreviewLayer.connection.enabled = NO;
+    // we must access the layer on the main thread, but manipulating
+    // the capture connection is blocking and should be dispatched
+    AVCaptureConnection *connection = self.capturePreviewLayer.connection;
     
     dispatch_async(self.privateSessionQueue, ^{
+        connection.enabled = NO;
         [self.session stopRunning];
     });
 }
@@ -817,14 +820,15 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     if (!self.session) {
         return;
     }
-    
-    self.capturePreviewLayer.connection.enabled = YES;
-    
+
+    AVCaptureConnection *connection = self.capturePreviewLayer.connection;
+
     if (!self.session.isRunning) {
         [self setDeviceInput:self.currentCaptureDeviceInput session:self.session];
         
         dispatch_async(self.privateSessionQueue, ^{
             [self.session startRunning];
+            connection.enabled = YES;
         });
     }
 }
