@@ -4,6 +4,12 @@
 
 There are no unreleased changes.
 
+## 5.0.10
+
+- Guard all uses of iOS 10+ classes and APIs with appropriate @available() tests
+
+Special thanks to [@bayoung](https://github.com/bayoung) for the work on this release!
+
 ## 5.0.9
 
 - Made call to freezeCapture non-blocking.
