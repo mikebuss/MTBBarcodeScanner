@@ -356,6 +356,7 @@ static const NSInteger kErrorMethodNotAvailableOnIOSVersion = 1005;
     [self stopRecognizingTaps];
     
     self.resultBlock = nil;
+    self.capturePreviewLayer.session = nil;
     self.capturePreviewLayer = nil;
     
     AVCaptureSession *session = self.session;
