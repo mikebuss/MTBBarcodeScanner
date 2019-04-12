@@ -4,6 +4,12 @@
 
 There are no unreleased changes.
 
+## 5.0.11
+
+- Fix rare crash when stopping the barcode scanner
+
+Special thanks to [@anuraagshakya](https://github.com/anuraagshakya) for the work on this release!
+
 ## 5.0.10
 
 - Guard all uses of iOS 10+ classes and APIs with appropriate @available() tests
