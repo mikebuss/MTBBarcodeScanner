@@ -17,7 +17,11 @@ class SwiftExampleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Scan all types of codes
         scanner = MTBBarcodeScanner(previewView: previewView)
+        
+        // If you want to scan only QR codes, use this instead!
+//        scanner = MTBBarcodeScanner(metadataObjectTypes: [AVMetadataObject.ObjectType.qr.rawValue], previewView: previewView)
     }
     
     override func viewDidAppear(_ animated: Bool) {
