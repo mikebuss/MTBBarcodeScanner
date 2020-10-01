@@ -1,3 +1,5 @@
+# This library is no longer actively maintained. If you are interested in maintaining it, please contact [the original author](mailto:mike@mikebuss.com).
+
 # MTBBarcodeScanner
 
 [![Version](https://img.shields.io/cocoapods/v/MTBBarcodeScanner.svg?style=flat)](http://cocoadocs.org/docsets/MTBBarcodeScanner)
